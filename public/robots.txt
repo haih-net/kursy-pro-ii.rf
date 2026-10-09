@@ -1,2 +1,5 @@
 User-agent: *
-Disallow: /
+Allow: /
+Disallow: /owner/
+
+Sitemap: https://xn-----xlcagzggchu2h.xn--p1ai/sitemap.xml

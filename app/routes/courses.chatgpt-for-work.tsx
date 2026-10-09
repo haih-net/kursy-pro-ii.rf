@@ -12,7 +12,6 @@ export const handle: SeoHandle = {
     description:
       '150 часов: ИИ и модели, инструменты ChatGPT, Google, Telegram, Scheduled, изображения, Sites, Codex и свои агенты. Выберите нужные темы.',
     path: '/courses/chatgpt-for-work',
-    noindex: true,
   },
 }
 export const meta: MetaFunction = ({ error }) =>

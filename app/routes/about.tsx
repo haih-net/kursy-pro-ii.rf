@@ -11,7 +11,6 @@ export const handle: SeoHandle = {
     description:
       'Николай Ланец (Fi1osof): больше 19 лет в IT, от фриланса до СберКласса, СберЛаборатории и международных компаний. Сейчас — практическое применение ИИ и личные занятия.',
     path: '/about',
-    noindex: true,
   },
 }
 export const meta: MetaFunction = ({ error }) =>

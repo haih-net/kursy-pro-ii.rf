@@ -12,7 +12,6 @@ export const handle: SeoHandle = {
     description:
       'Лекции с диалогом по работе с ИИ: постановка задач, проверка информации и управление агентами с примерами и ответами на вопросы.',
     path: '/courses',
-    noindex: true,
   },
 }
 export const meta: MetaFunction = ({ error }) =>

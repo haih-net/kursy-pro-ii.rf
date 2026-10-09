@@ -1,38 +1,24 @@
 # Курсы про ИИ
 
-Локальный каркас сайта **курсы-про-ии.рф**, созданный 9 октября 2026 года независимым клонированием website-template от `be942bb`. История Git сохранена, общих объектов и alternates нет. Remote `upstream` указывает на `/www/website-template`; удалённый репозиторий сайта пока не создан.
+Сайт курсы-про-ии.рф: главная, курсы, программа ChatGPT для работы, конструктор занятий и страница автора.
+
+Исходники: https://github.com/haih-net/kursy-pro-ii.rf. Основа website-template от `be942bb`, история сохранена, обновления доступны через upstream.
 
 ## Разработка
 
-Node.js 22.22.3 (см. `.nvmrc`), зависимости закреплены в `package-lock.json`.
+Node.js 22.22.3, зависимости закреплены в package-lock.json.
 
 ```bash
 npm ci --no-audit --no-fund
 npm run dev
 ```
 
-Сайт: http://localhost:3201. Команда `dev` задаёт этот порт, чтобы не занимать порт Wiki.
+Локальный адрес: http://localhost:3201. Проверки: `npm run types`, `npm test`, `npm run lint`. Production: `npm run build`, затем `PORT=3202 npm start`.
 
-```bash
-npm run types
-npm test
-npm run build
-PORT=3202 npm start
-```
+Собственные страницы и оформление находятся в app/Custom, маршруты — app/routes. Четыре публичные страницы включены в sitemap и открыты для индексации. Страница владельца и ошибки остаются noindex.
 
-## Структура
+## Публикация
 
-- `app/Custom/site.ts` — идентичность сайта.
-- `app/Custom/components/SiteLayout/` — общая оболочка и Linaria-стили.
-- `app/Custom/pages/HomePage/` — минимальная главная.
-- `app/Custom/pages/NotFoundPage/` — страница 404.
-- `app/routes/` — интеграция страниц с React Router; `app/routes.ts` сохраняет flatRoutes.
-- `app/components/`, `server/`, `docker/` — унаследованная основа.
+Сервер 159.194.244.220, каталог /www/kursy-pro-ii/repo. Общие Traefik, Varnish и мониторинг; отдельный контейнер app из production-образа, собранного вне сервера. Конфигурации, версия, проверки и возврат ведутся в Wiki marketing: servers/ии-поддержка-сайта.рф/sites/kursy-pro-ii и странице deployment этого сервера.
 
-Старые модули HAIH в `app/pages` сохранены для совместимости с историей, но исключены из маршрутов и пререндеринга. Главная предрендерится, стили извлекаются при сборке. Статистика сохранена из основы; секреты и подключение к agents-center не настроены.
-
-Сейчас работают только `/` и обработка неизвестных адресов. Конечное оформление, программа, цены, оплата и наполнение не реализованы. Индексация закрыта через robots.txt и noindex до подготовки публикации.
-
-Docker-конфигурация и интеграционные/e2e-сценарии HAIH унаследованы и не адаптированы для публикации этого сайта. Для текущей разработки используется только Node.js; сервер, DNS, Traefik и Varnish не изменялись.
-
-Карточка и состояние проекта: http://localhost:3000/wiki/projects/курсы-про-ии.рф.
+Форма отправляет заявки на n.lanets@freecode.academy. Для доставки поддерживаются серверные COURSE_SMTP_HOST, COURSE_SMTP_PORT, COURSE_SMTP_USER, COURSE_SMTP_PASSWORD и COURSE_MAIL_FROM. Успешная доставка через production SMTP пока не подтверждена. Секреты передаются через внешний app.env и не включаются в образ.

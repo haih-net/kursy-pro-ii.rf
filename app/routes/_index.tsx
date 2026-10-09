@@ -12,7 +12,6 @@ export const handle: SeoHandle = {
     title: courseSite.name,
     description: courseSite.description,
     path: '/',
-    noindex: true,
   },
 }
 export const meta: MetaFunction = ({ error }) =>
