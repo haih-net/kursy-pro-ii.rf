@@ -48,7 +48,7 @@ test('прямой адрес, обновление и мобильная шир
   expect((await page.reload())?.status()).toBe(200)
   await expect(page.locator('meta[name="robots"]')).toHaveAttribute(
     'content',
-    /noindex/,
+    'index, follow, max-image-preview:large',
   )
   await page.setViewportSize({ width: 390, height: 844 })
   expect(

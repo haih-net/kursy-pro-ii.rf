@@ -15,25 +15,21 @@ test('hydration, SPA navigation, metadata, focus and browser history', async ({
   // This property disappears on a document reload, including an accidental anchor navigation.
   await page.evaluate(() => Reflect.set(window, '__spaTest', 'same-document'))
   await page
-    .getByRole('navigation', { name: 'Main' })
-    .getByRole('link', { name: 'Solutions' })
+    .getByRole('navigation', { name: 'Основная навигация' })
+    .getByRole('link', { name: 'Курсы', exact: true })
     .click()
-  await expect(page).toHaveURL(/\/solutions$/)
-  await expect(page).toHaveTitle(
-    'Technology choices and their trade-offs — HAIH Solutions',
-  )
+  await expect(page).toHaveURL(/\/courses$/)
+  await expect(page).toHaveTitle('Курсы — Курсы про ИИ')
   await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
     'href',
-    'https://haih.site/solutions',
+    'https://xn-----xlcagzggchu2h.xn--p1ai/courses',
   )
   await expect(page.getByRole('heading', { level: 1 })).toBeFocused()
   await page.goBack()
   await expect(page).toHaveURL(/\/$/)
-  await expect(page).toHaveTitle(
-    'HAIH — Building websites with AI, from requirements',
-  )
+  await expect(page).toHaveTitle('Курсы про ИИ')
   await page.goForward()
-  await expect(page).toHaveURL(/\/solutions$/)
+  await expect(page).toHaveURL(/\/courses$/)
   expect(await page.evaluate(() => Reflect.get(window, '__spaTest'))).toBe(
     'same-document',
   )
@@ -41,7 +37,7 @@ test('hydration, SPA navigation, metadata, focus and browser history', async ({
 })
 
 test('public deep links survive refresh', async ({ page }) => {
-  const response = await page.goto('/blog/a-small-site-and-the-limits-we-found')
+  const response = await page.goto('/courses/chatgpt-for-work')
   expect(response?.status()).toBe(200)
   await expect(page.getByRole('heading', { level: 1 })).toBeVisible()
   const title: string = await page.title()
@@ -50,7 +46,7 @@ test('public deep links survive refresh', async ({ page }) => {
   await expect(page).toHaveTitle(title)
   await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
     'href',
-    'https://haih.site/blog/a-small-site-and-the-limits-we-found',
+    'https://xn-----xlcagzggchu2h.xn--p1ai/courses/chatgpt-for-work',
   )
 })
 
@@ -61,7 +57,7 @@ test('unknown pages and missing assets return 404', async ({
   const response = await page.goto('/missing-e2e-page')
   expect(response?.status()).toBe(404)
   await expect(
-    page.getByRole('heading', { name: 'Page not found' }),
+    page.getByRole('heading', { name: 'Страница не найдена' }),
   ).toBeVisible()
   await expect(page.locator('meta[name="robots"]')).toHaveAttribute(
     'content',
