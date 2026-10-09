@@ -1,10 +1,6 @@
-export const site = {
-  origin: 'https://haih.site',
-  name: 'HAIH',
-  language: 'en',
-  description:
-    'Building a website with AI, starting from requirements. Explore the working implementation, technology choices, experiments and lessons from HAIH.',
-}
+import { courseSite } from '../../Custom/site'
+
+export const site = courseSite
 
 // Preserve the identity published at https://fi1osof.ru/about.
 // ORCID was supplied by the author; no live profile lookup is required at build time.

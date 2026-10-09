@@ -3,14 +3,10 @@ export default {
   ssr: true,
   prerender: [
     '/',
-    '/solutions',
-    '/blog',
-    '/blog/two-protocols-one-development-loop',
-    '/blog/open-to-bots-closed-to-abuse',
-    '/blog/the-tests-passed-which-tests',
-    '/blog/eighteen-hours-a-real-portal-in-production',
-    '/blog/a-small-site-and-the-limits-we-found',
-    '/blog/one-server-two-modes-and-an-api',
+    '/courses',
+    '/about',
+    '/courses/chatgpt-for-work',
+    '/owner/notifications',
   ],
   routeDiscovery: { mode: 'initial' },
 } satisfies Config

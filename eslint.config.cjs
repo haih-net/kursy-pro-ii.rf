@@ -11,6 +11,7 @@ module.exports = [
   {
     ignores: [
       'node_modules/**',
+      'app/Custom/gql/generated.ts',
       'coverage/**',
       'playwright-report/**',
       'test-results/**',

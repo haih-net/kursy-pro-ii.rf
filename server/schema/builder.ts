@@ -1,9 +1,11 @@
 import type { Request } from 'express'
+import type { CourseApplications } from '../Custom/courseApplications'
 import SchemaBuilder from '@pothos/core'
 import { DateTimeResolver, JSONResolver } from 'graphql-scalars'
 
 export interface Context {
   req: Request
+  courseApplications?: CourseApplications
 }
 
 export const builder = new SchemaBuilder<{

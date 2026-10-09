@@ -1,4 +1,10 @@
 import express from 'express'
+import { existsSync } from 'node:fs'
+import { createNotificationsRouter } from './Custom/applications'
+
+if (existsSync('.env.notifications')) {
+  process.loadEnvFile('.env.notifications')
+}
 import { createServer } from 'node:http'
 import { resolve } from 'node:path'
 import { pathToFileURL } from 'node:url'
@@ -45,6 +51,20 @@ async function startServer() {
   const app = express()
   app.set('trust proxy', true)
   app.disable('x-powered-by')
+  app.use(
+    '/api',
+    createNotificationsRouter({
+      origin:
+        process.env.COURSE_SITE_ORIGIN || (dev ? 'http://localhost:3201' : ''),
+      ownerToken: process.env.COURSE_OWNER_TOKEN || '',
+      telegramToken: process.env.COURSE_TELEGRAM_BOT_TOKEN || '',
+      telegramChat: process.env.COURSE_TELEGRAM_CHAT_ID || '',
+      publicKey: process.env.COURSE_PUSH_PUBLIC_KEY || '',
+      privateKey: process.env.COURSE_PUSH_PRIVATE_KEY || '',
+      subject: process.env.COURSE_PUSH_SUBJECT || '',
+      directory: process.env.COURSE_NOTIFICATIONS_DIRECTORY || '.private',
+    }),
+  )
 
   const httpServer = createServer(app)
 
@@ -57,7 +77,20 @@ async function startServer() {
     // Development: Vite dev server with HMR
     const { createServer: createVite } = await import('vite')
     vite = await createVite({
-      server: { middlewareMode: true, ws: { server: httpServer } },
+      server: {
+        middlewareMode: true,
+        ws: { server: httpServer },
+        fs: {
+          deny: [
+            '.env',
+            '.env.*',
+            '*.{crt,pem}',
+            '**/.git/**',
+            '**/.private/**',
+            `${resolve(process.env.COURSE_NOTIFICATIONS_DIRECTORY || '.private')}/**`,
+          ],
+        },
+      },
       appType: 'custom',
     })
 

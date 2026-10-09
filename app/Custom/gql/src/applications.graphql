@@ -1,0 +1,12 @@
+mutation PrepareCourseApplication {
+  prepareCourseApplication {
+    token
+    waitMs
+  }
+}
+mutation SubmitCourseApplication($input: CourseApplicationInput!) {
+  submitCourseApplication(input: $input) {
+    id
+    message
+  }
+}

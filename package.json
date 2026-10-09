@@ -1,5 +1,5 @@
 {
-  "name": "haih-site",
+  "name": "kursy-pro-ii",
   "license": "MIT",
   "private": true,
   "type": "module",
@@ -7,7 +7,7 @@
     "node": ">=22.22.3 <23"
   },
   "scripts": {
-    "dev": "cross-env NODE_ENV=development tsx watch server/index.ts",
+    "dev": "cross-env NODE_ENV=development PORT=3201 tsx watch server/index.ts",
     "build": "react-router build && esbuild server/index.ts --bundle --platform=node --format=esm --packages=external --outfile=build/node/index.js",
     "clean": "node -e \"fs.rmSync('build',{recursive:true,force:true});fs.rmSync('.react-router',{recursive:true,force:true})\"",
     "router:gen": "react-router typegen",
@@ -32,7 +32,8 @@
     "e2e": "playwright test",
     "e2e:ui": "playwright test --ui",
     "e2e:webkit": "playwright test --project=webkit",
-    "e2e:report": "playwright show-report"
+    "e2e:report": "playwright show-report",
+    "generate:type": "graphql-codegen --config codegen.ts"
   },
   "dependencies": {
     "@apollo/server": "^5.5.1",
@@ -43,29 +44,38 @@
     "@prometheus-io/client": "0.16.1",
     "@react-router/express": "^8.4.0",
     "@react-router/fs-routes": "^8.4.0",
+    "@tanstack/react-query": "^5.104.1",
     "cors": "^2.8.6",
     "cross-env": "^10.1.0",
     "express": "^5.2.1",
     "graphql": "^16.14.2",
     "graphql-scalars": "^2.0.0",
+    "nodemailer": "^10.0.16",
     "punycode": "2.3.1",
     "react": "19.3.0",
     "react-dom": "19.3.0",
     "react-router": "^8.4.0",
     "sirv": "3.0.2",
-    "vite": "8.3.1"
+    "vite": "8.3.1",
+    "web-push": "^3.6.7"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.5",
+    "@graphql-codegen/cli": "^7.4.5",
+    "@graphql-codegen/typescript": "^6.1.1",
+    "@graphql-codegen/typescript-operations": "^6.1.10",
+    "@graphql-codegen/typescript-react-query": "^7.0.5",
     "@playwright/test": "1.63.0",
     "@react-router/dev": "^8.4.0",
     "@storybook/react-vite": "^10.6.0",
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",
     "@types/node": "22.19.15",
+    "@types/nodemailer": "^8.0.2",
     "@types/punycode": "2.1.4",
     "@types/react": "19.3.0",
     "@types/react-dom": "19.2.3",
+    "@types/web-push": "^3.6.4",
     "@vitest/coverage-v8": "5.0.3",
     "@wyw-in-js/vite": "^2.5.1",
     "esbuild": "^0.28.2",

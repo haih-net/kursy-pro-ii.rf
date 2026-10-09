@@ -1,11 +1,13 @@
+import favicon from './Custom/components/SiteLayout/assets/favicon.svg'
 import { Statistics } from './components/Statistics'
 import { errorPageStatusCode } from './components/Statistics/status'
-import { HtmlStyled } from './components/Layout/styles'
+import type * as React from 'react'
+import { DocumentStyled } from './Custom/components/SiteLayout/styles'
 import { SeoHeaders, unavailableSeoMeta } from './components/seo/SeoHeaders'
 
 export const meta = unavailableSeoMeta
 import type { ReactNode } from 'react'
-import { Layout as SiteLayout } from './components/Layout'
+import { SiteLayout } from './Custom/components/SiteLayout'
 import {
   Links,
   Outlet,
@@ -17,13 +19,14 @@ import {
 
 const betterlyticsId = import.meta.env.BETTERLYTICS_SITE_ID
 
-export function Layout({ children }: { children: ReactNode }) {
+export const Layout: React.FC<{ children: ReactNode }> = ({ children }) => {
   return (
-    <HtmlStyled lang="en">
+    <DocumentStyled lang="ru">
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="icon" type="image/png" sizes="32x32" href="/favicon.png" />
+        <meta name="theme-color" content="#ffffff" />
+        <link rel="icon" type="image/svg+xml" href={favicon} />
         <SeoHeaders />
         <Links />
         {betterlyticsId && (
@@ -40,10 +43,10 @@ export function Layout({ children }: { children: ReactNode }) {
         <ScrollRestoration />
         <Scripts />
       </body>
-    </HtmlStyled>
+    </DocumentStyled>
   )
 }
-export default function App() {
+const App: React.FC = () => {
   return (
     <>
       <Outlet />
@@ -52,18 +55,20 @@ export default function App() {
   )
 }
 
-export function ErrorBoundary() {
+export default App
+
+export const ErrorBoundary: React.FC = () => {
   const error = useRouteError()
   return (
     <>
       <Statistics statusCode={errorPageStatusCode(error)} />
       <h1 tabIndex={-1}>
         {isRouteErrorResponse(error)
-          ? `${error.status} ${error.statusText}`
-          : 'Something went wrong'}
+          ? `${error.status} — Не удалось открыть страницу`
+          : 'Не удалось открыть страницу'}
       </h1>
-      <p>Please reload the page to retry.</p>
-      <a href="/">Return home</a>
+      <p>Обновите страницу, чтобы попробовать ещё раз.</p>
+      <a href="/">На главную</a>
     </>
   )
 }

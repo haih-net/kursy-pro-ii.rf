@@ -9,12 +9,17 @@ import express from 'express'
 
 import { schema } from './schema'
 import { graphqlObservability, logEvent } from './observability'
+import { createCourseApplications } from './Custom/courseApplications'
 import type { Context } from './schema/builder'
 
 export async function setupGraphqlMiddleware(
   app: Express,
   httpServer: Server,
 ): Promise<() => Promise<void>> {
+  const courseApplications = createCourseApplications(
+    process.env.COURSE_SITE_ORIGIN ||
+      (process.env.NODE_ENV === 'development' ? 'http://localhost:3201' : ''),
+  )
   const apolloServer = new ApolloServer<Context>({
     schema,
     introspection: true,
@@ -41,7 +46,7 @@ export async function setupGraphqlMiddleware(
     expressMiddleware(apolloServer, {
       context: async ({ req, res }) => {
         res.setHeader('Cache-Control', 'no-store')
-        return { req }
+        return { req, courseApplications }
       },
     }),
   )
