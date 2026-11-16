@@ -54,7 +54,6 @@ export const HeaderNavStyled = styled.nav`
       justify-content: center;
       flex-wrap: wrap;
       gap: 4px 20px;
-      max-width: 320px;
     }
     .header-actions {
       grid-column: 3;
