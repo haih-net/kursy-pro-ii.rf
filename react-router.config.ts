@@ -5,6 +5,7 @@ export default {
     '/',
     '/courses',
     '/about',
+    '/terms',
     '/courses/chatgpt-for-work',
     '/owner/notifications',
   ],

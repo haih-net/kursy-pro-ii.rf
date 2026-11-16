@@ -34,6 +34,7 @@ export const SiteLayout: React.FC<React.PropsWithChildren> = ({ children }) => {
           </NavLink>
           <NavLink to="/courses">Курсы</NavLink>
           <NavLink to="/about">Обо мне</NavLink>
+          <NavLink to="/terms">Определения</NavLink>
         </nav>
         <a className="header-contact" href="mailto:n.lanets@freecode.academy">
           n.lanets@freecode.academy

@@ -10,6 +10,6 @@ export const agentFoundationsTopic: TopicMeta = {
   levels: ['beginner', 'confident'],
   lessons: [
     'LLM и система вокруг неё: из чего состоит агент',
-    'Агент, сценарий и чат: сравнение на одной задаче',
+    'Агент, сценарий и ИИ-чат: разбор одной задачи',
   ],
 }
