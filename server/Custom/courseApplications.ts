@@ -1,6 +1,5 @@
 import { randomUUID } from 'node:crypto'
 import { resolveMx } from 'node:dns/promises'
-import { domainToASCII } from 'node:url'
 import type { Request } from 'express'
 import { GraphQLError } from 'graphql'
 import nodemailer from 'nodemailer'
@@ -15,8 +14,6 @@ import {
   formatCoursePrice,
 } from '../../app/Custom/pages/ChatGptCoursePage/CourseBuilder/data'
 
-const recipient = 'n.lanets@freecode.academy'
-const mailDomain = domainToASCII('курсы-про-ии.рф')
 export interface CourseApplicationInput {
   token: string
   message: string
@@ -44,7 +41,13 @@ export type MailDelivery = (text: string, id: string) => Promise<void>
 
 // Адрес получателя фиксирован: клиент не может превратить форму в почтовый ретранслятор.
 export const deliverCourseEmail: MailDelivery = async (text, id) => {
-  const configuredHost = process.env.COURSE_SMTP_HOST
+  const from = process.env.MAIL_FROM?.trim()
+  const recipient = process.env.MAIL_TO?.trim() || from
+  if (!from || !recipient) {
+    throw new Error('MAIL_UNAVAILABLE')
+  }
+  const mailDomain = from.split('@')[1]
+  const configuredHost = process.env.SMTP_HOST
   const exchanges = configuredHost
     ? [{ exchange: configuredHost, priority: 0 }]
     : (await resolveMx(recipient.split('@')[1])).sort(
@@ -55,20 +58,18 @@ export const deliverCourseEmail: MailDelivery = async (text, id) => {
   }
   // Повтор после неопределённого результата DATA не запускаем: письмо могло уже быть принято.
   const host = exchanges[0].exchange
-  const port = Number(
-    process.env.COURSE_SMTP_PORT || (configuredHost ? 587 : 25),
-  )
+  const port = Number(process.env.SMTP_PORT || (configuredHost ? 587 : 25))
   const transport = nodemailer.createTransport({
     host,
     port,
     secure: port === 465,
-    requireTLS: true,
+    requireTLS: process.env.SMTP_REQUIRE_TLS !== 'false',
     name: mailDomain,
-    ...(process.env.COURSE_SMTP_USER
+    ...(process.env.SMTP_USER
       ? {
           auth: {
-            user: process.env.COURSE_SMTP_USER,
-            pass: process.env.COURSE_SMTP_PASSWORD || '',
+            user: process.env.SMTP_USER,
+            pass: process.env.SMTP_PASSWORD || '',
           },
         }
       : {}),
@@ -81,7 +82,7 @@ export const deliverCourseEmail: MailDelivery = async (text, id) => {
   const result = await transport.sendMail({
     from: {
       name: 'Курсы про ИИ',
-      address: process.env.COURSE_MAIL_FROM || `courses@${mailDomain}`,
+      address: from,
     },
     to: recipient,
     subject: 'Заявка на курс ChatGPT для работы',
@@ -90,7 +91,7 @@ export const deliverCourseEmail: MailDelivery = async (text, id) => {
   })
   if (
     !result.accepted.some(
-      (address) => String(address).toLowerCase() === recipient,
+      (address) => String(address).toLowerCase() === recipient.toLowerCase(),
     )
   ) {
     throw new Error('MAIL_REJECTED')

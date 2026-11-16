@@ -21,4 +21,4 @@ npm run dev
 
 Сервер 159.194.244.220, каталог /www/kursy-pro-ii/repo. Общие Traefik, Varnish и мониторинг; отдельный контейнер app из production-образа, собранного вне сервера. Конфигурации, версия, проверки и возврат ведутся в Wiki marketing: servers/ии-поддержка-сайта.рф/sites/kursy-pro-ii и странице deployment этого сервера.
 
-Форма отправляет заявки на n.lanets@freecode.academy. Для доставки поддерживаются серверные COURSE_SMTP_HOST, COURSE_SMTP_PORT, COURSE_SMTP_USER, COURSE_SMTP_PASSWORD и COURSE_MAIL_FROM. Успешная доставка через production SMTP пока не подтверждена. Секреты передаются через внешний app.env и не включаются в образ.
+Форма отправляет заявки на адрес из серверной переменной MAIL_TO (при её отсутствии — MAIL_FROM). Отправитель задаётся через MAIL_FROM. Для доставки используются общие SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASSWORD и SMTP_REQUIRE_TLS; без SMTP_HOST выполняется прямая доставка на MX получателя. Успешная доставка через production SMTP пока не подтверждена. Секреты передаются через внешний app.env и не включаются в образ.
