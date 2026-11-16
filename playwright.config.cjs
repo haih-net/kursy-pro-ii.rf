@@ -23,7 +23,12 @@ module.exports = {
     : {
         command: 'npm run build && npm start',
         url: baseURL,
-        env: { PORT: '4317', METRICS_PORT: '', COURSE_SITE_ORIGIN: baseURL },
+        env: {
+          PORT: '4317',
+          METRICS_PORT: '',
+          COURSE_SITE_ORIGIN: baseURL,
+          DATABASE_FILENAME: ':memory:',
+        },
         reuseExistingServer: false,
         timeout: 120000,
       },

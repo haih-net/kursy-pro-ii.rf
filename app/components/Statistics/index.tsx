@@ -1,4 +1,5 @@
 import { useEffect } from 'react'
+import { customAlphabet } from 'nanoid'
 import type * as React from 'react'
 import { useLocation, useMatches } from 'react-router'
 import { createStatisticsQueue, type StatisticsQueue } from './queue'
@@ -17,12 +18,7 @@ interface BrowserStatistics {
 
 let statistics: BrowserStatistics | undefined
 
-const createId = (): string => {
-  const bytes: Uint8Array = crypto.getRandomValues(new Uint8Array(12))
-  return Array.from(bytes, (byte: number): string =>
-    byte.toString(16).padStart(2, '0'),
-  ).join('')
-}
+const createId = customAlphabet('0123456789abcdef', 24)
 
 const storedId = (
   kind: 'localStorage' | 'sessionStorage',
@@ -112,4 +108,24 @@ export const Statistics: React.FC<StatisticsProps> = ({
     }
   }, [])
   return null
+}
+
+export const recordStatistics = (
+  eventId: import('./transport').ChatStatisticsEvent['eventId'],
+  data: Record<string, unknown>,
+): void => {
+  const state = getStatistics()
+  state.queue.enqueue({
+    visitorId: state.visitorId,
+    tabId: state.tabId,
+    events: [
+      {
+        ...data,
+        eventId,
+        eventKey: createId(),
+        timestamp: Date.now(),
+        url: location.href,
+      },
+    ],
+  })
 }

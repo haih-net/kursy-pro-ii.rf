@@ -1,17 +1,14 @@
 import { describe, expect, test } from 'vitest'
-import { canonicalUrl } from '../../app/components/seo/site'
+import { canonicalUrl, site } from '../../app/components/seo/site'
 import { serializeJsonLd } from '../../app/components/seo/JsonLd/helpers'
 import type { SchemaType } from '../../app/components/seo/JsonLd/types'
 
 describe('canonicalUrl', () => {
   test.each([
-    ['/', 'https://xn-----xlcagzggchu2h.xn--p1ai/'],
-    ['/blog/?ref=test#article', 'https://xn-----xlcagzggchu2h.xn--p1ai/blog'],
-    ['/blog///', 'https://xn-----xlcagzggchu2h.xn--p1ai/blog'],
-    [
-      'https://xn-----xlcagzggchu2h.xn--p1ai/solutions?ref=test',
-      'https://xn-----xlcagzggchu2h.xn--p1ai/solutions',
-    ],
+    ['/', `${site.origin}/`],
+    ['/blog/?ref=test#article', `${site.origin}/blog`],
+    ['/blog///', `${site.origin}/blog`],
+    [`${site.origin}/example?ref=test`, `${site.origin}/example`],
   ])('normalizes %s', (path: string, expected: string) => {
     expect(canonicalUrl(path)).toBe(expected)
   })

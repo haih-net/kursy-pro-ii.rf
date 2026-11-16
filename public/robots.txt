@@ -1,5 +1,23 @@
 User-agent: *
 Allow: /
 Disallow: /owner/
+Disallow: /calls$
+Disallow: /calls?
+Disallow: /calls/
+Disallow: /docs$
+Disallow: /docs?
+Disallow: /docs/
+Disallow: /signin$
+Disallow: /signin?
+Disallow: /signin/
+Disallow: /signup$
+Disallow: /signup?
+Disallow: /signup/
+Disallow: /panel$
+Disallow: /panel?
+Disallow: /panel/
+Disallow: /admin-panel$
+Disallow: /admin-panel?
+Disallow: /admin-panel/
 
 Sitemap: https://xn-----xlcagzggchu2h.xn--p1ai/sitemap.xml

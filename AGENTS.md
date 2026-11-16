@@ -20,7 +20,7 @@ This repository is the website itself. It is not an engine, framework, starter k
 
 The website is its own first demonstration. Its implementation, experiments, checks, commits, and eventually releases provide evidence for the approach it describes. Do not present planned or untested capabilities as proven.
 
-All project content, UI copy, documentation, code identifiers, and commit/release descriptions must be in English. Discussion with the owner may be in Russian.
+Язык сайта — русский. Все пользовательские тексты, включая кнопки, пояснения, ошибки, сообщения валидации, подписи доступности, метаданные страниц и документацию на сайте, должны быть на русском. Новую документацию и изменения README писать на русском. Идентификаторы кода, имена API, названия технологий и технические обозначения сохранять в оригинале. Сообщения коммитов писать на английском. Общение с владельцем — на русском.
 
 ## Decision model
 
@@ -176,4 +176,4 @@ Record implemented decisions, their motivating needs, known limitations, and rep
 
 Use focused commits for coherent changes and versioned releases for reproducible milestones when requested as part of the workflow. Do not publish, deploy, or create remote releases merely because a local build succeeds.
 
-Gradually turn verified implementation knowledge into English Solution pages. Keep documentation proportional to the project's current complexity.
+Постепенно оформляйте проверенные знания о реализации в русскоязычные страницы решений. Объём документации должен соответствовать сложности проекта.

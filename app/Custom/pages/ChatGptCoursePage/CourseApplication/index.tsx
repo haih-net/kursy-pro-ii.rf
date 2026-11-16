@@ -201,8 +201,7 @@ const ApplicationForm: React.FC<ApplicationProps> = ({
                 Ваши контакты и пожелания
               </label>
               <p className="field-help" id="contact-help">
-                Telegram или Email — достаточно одного удобного способа
-                связи.
+                Telegram или Email — достаточно одного удобного способа связи.
               </p>
               <textarea
                 id="course-contact-message"
