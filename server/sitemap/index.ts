@@ -23,7 +23,10 @@ function generateUrls(items: SitemapItem[], origin: string): string {
   const urls = new Map<string, SitemapItem>()
   for (const item of items) {
     const url = new URL(item.uri, `${origin}/`)
-    if (url.origin !== origin || /^\/(calls|docs)(?:\/|$)/.test(url.pathname)) {
+    if (
+      url.origin !== origin ||
+      /^\/(ai|calls|docs)(?:\/|$)/.test(url.pathname)
+    ) {
       continue
     }
     urls.set(url.href, item)

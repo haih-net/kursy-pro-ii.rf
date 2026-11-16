@@ -9,6 +9,12 @@ export const FooterStyled = styled.footer`
   padding: 28px 0;
   color: #555;
   font-size: 0.85rem;
+  nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px 24px;
+    width: 100%;
+  }
   > span {
     margin-right: auto;
   }

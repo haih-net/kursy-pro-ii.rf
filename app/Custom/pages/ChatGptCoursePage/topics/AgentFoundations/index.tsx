@@ -9,6 +9,11 @@ export const AgentFoundations: React.FC = () => (
       Значение сценария и его связь с агентом и ИИ-чатом разобраны в{' '}
       <Link to="/terms#scenario">определениях для курсов</Link>.
     </p>
+    <p>
+      Общее устройство системы разобрано в статьях{' '}
+      <a href="https://что-такое-ии.рф/terms/agent">«ИИ-агент»</a> и{' '}
+      <a href="https://что-такое-ии.рф/terms/harness">«Обвязки»</a>.
+    </p>
     <TopicOutline
       lessons={agentFoundationsTopic.lessons}
       parts={{
