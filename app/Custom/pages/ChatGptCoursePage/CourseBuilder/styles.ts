@@ -241,8 +241,7 @@ export const BuilderStyled = styled.section`
   & .stage summary:focus-visible,
   & button:focus-visible,
   & input:focus-visible {
-    outline: 2px solid #ad3b20;
-    outline-offset: 3px;
+    border-color: #ad3b20;
   }
   & .stage .level-badges {
     grid-column: 1;

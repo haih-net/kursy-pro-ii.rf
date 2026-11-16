@@ -1,13 +1,13 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import type * as React from 'react'
-import { Link, useLocation } from 'react-router'
-import { useOpenChatWithMessage } from '../../components/Chat/hooks/useOpenChatWithMessage'
+import { Link, NavLink, useLocation } from 'react-router'
 import { HeaderNavStyled, HeaderStyled } from './styles'
 import { SignOutButton } from '../../components/Auth/SignOutButton'
 import { theme } from '../../theme'
+import { courseSite } from '../../site'
 import { useAppContext } from 'app/Custom/components/AppContext'
 import { UserAvatar } from 'app/Custom/components/UserAvatar'
-import { SeparatorStyled } from 'app/Custom/components/Separator/styles'
+import { MessageCircle, LogIn } from 'lucide-react'
 
 export const Header: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false)
@@ -21,15 +21,6 @@ export const Header: React.FC = () => {
     openFeedback?.()
     setIsOpen(false)
   }, [openFeedback])
-  const openChat = useOpenChatWithMessage()
-  const handleOpenChat = useCallback(
-    (event: React.MouseEvent<HTMLButtonElement>) => {
-      openChat(event)
-      setIsOpen(false)
-    },
-    [openChat],
-  )
-
   const closeMenu = useCallback(() => {
     setIsOpen(false)
     if (accountMenu.current) {
@@ -64,7 +55,7 @@ export const Header: React.FC = () => {
         setIsOpen(false)
       }
     }
-    const media = window.matchMedia(`(min-width: ${theme.breakpoints.sm}px)`)
+    const media = window.matchMedia(`(min-width: ${theme.breakpoints.lg}px)`)
     const onResize = () => {
       if (media.matches) {
         setIsOpen(false)
@@ -107,6 +98,15 @@ export const Header: React.FC = () => {
   return (
     <HeaderStyled ref={header}>
       <div className="header-inner">
+        <Link className="brand" to="/" onClick={closeMenu}>
+          <span className="brand-mark" aria-hidden="true">
+            ии
+          </span>
+          <span>
+            {courseSite.name}
+            <span className="brand-author">Николай Ланец · Fi1osof</span>
+          </span>
+        </Link>
         <button
           ref={toggle}
           type="button"
@@ -137,30 +137,39 @@ export const Header: React.FC = () => {
           data-open={isOpen}
           onBlur={handleBlur}
         >
-          <Link to={'/'}>Главная</Link>
-          {user?.sudo === true && (
-            <>
-              <Link
-                to="/calls"
-                onClick={closeMenu}
-                aria-current={
-                  location.pathname.startsWith('/calls') ? 'page' : undefined
-                }
-              >
-                Видеозвонки
-              </Link>
-              <Link
-                to="/docs"
-                onClick={closeMenu}
-                aria-current={
-                  location.pathname.startsWith('/docs') ? 'page' : undefined
-                }
-              >
-                Документация
-              </Link>
-            </>
-          )}
-          {/* <Link
+          <div className="navigation-links">
+            <NavLink to="/courses" onClick={closeMenu}>
+              Курсы
+            </NavLink>
+            <NavLink to="/about" onClick={closeMenu}>
+              Обо мне
+            </NavLink>
+            <NavLink to="/terms" onClick={closeMenu}>
+              Определения
+            </NavLink>
+            {user?.sudo === true && (
+              <>
+                <Link
+                  to="/calls"
+                  onClick={closeMenu}
+                  aria-current={
+                    location.pathname.startsWith('/calls') ? 'page' : undefined
+                  }
+                >
+                  Видеозвонки
+                </Link>
+                <Link
+                  to="/docs"
+                  onClick={closeMenu}
+                  aria-current={
+                    location.pathname.startsWith('/docs') ? 'page' : undefined
+                  }
+                >
+                  Документация
+                </Link>
+              </>
+            )}
+            {/* <Link
             to="/users"
             onClick={closeMenu}
             aria-current={
@@ -169,78 +178,66 @@ export const Header: React.FC = () => {
           >
             Пользователи
           </Link> */}
-
-          <SeparatorStyled />
-
-          <button
-            type="button"
-            className="feedback-button"
-            onClick={handleFeedback}
-            disabled={!openFeedback}
-          >
-            Написать
-          </button>
-          {location.pathname === '/ai' ? (
-            <Link to="/ai" className="ai-button" onClick={closeMenu}>
-              Спросить ИИ <span aria-hidden="true">↗</span>
-            </Link>
-          ) : (
+          </div>
+          <div className="header-actions">
             <button
               type="button"
-              className="ai-button"
-              onClick={handleOpenChat}
+              className="feedback-button"
+              onClick={handleFeedback}
+              disabled={!openFeedback}
             >
-              Спросить ИИ <span aria-hidden="true">↗</span>
+              <MessageCircle size={16} aria-hidden="true" />
+              Написать мне
             </button>
-          )}
-          {!userLoading &&
-            (user ? (
-              <details className="account-menu" ref={accountMenu}>
-                <summary
-                  aria-label={`Меню пользователя: ${user.fullname || user.username || 'Мой аккаунт'}`}
-                >
-                  <UserAvatar user={user} />
-                  <span className="account-name">
-                    {user.fullname || user.username || 'Мой аккаунт'}
-                  </span>
-                  <svg
-                    className="account-chevron"
-                    width="16"
-                    height="16"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    aria-hidden="true"
+            {!userLoading &&
+              (user ? (
+                <details className="account-menu" ref={accountMenu}>
+                  <summary
+                    aria-label={`Меню пользователя: ${user.fullname || user.username || 'Мой аккаунт'}`}
                   >
-                    <path d="m6 9 6 6 6-6" />
-                  </svg>
-                </summary>
-                <div className="account-dropdown">
-                  <p>{user.sudo ? 'Администратор' : 'Мой аккаунт'}</p>
-                  <Link to="/panel/profile" onClick={closeMenu}>
-                    Мой профиль
-                  </Link>
-                  {user.sudo && (
-                    <>
-                      <Link to="/users" onClick={closeMenu}>
-                        Пользователи
-                      </Link>
-                      <Link to="/admin-panel" onClick={closeMenu}>
-                        Админка
-                      </Link>
-                    </>
-                  )}
-                  <SignOutButton variant="ghost" />
-                </div>
-              </details>
-            ) : (
-              <Link className="signin-link" to="/signin" onClick={closeMenu}>
-                Войти
-              </Link>
-            ))}
+                    <UserAvatar user={user} />
+                    <span className="account-name">
+                      {user.fullname || user.username || 'Мой аккаунт'}
+                    </span>
+                    <svg
+                      className="account-chevron"
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      aria-hidden="true"
+                    >
+                      <path d="m6 9 6 6 6-6" />
+                    </svg>
+                  </summary>
+                  <div className="account-dropdown">
+                    <p>{user.sudo ? 'Администратор' : 'Мой аккаунт'}</p>
+                    <Link to="/panel/profile" onClick={closeMenu}>
+                      Мой профиль
+                    </Link>
+                    {user.sudo && (
+                      <>
+                        <Link to="/users" onClick={closeMenu}>
+                          Пользователи
+                        </Link>
+                        <Link to="/admin-panel" onClick={closeMenu}>
+                          Админка
+                        </Link>
+                      </>
+                    )}
+                    <SignOutButton variant="ghost" />
+                  </div>
+                </details>
+              ) : (
+                <Link className="signin-link" to="/signin" onClick={closeMenu}>
+                  <LogIn size={16} aria-hidden="true" /> Войти
+                </Link>
+              ))}
+          </div>
         </HeaderNavStyled>
       </div>
     </HeaderStyled>

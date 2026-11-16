@@ -28,8 +28,7 @@ export const AutocompleteFieldStyled = styled.div`
     padding: 12px 84px 12px 14px;
     color: ${theme.colors.foreground};
     &:focus-visible {
-      outline: 2px solid ${theme.colors.primary};
-      outline-offset: 2px;
+      border-color: ${theme.colors.primary};
     }
     &:disabled {
       background: #f2f3ef;
@@ -50,7 +49,7 @@ export const AutocompleteTriggerStyled = styled.button`
   align-items: center;
   justify-content: center;
   padding: 0;
-  border: 0;
+  border: 1px solid transparent;
   border-radius: 0 9px 9px 0;
   background: transparent;
   color: ${theme.colors.foreground};

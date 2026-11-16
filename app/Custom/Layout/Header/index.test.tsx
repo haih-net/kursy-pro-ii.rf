@@ -47,5 +47,7 @@ it.each([
       expect(link).toBeNull()
     }
   }
-  expect(screen.getByRole('link', { name: 'Главная' })).not.toBeNull()
+  for (const name of ['Курсы', 'Обо мне', 'Определения']) {
+    expect(screen.getByRole('link', { name })).not.toBeNull()
+  }
 })

@@ -7,122 +7,162 @@ export const HeaderNavStyled = styled.nav`
   top: 100%;
   left: 0;
   right: 0;
-  padding: 20px 24px 28px;
+  padding: 16px 20px;
+  max-height: calc(100dvh - 100px);
+  overflow-y: auto;
   background: ${theme.backgrounds.page};
-  box-shadow: 0 16px 24px #182e2012;
+  box-shadow: 0 12px 24px #25252512;
   border-bottom: 1px solid ${theme.colors.border};
-  align-items: stretch;
-  gap: 6px;
   font-size: 14px;
-
-  @media (min-width: ${theme.breakpoints.sm}px) {
-    display: flex;
-    position: static;
-    padding: 0;
-    background: transparent;
-    box-shadow: none;
-    border-bottom: 0;
-    align-items: center;
-    gap: 20px;
-    width: 100%;
-  }
-
-  @media (min-width: ${theme.breakpoints.md}px) {
-    gap: 32px;
-  }
-
   &[data-open='true'] {
+    display: block;
+  }
+  .navigation-links {
     display: flex;
     flex-direction: column;
-
-    @media (min-width: ${theme.breakpoints.sm}px) {
+    gap: 4px;
+  }
+  .navigation-links > a {
+    padding: 10px 0;
+    text-decoration: none;
+    border-bottom: 2px solid transparent;
+  }
+  .navigation-links > a:hover,
+  .navigation-links > a[aria-current='page'] {
+    border-bottom-color: ${theme.colors.primary};
+  }
+  .navigation-links > a[aria-current='page'] {
+    font-weight: 600;
+  }
+  .header-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px 8px;
+    padding-top: 12px;
+    margin-top: 12px;
+    border-top: 1px solid ${theme.colors.border};
+  }
+  @media (min-width: ${theme.breakpoints.lg}px) {
+    &,
+    &[data-open='true'] {
+      display: contents;
+    }
+    .navigation-links {
+      grid-column: 2;
       flex-direction: row;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 4px 20px;
+      max-width: 320px;
     }
-  }
-  & a {
-    padding: 12px 0;
-
-    @media (min-width: ${theme.breakpoints.sm}px) {
-      padding: 10px 0;
+    .header-actions {
+      grid-column: 3;
+      justify-self: end;
+      justify-content: flex-end;
+      flex-wrap: nowrap;
+      padding: 0;
+      margin: 0;
+      border: 0;
     }
-  }
-  & a[aria-current='page'] {
-    text-decoration: underline;
-    text-underline-offset: 6px;
   }
 `
 
 export const HeaderStyled = styled.header`
-  position: sticky;
-  top: 0;
+  position: relative;
   z-index: 300;
   background: ${theme.backgrounds.page};
-  border-bottom: 1px solid ${theme.colors.border};
+  border-bottom: 1px solid ${theme.colors.foreground};
+  a {
+    color: inherit;
+  }
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-weight: 700;
+    text-decoration: none;
+    font-size: 1.05rem;
+    justify-self: start;
+  }
+  .brand-mark {
+    font-size: 1.35rem;
+    font-weight: 800;
+    color: ${theme.colors.primary};
+    letter-spacing: -0.08em;
+    padding-right: 12px;
+    border-right: 1px solid #bbb;
+  }
+  .brand-author {
+    display: block;
+    font-size: 0.7rem;
+    font-weight: 400;
+    color: ${theme.colors.text.secondary};
+  }
   .header-inner {
-    max-width: 1328px;
-    margin: auto;
     min-height: 80px;
-    padding: 16px;
+    padding: 16px 0;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 12px;
-
-    @media (min-width: ${theme.breakpoints.xs}px) {
-      padding: 16px 24px;
-      gap: 32px;
-    }
-
-    @media (min-width: ${theme.breakpoints.sm}px) {
-      min-height: 96px;
-      padding: 18px 40px;
-    }
-  }
-
-  nav .ai-button {
-    padding: 10px 16px;
-    line-height: inherit;
-    justify-content: center;
-
-    @media (min-width: ${theme.breakpoints.sm}px) {
-      justify-content: flex-start;
+    gap: 16px;
+    @media (min-width: ${theme.breakpoints.lg}px) {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
     }
   }
   .menu-toggle {
     display: flex;
     background: transparent;
     border: 1px solid ${theme.colors.border};
-    border-radius: 10px;
+    border-radius: 3px;
+    flex-shrink: 0;
     width: 44px;
     height: 44px;
     align-items: center;
     justify-content: center;
     color: inherit;
-
-    @media (min-width: ${theme.breakpoints.sm}px) {
+    @media (min-width: ${theme.breakpoints.lg}px) {
       display: none;
     }
   }
-
-  .feedback-button,
-  .signin-link {
+  .header-actions .feedback-button,
+  .header-actions .signin-link {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    min-height: 42px;
-    padding: 10px 16px;
-    border: 1px solid ${theme.colors.border};
-    border-radius: 10px;
-    color: ${theme.colors.text.primary};
-    background: white;
+    gap: 6px;
+    min-height: 36px;
+    padding: 6px 8px;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    background: transparent;
+    color: ${theme.colors.foreground};
     font: inherit;
-    font-weight: 700;
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 1.4;
+    white-space: nowrap;
     text-decoration: none;
-    cursor: pointer;
   }
-  .feedback-button:hover,
-  .signin-link:hover {
-    background: #eef1e9;
+  .header-actions .feedback-button:hover,
+  .header-actions .signin-link:hover {
+    background: #f3f3f3;
+  }
+  .header-actions > a:focus-visible,
+  .header-actions > button:focus-visible,
+  .account-menu summary:focus-visible {
+    border-color: ${theme.colors.primary};
+  }
+  .header-actions > a svg,
+  .header-actions > button svg {
+    flex-shrink: 0;
+  }
+  @media (max-width: ${theme.breakpoints.lg - 1}px) {
+    .header-actions .feedback-button,
+    .header-actions .signin-link {
+      min-height: 44px;
+    }
   }
   .account-menu {
     position: relative;
@@ -133,7 +173,7 @@ export const HeaderStyled = styled.header`
     align-items: center;
     gap: 8px;
     padding: 6px 8px;
-    border-radius: 10px;
+    border-radius: 3px;
     cursor: pointer;
     font-weight: 700;
     list-style: none;
@@ -143,7 +183,7 @@ export const HeaderStyled = styled.header`
   }
   .account-menu summary:hover,
   .account-menu[open] summary {
-    background: #eef1e9;
+    background: #f3f3f3;
   }
   .account-name {
     max-width: 140px;
@@ -161,9 +201,9 @@ export const HeaderStyled = styled.header`
     border: 1px solid ${theme.colors.border};
     border-radius: 12px;
     background: white;
-    box-shadow: 0 12px 32px #1d30251a;
+    box-shadow: 0 12px 32px #2525251a;
     min-width: 220px;
-    @media (min-width: ${theme.breakpoints.sm}px) {
+    @media (min-width: ${theme.breakpoints.lg}px) {
       position: absolute;
       right: 0;
       top: 100%;
@@ -187,7 +227,7 @@ export const HeaderStyled = styled.header`
     color: ${theme.colors.text.primary};
   }
   .account-dropdown a:hover {
-    background: #eef1e9;
+    background: #f3f3f3;
   }
   .account-dropdown button {
     margin-top: 4px;

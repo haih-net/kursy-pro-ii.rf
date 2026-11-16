@@ -21,14 +21,10 @@ export const ChatContentContainer = styled.div`
   /* 
     This is so the scroll is inside the container, not the entire view
   */
-  height: 100%;
   overflow: auto;
 
   grid-template-columns: minmax(0, 1fr);
-  grid-template-rows: minmax(0, 1fr) auto auto;
-  @media (min-width: 768px) {
-    grid-template-rows: minmax(0, 1fr) auto 1fr;
-  }
+  grid-template-rows: minmax(min-content, 1fr) auto minmax(0, 1fr);
   &[data-has-messages='true'] {
     grid-template-rows: minmax(0, 1fr) auto;
     align-content: start;
@@ -70,10 +66,10 @@ export const ChatWindow = styled.div`
     left: auto;
     bottom: 20px;
     right: 20px;
-    width: 380px;
-    height: min(500px, calc(100dvh - 80px));
+    width: 400px;
+    height: min(580px, calc(100dvh - 80px));
     max-height: calc(100dvh - 80px);
-    border-radius: 16px;
+    border-radius: 8px;
     &[data-expanded='true'] {
       top: 0;
       left: 0;
@@ -88,19 +84,20 @@ export const ChatWindow = styled.div`
 `
 
 export const ChatHeader = styled.div`
-  padding: 16px 20px;
-  background: #f9fafb;
+  flex-shrink: 0;
+  padding: 14px 20px;
+  background: ${theme.backgrounds.page};
   display: flex;
   align-items: center;
   justify-content: space-between;
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: 1px solid ${theme.colors.border};
 `
 
 export const ChatTitle = styled.h3`
   margin: 0;
   font-size: 1rem;
   font-weight: 600;
-  color: #1f2937;
+  color: ${theme.colors.foreground};
 `
 
 export const HeaderButtons = styled.div`
@@ -111,17 +108,17 @@ export const HeaderButtons = styled.div`
 
 export const HeaderButton = styled.button`
   background: none;
-  border: none;
+  border: 1px solid transparent;
   cursor: pointer;
   padding: 4px;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #6b7280;
+  color: ${theme.colors.text.secondary};
   transition: color 0.2s;
 
   &:hover {
-    color: #1f2937;
+    color: ${theme.colors.foreground};
   }
 
   svg {
@@ -143,6 +140,7 @@ export const CloseButton = styled(HeaderButton)``
 export const ChatMessages = styled.div`
   box-sizing: border-box;
   flex: 1;
+  min-height: 0;
   overflow-y: auto;
   overflow-anchor: none;
   padding: 24px;
@@ -183,6 +181,9 @@ export const ChatInputContainer = styled.div`
   padding: 16px 24px 24px;
   background: transparent;
   grid-row: 2;
+  @media (max-height: 560px) {
+    padding: 12px 16px 16px;
+  }
 `
 
 export const ChatForm = styled.form`
@@ -191,10 +192,13 @@ export const ChatForm = styled.form`
   align-items: center;
   margin: 0 auto;
   background: #ffffff;
-  border-radius: 24px;
+  border-radius: 6px;
   padding: 8px 8px 8px 16px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
-  border: 1px solid rgba(0, 0, 0, 0.06);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+  border: 1px solid ${theme.colors.border};
+  &:focus-within {
+    border-color: ${theme.colors.primary};
+  }
 `
 
 export const ChatTextarea = styled.textarea`
@@ -204,7 +208,7 @@ export const ChatTextarea = styled.textarea`
   border: none;
   border-radius: 0;
   background: transparent;
-  color: #1f2937;
+  color: ${theme.colors.foreground};
   font-size: 1rem;
   font-family: inherit;
   resize: none;
@@ -224,9 +228,9 @@ export const SendButton = styled.button`
   border-radius: 50%;
   background: #9ca3af;
   &[data-has-text='true'] {
-    background: #1f2937;
+    background: ${theme.colors.primary};
   }
-  border: none;
+  border: 1px solid transparent;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -235,9 +239,9 @@ export const SendButton = styled.button`
   font-size: 0;
 
   &:hover {
-    background: #6b7280;
+    background: ${theme.colors.text.secondary};
     &[data-has-text='true'] {
-      background: #374151;
+      background: #8d2c18;
     }
     transform: scale(1.05);
   }
@@ -255,8 +259,8 @@ export const StopButton = styled.button`
   height: 44px;
   flex-shrink: 0;
   border-radius: 50%;
-  background: #1f2937;
-  border: none;
+  background: ${theme.colors.foreground};
+  border: 1px solid transparent;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -315,8 +319,8 @@ export const TypingIndicator = styled.div`
 
 export const WelcomeMessage = styled.div`
   text-align: center;
-  padding: 48px 24px;
-  color: #6b7280;
+  padding: 24px;
+  color: ${theme.colors.text.secondary};
   font-size: 1rem;
   line-height: 1.6;
   display: flex;
@@ -324,25 +328,39 @@ export const WelcomeMessage = styled.div`
   align-items: center;
   justify-content: flex-end;
   grid-row: 1;
+  @media (max-height: 560px) {
+    padding: 12px 20px;
+  }
 
   h4 {
-    color: #1f2937;
+    color: ${theme.colors.foreground};
     margin: 0 0 12px;
-    font-size: 1.75rem;
+    font-size: 1.35rem;
     font-weight: 600;
   }
 
   p {
     max-width: 400px;
+    margin: 0;
   }
 `
 
 export const ChatButton = styled.button`
-  width: 56px;
-  height: 56px;
-  border-radius: 50%;
+  min-height: 52px;
+  padding: 14px 20px;
+  gap: 10px;
+  border-radius: ${theme.radii.full};
   background: ${theme.colors.primary};
-  border: none;
+  color: ${theme.colors.text.light};
+  font: 700 16px/1.25 ${theme.font};
+  white-space: nowrap;
+
+  @media (min-width: 560px) {
+    min-height: 60px;
+    padding: 16px 26px;
+    font-size: 18px;
+  }
+  border: 1px solid transparent;
   cursor: pointer;
   display: flex;
   &[data-open='true'] {
@@ -350,14 +368,37 @@ export const ChatButton = styled.button`
   }
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4px 12px rgba(23, 63, 46, 0.24);
+  box-shadow: 0 4px 12px rgba(173, 59, 32, 0.24);
   transition:
     transform 0.2s,
     box-shadow 0.2s;
 
+  &[data-animated='true'] {
+    animation: chatButtonPulse 2.6s ease-in-out infinite;
+  }
+
+  @keyframes chatButtonPulse {
+    0%,
+    100% {
+      box-shadow:
+        0 8px 24px rgba(173, 59, 32, 0.24),
+        0 0 0 0 rgba(173, 59, 32, 0.3);
+    }
+    50% {
+      box-shadow:
+        0 10px 28px rgba(173, 59, 32, 0.3),
+        0 0 0 12px rgba(173, 59, 32, 0);
+    }
+  }
+
+  &:focus-visible {
+    border-color: ${theme.colors.primary};
+  }
+
   &:hover:not(:disabled) {
-    transform: scale(1.05);
-    box-shadow: 0 6px 16px rgba(23, 63, 46, 0.32);
+    background: #8d2c18;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(173, 59, 32, 0.32);
   }
 
   &:disabled {
@@ -381,6 +422,9 @@ export const ChatButton = styled.button`
   }
 
   @media (prefers-reduced-motion: reduce) {
+    transition: none;
+
+    &[data-animated='true'],
     &[aria-busy='true'] svg {
       animation: none;
     }
@@ -389,7 +433,7 @@ export const ChatButton = styled.button`
   svg {
     width: 24px;
     height: 24px;
-    fill: #fff;
+    flex-shrink: 0;
     display: block;
   }
 `

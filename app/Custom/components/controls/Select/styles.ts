@@ -32,8 +32,7 @@ export const SelectTriggerStyled = styled.button`
     border-color: ${theme.colors.borderHover};
   }
   &:focus-visible {
-    outline: 2px solid ${theme.colors.primary};
-    outline-offset: 2px;
+    border-color: ${theme.colors.primary};
   }
   &:disabled {
     background: #f2f3ef;

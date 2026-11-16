@@ -1,4 +1,5 @@
 import { styled } from '@linaria/react'
+import { theme } from '../../theme'
 
 export const FeedbackDialog = styled.dialog`
   width: min(540px, calc(100vw - 32px));
@@ -20,7 +21,7 @@ export const FeedbackDialog = styled.dialog`
     right: 12px;
     top: 12px;
     font-size: 26px;
-    border: 0;
+    border: 1px solid transparent;
     background: none;
     cursor: pointer;
   }
@@ -41,6 +42,11 @@ export const FeedbackDialog = styled.dialog`
     border-radius: 4px;
     font: inherit;
   }
+  input:focus,
+  textarea:focus,
+  button:focus-visible {
+    border-color: ${theme.colors.primary};
+  }
   textarea {
     min-height: 150px;
     resize: vertical;
@@ -49,7 +55,7 @@ export const FeedbackDialog = styled.dialog`
     background: #bd302b;
     color: white;
     padding: 12px;
-    border: 0;
+    border: 1px solid transparent;
     border-radius: 4px;
     font: inherit;
     cursor: pointer;

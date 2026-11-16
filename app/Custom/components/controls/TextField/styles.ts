@@ -32,6 +32,10 @@ export const TextFieldStyled = styled.span`
     -webkit-text-security: disc;
   }
 
+  input:focus {
+    border-color: ${theme.colors.primary};
+  }
+
   input:disabled {
     background: #f2f3ef;
     opacity: 0.7;

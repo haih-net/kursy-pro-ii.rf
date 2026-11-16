@@ -29,9 +29,20 @@ export const CustomLayoutGridStyled = styled.section`
 export const CustomLayoutMainStyled = styled.main`
   flex: 1;
   min-width: 0;
+  padding: 30px 0 65px;
+  min-height: 65vh;
+  @media (min-width: 768px) {
+    padding-top: 40px;
+  }
 `
 
 export const CustomLayoutStyled = styled.div`
+  max-width: 1248px;
+  margin: 0 auto;
+  padding: 0 20px;
+  @media (min-width: 768px) {
+    padding-inline: 40px;
+  }
   min-height: 100dvh;
   display: flex;
   flex-direction: column;
@@ -43,7 +54,7 @@ export const CustomLayoutStyled = styled.div`
     justify-content: center;
     gap: 10px;
     border: 1px solid transparent;
-    border-radius: 10px;
+    border-radius: 3px;
     padding: 14px 20px;
     background: ${theme.colors.primary};
     color: #fff;
@@ -54,8 +65,37 @@ export const CustomLayoutStyled = styled.div`
     text-decoration: none;
   }
   .ai-button:hover {
-    background: #28583f;
+    background: #8d2c18;
     text-decoration: none;
+  }
+  .button-primary,
+  .button-secondary {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    gap: 16px;
+    padding: 13px 21px;
+    border-radius: 3px;
+    font-weight: 600;
+    text-decoration: none;
+    line-height: 1.5;
+  }
+  .button-primary {
+    border: 1px solid #ad3b20;
+    background: #ad3b20;
+    color: #fff;
+  }
+  .button-primary:hover {
+    background: #8d2c18;
+    border-color: #8d2c18;
+  }
+  .button-secondary {
+    border: 1px solid #999;
+    background: #fff;
+  }
+  .button-secondary:hover {
+    border-color: #252525;
+    background: #f3f3f3;
   }
   .skip-link {
     position: absolute;

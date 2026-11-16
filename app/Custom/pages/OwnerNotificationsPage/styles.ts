@@ -75,8 +75,7 @@ export const OwnerNotificationsStyled = styled.section`
     display: none;
   }
   & :focus-visible {
-    outline: 3px solid #ad3b20;
-    outline-offset: 3px;
+    border-color: #ad3b20;
   }
   @media (min-width: 700px) {
     & .slots {

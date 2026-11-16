@@ -2,11 +2,11 @@ import { loadRoot } from './request/rootLoader.server'
 import { requestMiddleware } from './request/context.server'
 import { App as CustomApp } from './Custom/components/pages/_App'
 import type { ShouldRevalidateFunction } from 'react-router'
-import favicon from './Custom/components/SiteLayout/assets/favicon.svg'
+import favicon from './Custom/Layout/assets/favicon.svg'
 import { Statistics } from './components/Statistics'
 import { errorPageStatusCode } from './components/Statistics/status'
 import type * as React from 'react'
-import { DocumentStyled } from './Custom/components/SiteLayout/styles'
+import { HtmlStyled } from './Custom/theme/global'
 import { SeoHeaders, unavailableSeoMeta } from './components/seo/SeoHeaders'
 
 export const middleware = [requestMiddleware]
@@ -19,7 +19,7 @@ export const shouldRevalidate: ShouldRevalidateFunction = ({
 }) => defaultShouldRevalidate || currentUrl.pathname !== nextUrl.pathname
 export const meta = unavailableSeoMeta
 import type { ReactNode } from 'react'
-import { SiteLayout } from './Custom/components/SiteLayout'
+import { Layout as CustomLayout } from './Custom/Layout'
 import {
   Links,
   Outlet,
@@ -35,7 +35,7 @@ const betterlyticsId = import.meta.env.BETTERLYTICS_SITE_ID
 export const Layout: React.FC<{ children: ReactNode }> = ({ children }) => {
   const rootData = useRouteLoaderData<typeof loader>('root')
   return (
-    <DocumentStyled lang="ru">
+    <HtmlStyled lang="ru">
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -54,12 +54,12 @@ export const Layout: React.FC<{ children: ReactNode }> = ({ children }) => {
       </head>
       <body>
         <CustomApp initialApolloState={rootData?.initialApolloState}>
-          <SiteLayout>{children}</SiteLayout>
+          <CustomLayout>{children}</CustomLayout>
         </CustomApp>
         <ScrollRestoration />
         <Scripts />
       </body>
-    </DocumentStyled>
+    </HtmlStyled>
   )
 }
 const App: React.FC = () => {

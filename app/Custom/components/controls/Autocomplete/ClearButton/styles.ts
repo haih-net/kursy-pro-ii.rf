@@ -11,7 +11,7 @@ export const ClearButtonStyled = styled.button`
   justify-content: center;
   width: 36px;
   padding: 0;
-  border: none;
+  border: 1px solid transparent;
   border-radius: 8px;
   background: transparent;
   color: ${theme.colors.text.secondary};
@@ -20,7 +20,7 @@ export const ClearButtonStyled = styled.button`
     background: #eef1e9;
   }
   &:focus-visible {
-    outline: 2px solid ${theme.colors.primary};
+    border-color: ${theme.colors.primary};
   }
   &:disabled {
     opacity: 0.7;
