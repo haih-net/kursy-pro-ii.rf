@@ -1,5 +1,4 @@
 import './env'
-import { createNotificationsRouter } from './Custom/applications'
 import { setupCallSignaling } from './schema/types/CallRoom/helpers/setupCallSignaling'
 import { db, migrateDatabase } from './database'
 import express, { type ErrorRequestHandler } from 'express'
@@ -70,20 +69,6 @@ async function startServer() {
   const app = express()
   app.set('trust proxy', true)
   app.disable('x-powered-by')
-  app.use(
-    '/api',
-    createNotificationsRouter({
-      origin:
-        process.env.COURSE_SITE_ORIGIN || (dev ? 'http://localhost:3201' : ''),
-      ownerToken: process.env.COURSE_OWNER_TOKEN || '',
-      telegramToken: process.env.COURSE_TELEGRAM_BOT_TOKEN || '',
-      telegramChat: process.env.COURSE_TELEGRAM_CHAT_ID || '',
-      publicKey: process.env.COURSE_PUSH_PUBLIC_KEY || '',
-      privateKey: process.env.COURSE_PUSH_PRIVATE_KEY || '',
-      subject: process.env.COURSE_PUSH_SUBJECT || '',
-      directory: process.env.COURSE_NOTIFICATIONS_DIRECTORY || '.private',
-    }),
-  )
 
   setupClientCertificate(app, db)
   setupChat({ app, storage: undefined })
@@ -104,20 +89,7 @@ async function startServer() {
     // Development: Vite dev server with HMR
     const { createServer: createVite } = await import('vite')
     vite = await createVite({
-      server: {
-        middlewareMode: true,
-        ws: { server: httpServer },
-        fs: {
-          deny: [
-            '.env',
-            '.env.*',
-            '*.{crt,pem}',
-            '**/.git/**',
-            '**/.private/**',
-            `${resolve(process.env.COURSE_NOTIFICATIONS_DIRECTORY || '.private')}/**`,
-          ],
-        },
-      },
+      server: { middlewareMode: true, ws: { server: httpServer } },
       appType: 'custom',
     })
 

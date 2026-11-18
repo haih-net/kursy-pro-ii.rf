@@ -181,16 +181,6 @@ test('календарь удалён из навигации и недосту�
   expect((await page.goto('/calendar'))?.status()).toBe(404)
 })
 
-test('кабинет не показывает заявки без авторизации', async ({ page }) => {
-  await page.goto('/owner/notifications')
-  await page.getByLabel('Ключ преподавателя').fill('incorrect-key')
-  await page.getByRole('button', { name: 'Открыть заявки' }).click()
-  await expect(page.getByRole('status')).toHaveText('Нужен ключ преподавателя.')
-  await expect(
-    page.getByRole('button', { name: 'Проверить оба канала' }),
-  ).toHaveCount(0)
-})
-
 test('компактные темы раскрываются независимо от выбора', async ({ page }) => {
   await page.goto('/courses/chatgpt-for-work')
   const topic = page.locator('[data-topic-id="course-map"]')

@@ -4,7 +4,3 @@ import { loadEnvFile } from 'node:process'
 if (existsSync('.env')) {
   loadEnvFile('.env')
 }
-
-if (existsSync('.env.notifications')) {
-  loadEnvFile('.env.notifications')
-}

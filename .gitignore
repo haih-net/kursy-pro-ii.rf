@@ -22,5 +22,4 @@ test-results/
 
 work/
 
-.private/
 docker/supabase/data/
