@@ -14,6 +14,7 @@ export function readCallSessionToken(token: string): CallSession {
     algorithms: ['HS256'],
     audience: 'call-signaling',
   })
+
   if (
     typeof payload === 'string' ||
     payload.type !== 'CallSession' ||

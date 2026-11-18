@@ -18,11 +18,13 @@ export async function insertUser(
     email,
     password: data.password,
   })
+
   if (error) {
     throw new Error(error)
   }
   const status =
     requestedStatus ?? (process.env.USER_DEFAULT_STATUS || 'active')
+
   if (!['active', 'newbie', 'blocked'].includes(status)) {
     throw new Error('Некорректный USER_DEFAULT_STATUS')
   }
@@ -42,6 +44,7 @@ export async function insertUser(
         createdAt: new Date(),
       })
       .returning('*')
+
     return user
   } catch (error) {
     if (

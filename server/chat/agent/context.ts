@@ -62,6 +62,7 @@ export function createAgentContext<S extends AgentStorage>(
     searchTool: process.env.CHAT_WEB_SEARCH_TOOL || 'openrouter:web_search',
     ...input.config,
   }
+
   const baseUrl = process.env.CHAT_API_BASE_URL
   return {
     ...input,

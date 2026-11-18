@@ -1,8 +1,27 @@
 import { theme } from 'app/Custom/theme'
 import { styled } from '@linaria/react'
+import { Form } from 'react-router'
+
+export const UsersViewFiltersFormStyled = styled(Form)`
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+  max-width: 640px;
+
+  > label {
+    display: contents;
+
+    input {
+      flex: 1;
+      height: 100%;
+    }
+  }
+`
+
 export const UsersViewStyled = styled.div`
-  max-width: 1100px;
-  margin: 0 auto;
+  display: contents;
+
   h1 {
     margin: 0 0 8px;
     font-size: clamp(26px, 4vw, 34px);

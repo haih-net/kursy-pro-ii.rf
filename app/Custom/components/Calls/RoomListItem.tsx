@@ -1,66 +1,70 @@
+import type { CallRoomFormData } from './interfaces'
 import type * as React from 'react'
 import { useCallback, useState } from 'react'
 import { Link } from 'react-router'
-import {
-  type CallRoomNoNestingFragment,
-  useCloseCallRoomMutation,
-  useDeleteCallRoomMutation,
-  useUpdateCallRoomMutation,
-} from 'app/gql/generated'
+import type { CallRoomNoNestingFragment } from 'app/gql/generated'
+import { useCallRoomMutations } from './hooks/useCallRoomMutations'
+import { useCallNotifications } from './hooks/useCallNotifications'
 import { Button } from '../Button'
 import { CallRoomForm } from './RoomForm'
-import type { CallRoomFormData } from './RoomForm/schema'
 
 type RoomAction = 'settings' | 'close' | 'delete' | null
 
 export const CallRoomListItem: React.FC<{
   room: CallRoomNoNestingFragment
-  onRefresh: () => Promise<unknown>
-}> = ({ room, onRefresh }) => {
+}> = ({ room }) => {
   const [action, setAction] = useState<RoomAction>(null)
-  const [notice, setNotice] = useState('')
-  const [update] = useUpdateCallRoomMutation()
-  const [close, closing] = useCloseCallRoomMutation()
-  const [remove, removing] = useDeleteCallRoomMutation()
-  const busy = closing.loading || removing.loading
+  const {
+    saveRoom: update,
+    closeRoom: close,
+    deleteRoom: remove,
+    closing,
+    deleting,
+  } = useCallRoomMutations()
+
+  const { reportError } = useCallNotifications()
+  const busy = closing || deleting
+
   const cancel = useCallback((): void => setAction(null), [])
   const select = useCallback<React.MouseEventHandler<HTMLButtonElement>>(
     (event) => {
       const value = event.currentTarget.dataset.action
       if (value === 'settings' || value === 'close' || value === 'delete') {
-        setNotice('')
         setAction(value)
       }
     },
     [],
   )
+
   const save = useCallback(
     async (data: CallRoomFormData): Promise<void> => {
-      await update({ variables: { id: room.id, data } })
-      await onRefresh()
+      if (!update) {
+        throw new Error('Управление звонками недоступно')
+      }
+      await update(room.id, data)
       setAction(null)
-      setNotice('Настройки сохранены')
     },
-    [update, room.id, onRefresh],
+    [update, room.id],
   )
+
   const confirm = useCallback(async (): Promise<void> => {
-    setNotice('')
     try {
+      if (!remove || !close) {
+        throw new Error('Управление звонками недоступно')
+      }
       if (action === 'delete') {
-        await remove({ variables: { id: room.id } })
+        await remove(room.id)
       } else if (action === 'close') {
-        await close({ variables: { id: room.id } })
+        await close(room.id)
       } else {
         return
       }
       setAction(null)
-      await onRefresh()
     } catch (err) {
-      setNotice(
-        err instanceof Error ? err.message : 'Не удалось выполнить действие',
-      )
+      reportError(err)
     }
-  }, [action, remove, close, room.id, onRefresh])
+  }, [action, remove, close, room.id, reportError])
+
   return (
     <li>
       <div className="room-row">
@@ -122,10 +126,8 @@ export const CallRoomListItem: React.FC<{
               authenticatedOnly: room.authenticatedOnly,
             }}
             onSave={save}
+            onCancel={cancel}
           />
-          <Button size="small" variant="secondary" onClick={cancel}>
-            Отмена
-          </Button>
         </div>
       )}
       {(action === 'close' || action === 'delete') && (
@@ -153,7 +155,6 @@ export const CallRoomListItem: React.FC<{
           </Button>
         </div>
       )}
-      {notice && <p role="status">{notice}</p>}
     </li>
   )
 }

@@ -1,10 +1,11 @@
+import { useCallNotifications } from './hooks/useCallNotifications'
 import type * as React from 'react'
 import { useEffect, useState } from 'react'
 export const MicrophoneLevel: React.FC<{ stream: MediaStream | null }> = ({
   stream,
 }) => {
   const [level, setLevel] = useState(0)
-  const [error, setError] = useState('')
+  const { addMessage } = useCallNotifications()
   useEffect(() => {
     if (!stream) {
       return
@@ -23,25 +24,30 @@ export const MicrophoneLevel: React.FC<{ stream: MediaStream | null }> = ({
         const rms = Math.sqrt(
           values.reduce((sum, value) => sum + value * value, 0) / values.length,
         )
+
         setLevel(Math.min(100, Math.round(rms * 350)))
         frame = requestAnimationFrame(sample)
       }
+
       void context
         .resume()
         .catch(() =>
-          setError(
+          addMessage?.(
             'Браузер приостановил анализ звука. Выключите и включите микрофон.',
+            { variant: 'error' },
           ),
         )
       sample()
     } catch {
-      setError('В этом браузере не удалось включить индикатор звука.')
+      addMessage?.('В этом браузере не удалось включить индикатор звука.', {
+        variant: 'error',
+      })
     }
     return () => {
       cancelAnimationFrame(frame)
       void context?.close()
     }
-  }, [stream])
+  }, [stream, addMessage])
   return (
     <div>
       <label>
@@ -58,7 +64,6 @@ export const MicrophoneLevel: React.FC<{ stream: MediaStream | null }> = ({
           ? 'Произнесите несколько слов: индикатор должен двигаться.'
           : 'Включите микрофон для проверки.'}
       </p>
-      {error && <p role="alert">{error}</p>}
     </div>
   )
 }

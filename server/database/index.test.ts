@@ -13,6 +13,7 @@ import type { UserRecord } from '../schema/types/User/interfaces'
 const { graphql } = createRequire(import.meta.url)(
   'graphql',
 ) as typeof import('graphql')
+
 let db: Knex
 
 beforeEach(async () => {
@@ -30,6 +31,7 @@ async function query(source: string, currentUser: UserRecord | null = null) {
     source,
     contextValue: { db, currentUser, req: {} as Request },
   })
+
   expect(result.errors).toBeUndefined()
   return result.data
 }
@@ -82,6 +84,7 @@ describe('SQLite integration', () => {
     const result = await query(
       'mutation { signin(where: {username: "owner"}, data: {password: "test-password"}) {success token} }',
     )
+
     const payload = result?.signin as { success: boolean; token: string }
     expect(payload.success).toBe(true)
     expect(await authenticate(payload.token, db)).toMatchObject({
@@ -96,6 +99,7 @@ describe('SQLite integration', () => {
     const [owner] = await db<UserRecord>('User')
       .insert({ id: 'owner', fullname: 'ПРИМЕР_100%', sudo: true })
       .returning('*')
+
     expect(
       await usersQuery(
         db,
@@ -185,6 +189,7 @@ describe('SQLite integration', () => {
       mimetype: 'text/plain',
       encoding: '7bit',
     }
+
     expect(await db('File').insert(file).returning('*')).toHaveLength(1)
     expect(
       await db('File')

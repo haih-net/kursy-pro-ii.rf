@@ -39,6 +39,7 @@ export const describeSelection = (
       (topic) =>
         `${topic.title}: ${levels[choices.get(topic.id) ?? topic.levels[0]].title}`,
     )
+
   const totals = getCourseTotals(ids, formatId)
   return `${format.title}. ${audienceId ? audiences[audienceId as AudienceId].title : 'Аудиторию обсудим'}. ${totals.hours} ч. · ${formatCoursePrice(totals.price)}. Уровни: ${descriptions.join('; ') || 'Обсудим'}`
 }

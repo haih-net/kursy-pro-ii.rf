@@ -31,6 +31,7 @@ export const OwnerNotificationsPage: React.FC = () => {
         },
         body: body === undefined ? undefined : JSON.stringify(body),
       })
+
       if (!response.ok) {
         const error = (await response.json()) as { message?: string }
         throw new Error(error.message || 'Ошибка запроса')
@@ -39,6 +40,7 @@ export const OwnerNotificationsPage: React.FC = () => {
     },
     [token],
   )
+
   const changeToken = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>): void => {
       setToken(event.target.value)
@@ -46,6 +48,7 @@ export const OwnerNotificationsPage: React.FC = () => {
     },
     [],
   )
+
   const refresh = useCallback(async (): Promise<void> => {
     setBusy(true)
     try {
@@ -58,6 +61,7 @@ export const OwnerNotificationsPage: React.FC = () => {
       setBusy(false)
     }
   }, [api])
+
   const login = useCallback(
     (event: React.SubmitEvent<HTMLFormElement>): void => {
       event.preventDefault()
@@ -65,6 +69,7 @@ export const OwnerNotificationsPage: React.FC = () => {
     },
     [refresh],
   )
+
   const subscribe = useCallback(async (): Promise<void> => {
     setBusy(true)
     try {
@@ -91,6 +96,7 @@ export const OwnerNotificationsPage: React.FC = () => {
           userVisibleOnly: true,
           applicationServerKey: state.publicKey,
         }))
+
       await api('/subscriptions', subscription.toJSON())
       setState((await (await api('')).json()) as OwnerState)
       setMessage(
@@ -102,6 +108,7 @@ export const OwnerNotificationsPage: React.FC = () => {
       setBusy(false)
     }
   }, [api, state])
+
   const send = useCallback(
     async (event: React.MouseEvent<HTMLButtonElement>): Promise<void> => {
       const path = event.currentTarget.dataset.path
@@ -113,6 +120,7 @@ export const OwnerNotificationsPage: React.FC = () => {
         const result = (await (await api(path, {})).json()) as {
           message: string
         }
+
         setMessage(result.message)
         setState((await (await api('')).json()) as OwnerState)
       } catch (error) {
@@ -123,11 +131,13 @@ export const OwnerNotificationsPage: React.FC = () => {
     },
     [api],
   )
+
   const logout = useCallback((): void => {
     setToken('')
     setState(null)
     setMessage('Ключ удалён из памяти этой страницы.')
   }, [])
+
   return (
     <OwnerNotificationsStyled>
       <h1 tabIndex={-1}>Уведомления преподавателя</h1>

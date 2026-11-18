@@ -9,6 +9,7 @@ const meta = {
   tags: ['autodocs'],
   args: { label: 'Город', options },
 } satisfies Meta<typeof Autocomplete>
+
 export default meta
 type Story = StoryObj<typeof meta>
 

@@ -38,10 +38,12 @@ builder.mutationField('updateCallRoom', (t) =>
               : null,
         version: room.version + 1,
       }
+
       const changed = await ctx
         .db('CallRoom')
         .where({ id, version: room.version, closed: false })
         .update(updated)
+
       if (!changed) {
         throw new Error('Настройки изменились. Обновите страницу.')
       }

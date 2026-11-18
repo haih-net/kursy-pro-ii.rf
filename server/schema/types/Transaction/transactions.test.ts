@@ -12,6 +12,7 @@ import { creditTopUp } from '../Balance/resolvers/topUp'
 const { graphql } = createRequire(import.meta.url)(
   'graphql',
 ) as typeof import('graphql')
+
 let db: Knex
 let sender: UserRecord
 let receiver: UserRecord
@@ -20,6 +21,7 @@ const context = (user: UserRecord | null): Context => ({
   currentUser: user,
   req: {} as Request,
 })
+
 beforeEach(async () => {
   db = createDatabase()
   await migrateDatabase(db)
@@ -50,6 +52,7 @@ describe('Balance and transaction integrity', () => {
         '{ myTransactionsCount myTransactions { type amount Parent { User { id } } } }',
       contextValue: context(receiver),
     })
+
     expect(result.errors).toBeUndefined()
     expect(result.data).toMatchObject({
       myTransactionsCount: 1,
@@ -66,6 +69,7 @@ describe('Balance and transaction integrity', () => {
       source: '{myTransactionsCount}',
       contextValue: context(null),
     })
+
     expect(anonymous.errors).toHaveLength(1)
   })
   it('prevents concurrent overdrafts and rolls back invalid recipients', async () => {
@@ -73,6 +77,7 @@ describe('Balance and transaction integrity', () => {
       createTransfer({ toUserId: receiver.id, amount: 7 }, context(sender)),
       createTransfer({ toUserId: receiver.id, amount: 7 }, context(sender)),
     ])
+
     expect(
       results.filter((result) => result.status === 'fulfilled'),
     ).toHaveLength(1)

@@ -23,6 +23,7 @@ const ACCEPTED_IMAGE_TYPES = [
   'image/gif',
   'image/webp',
 ]
+
 const MAX_FILE_SIZE = 10 * 1024 * 1024
 
 export interface FileUploaderProps {

@@ -17,6 +17,7 @@ const Icon: React.FC<IconProps> = ({ size = 24, children, ...props }) => (
     {children}
   </svg>
 )
+
 export const ArrowRight: React.FC<IconProps> = (props) => (
   <Icon {...props}>
     <path d="M5 12h14m-6-6 6 6-6 6" />

@@ -13,6 +13,7 @@ test('collects initial and SPA page visits without chat or duplicate hash events
     const body = route.request().postDataJSON() as {
       variables: { data: StatisticsPacket }
     }
+
     packets.push(body.variables.data)
     expect(route.request().headers().authorization).toBeUndefined()
     await route.fulfill({ json: { data: { logStats: [{ id: 'saved' }] } } })
@@ -56,6 +57,7 @@ test('stops after three failed attempts and keeps navigation usable', async ({
     const body = route.request().postDataJSON() as {
       variables: { data: StatisticsPacket }
     }
+
     keys.push(body.variables.data.events[0].eventKey)
     await route.fulfill({ status: 503, body: 'Unavailable' })
   })

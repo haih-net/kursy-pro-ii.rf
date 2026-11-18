@@ -49,6 +49,7 @@ export function createDatabase(): Knex {
     loadExtensions: ['.mjs'],
     extension: 'mjs',
   }
+
   if (client === 'pg') {
     if (!process.env.DATABASE_URL) {
       throw new Error('DATABASE_URL is required for PostgreSQL')
@@ -135,6 +136,7 @@ export async function ensureDatabase(database: Knex): Promise<void> {
 
   const connection = database.client
     .connectionSettings as Knex.PgConnectionConfig
+
   const name = connection.database || connection.user
   if (!name) {
     throw new Error('Specify the PostgreSQL database name in DATABASE_URL')
@@ -150,6 +152,7 @@ export async function ensureDatabase(database: Knex): Promise<void> {
     pool: { min: 0, max: 1 },
     acquireConnectionTimeout: 10000,
   })
+
   try {
     // Quote a single database identifier, including names with dots or quotes.
     await maintenance.raw(`CREATE DATABASE "${name.replaceAll('"', '""')}"`)
@@ -185,6 +188,7 @@ export async function migrateDatabase(
       const migrationDatabase = database.withUserParams({
         ...database.userParams,
       })
+
       return await migrationDatabase.transaction(async (trx) => {
         // Serialize bootstrap too: Knex creates its metadata before taking its lock.
         await trx.raw(

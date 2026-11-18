@@ -33,6 +33,7 @@ export function setupCallSignaling(server: Server, db: Knex): () => void {
       socket.send(JSON.stringify(data))
     }
   }
+
   const broadcast = (roomId: string, data: unknown, except?: string): void => {
     for (const peer of clients.values()) {
       if (peer.roomId === roomId && peer.id !== except) {
@@ -40,6 +41,7 @@ export function setupCallSignaling(server: Server, db: Knex): () => void {
       }
     }
   }
+
   const remove = (client: CallClient): void => {
     if (clients.get(client.id) !== client) {
       return
@@ -48,6 +50,7 @@ export function setupCallSignaling(server: Server, db: Knex): () => void {
     clients.delete(client.id)
     broadcast(client.roomId, { type: 'left', id: client.id })
   }
+
   const closeRoom = (id: string): void => {
     for (const peer of clients.values()) {
       if (peer.roomId === id) {
@@ -57,6 +60,7 @@ export function setupCallSignaling(server: Server, db: Knex): () => void {
       }
     }
   }
+
   const settings = (id: string, authenticatedOnly: boolean): void => {
     broadcast(id, { type: 'settings' })
     for (const peer of clients.values()) {
@@ -71,6 +75,7 @@ export function setupCallSignaling(server: Server, db: Knex): () => void {
       }
     }
   }
+
   const kick = (roomId: string, participantId: string): void => {
     const peer = clients.get(participantId)
     if (peer?.roomId !== roomId) {
@@ -83,6 +88,7 @@ export function setupCallSignaling(server: Server, db: Knex): () => void {
     remove(peer)
     peer.socket.close(1008, 'Participant removed')
   }
+
   callEvents.on('kick', kick)
   callEvents.on('closed', closeRoom)
   callEvents.on('settings', settings)
@@ -112,6 +118,7 @@ export function setupCallSignaling(server: Server, db: Knex): () => void {
     }
     wss.handleUpgrade(req, socket, head, (ws) => wss.emit('connection', ws))
   }
+
   server.on('upgrade', onUpgrade)
   wss.on('connection', (socket) => {
     let client: CallClient | undefined
@@ -163,6 +170,7 @@ export function setupCallSignaling(server: Server, db: Knex): () => void {
             const user = await db('User')
               .where({ id: session.userId })
               .first('status', 'image')
+
             if (!user || user.status === 'blocked') {
               throw new Error('Доступ запрещён')
             }
@@ -197,6 +205,7 @@ export function setupCallSignaling(server: Server, db: Knex): () => void {
               image: p.image,
               connected: p.disconnectedAt === null,
             }))
+
           clients.set(client.id, client)
           // A late close from the replaced socket must not remove the resumed session.
           previous?.socket.close(4001, 'Session replaced')
@@ -262,8 +271,10 @@ export function setupCallSignaling(server: Server, db: Knex): () => void {
         const signal = payload as Record<string, unknown>
         const description = signal.description as
           Record<string, unknown> | undefined
+
         const candidate = signal.candidate as
           Record<string, unknown> | undefined
+
         if (
           description &&
           (typeof description.sdp !== 'string' ||
@@ -329,6 +340,7 @@ export function setupCallSignaling(server: Server, db: Knex): () => void {
       }
     }
   }, 15000)
+
   heartbeat.unref()
   return () => {
     shuttingDown = true

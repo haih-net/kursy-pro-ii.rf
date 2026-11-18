@@ -7,6 +7,7 @@ const req: Request = Object.assign(Object.create(express.request) as Request, {
   socket: { remoteAddress: '127.0.0.1' },
   app: express(),
 })
+
 afterEach(() => {
   vi.unstubAllEnvs()
   vi.unstubAllGlobals()
@@ -22,6 +23,7 @@ it.each([
   const request = vi.fn(async () =>
     Response.json({ data: { createActivity: { id: 'saved' } } }),
   )
+
   vi.stubGlobal('fetch', request)
   const event = {
     eventId,
@@ -42,6 +44,7 @@ it.each([
     language: 'ru',
     viewport: { width: 390, height: 844 },
   }
+
   expect(
     await logStatistics(
       { visitorId: 'a'.repeat(24), tabId: 'b'.repeat(24), events: [event] },

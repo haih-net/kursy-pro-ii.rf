@@ -7,6 +7,7 @@ export function listen(server: Server, port: number): Promise<number> {
       server.off('listening', onListening)
       reject(error)
     }
+
     const onListening = (): void => {
       server.off('error', onError)
       const address = server.address()
@@ -16,6 +17,7 @@ export function listen(server: Server, port: number): Promise<number> {
       }
       resolve(address.port)
     }
+
     server.once('error', onError)
     server.once('listening', onListening)
     server.listen(port, '0.0.0.0')

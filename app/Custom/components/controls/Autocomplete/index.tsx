@@ -50,14 +50,17 @@ export const Autocomplete: React.FC<AutocompleteProps> = ({
     () => createCollection({ options, groups }),
     [options, groups],
   )
+
   const disabledKeys = useMemo(
     () => getDisabledKeys({ options, groups }),
     [options, groups],
   )
+
   const change = useCallback(
     (key: Key | null): void => onChange?.(key === null ? null : String(key)),
     [onChange],
   )
+
   const comboProps = {
     ...props,
     onChange: change,
@@ -70,10 +73,12 @@ export const Autocomplete: React.FC<AutocompleteProps> = ({
     menuTrigger: 'focus' as const,
     validationBehavior: 'aria' as const,
   }
+
   const state = useComboBoxState<ControlOption>({
     ...comboProps,
     defaultFilter: onSearch ? acceptAll : contains,
   })
+
   const {
     inputProps,
     listBoxProps,
@@ -83,6 +88,7 @@ export const Autocomplete: React.FC<AutocompleteProps> = ({
     { ...comboProps, inputRef, listBoxRef, popoverRef, buttonRef },
     state,
   )
+
   const { buttonProps } = useButton(triggerProps, buttonRef)
   const search = useAutocompleteSearch(
     state.inputValue,
@@ -90,6 +96,7 @@ export const Autocomplete: React.FC<AutocompleteProps> = ({
     searchDelay,
     disabled,
   )
+
   const clear = useCallback((): void => {
     state.close()
     state.setValue(null)
@@ -97,6 +104,7 @@ export const Autocomplete: React.FC<AutocompleteProps> = ({
     onClear?.()
     inputRef.current?.focus()
   }, [state, onClear, inputRef])
+
   const keyDown = useCallback<React.KeyboardEventHandler<HTMLInputElement>>(
     (event) => {
       if (
@@ -114,6 +122,7 @@ export const Autocomplete: React.FC<AutocompleteProps> = ({
     },
     [state, onSubmit, inputProps],
   )
+
   return (
     <AutocompleteStyled>
       {props.label && (

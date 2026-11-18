@@ -25,6 +25,7 @@ test('личное предложение и страница автора до�
   const portrait = page.getByRole('img', {
     name: 'Николай Ланец — автор и ведущий курса',
   })
+
   await expect(portrait).toBeVisible()
   await expect
     .poll(() => portrait.evaluate((img: HTMLImageElement) => img.naturalWidth))

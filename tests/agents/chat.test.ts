@@ -18,6 +18,7 @@ const fixture = {
   id: randomUUID(),
   title: `Test item ${randomUUID()}`,
 }
+
 const lookups: string[] = []
 const testSchema = extendSchema(
   schema,
@@ -26,6 +27,7 @@ const testSchema = extendSchema(
   extend type Query { agentTestPage(uri: String!): AgentTestPage }
 `),
 )
+
 let server: Server | undefined
 let base: string
 const forwarded: Array<{ pageUrl?: string; marker?: string }> = []
@@ -61,6 +63,7 @@ beforeAll(async () => {
         },
       },
     })
+
     res.json(result)
   })
   const httpServer = createServer(app)
@@ -105,11 +108,13 @@ async function send(
     }),
     signal: AbortSignal.timeout(130000),
   })
+
   expect(response.ok).toBe(true)
   const result = (await response.json()) as {
     errors?: unknown[]
     data?: { sendChatMessage: ChatResponse }
   }
+
   expect(result.errors).toBeUndefined()
   const answer = result.data?.sendChatMessage
   expect(answer?.success).toBe(true)
@@ -146,6 +151,7 @@ it('reads the current page from request headers', async () => {
     'Return only a JSON object with one field pageUrl containing the exact current page URL from the message context. Use null if unavailable. Do not use tools or add explanations.',
     pageUrl,
   )
+
   expect(result).toEqual({ pageUrl })
   expect(
     (await chatStorage.read(token.split('.')[0])).map(({ role }) => role),

@@ -15,6 +15,7 @@ vi.mock('react-router', () => ({ useLocation: () => ({ pathname: '/ai' }) }))
 const wrapper = ({ children }: { children: React.ReactNode }) => (
   <ChatProvider>{children}</ChatProvider>
 )
+
 beforeEach(() => {
   vi.clearAllMocks()
   localStorage.clear()
@@ -119,6 +120,7 @@ it.each(['empty', 'duplicate', 'long', 'cancelled', 'error-then-done'])(
     const responses = vi
       .mocked(recordStatistics)
       .mock.calls.filter(([event]) => event === 'chat.message.received')
+
     expect(responses).toHaveLength(['duplicate', 'long'].includes(mode) ? 1 : 0)
     if (mode === 'long') {
       expect(responses[0][1]).toMatchObject({
@@ -194,6 +196,7 @@ it.each([true, false])(
     const wrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => (
       <ChatProvider stream={stream}>{children}</ChatProvider>
     )
+
     const { result } = renderHook(useChatContext, { wrapper })
     await act(async () => {
       await result.current.submitMessage('Вопрос')

@@ -30,6 +30,7 @@ function AdminUserProfile({ userId }: { userId: string }) {
     ssr: false,
     variables: getUserQueryVariables(userId),
   })
+
   if (error) {
     return <p role="alert">Не удалось загрузить профиль: {error.message}</p>
   }

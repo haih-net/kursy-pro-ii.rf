@@ -18,6 +18,7 @@ import {
 export const ConceptsPage: React.FC = () => {
   const { page, kind, initialError } =
     useLoaderData<ReturnType<typeof createListLoader>>()
+
   const variables = getListVariables(kind, page)
   const { data, loading, error } = useConceptsConnectionQuery({ variables })
   return (

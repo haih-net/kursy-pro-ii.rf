@@ -1,10 +1,13 @@
+import { useCallMedia } from '../../../components/Calls/hooks/useCallMedia'
+import { previewMediaId } from '../../../components/Calls/hooks/useCallMedia'
 import type * as React from 'react'
 import { useCallback, useEffect, useState } from 'react'
 import { Button } from 'app/Custom/components/Button'
-import type { CallMedia } from 'app/Custom/components/Calls/hooks/useCallMedia'
+
 import { MediaView } from 'app/Custom/components/Calls/MediaView'
 
-export const ScreenShare: React.FC<{ media: CallMedia }> = ({ media }) => {
+export const ScreenShare: React.FC = () => {
+  const media = useCallMedia(previewMediaId)
   const [availability, setAvailability] = useState<string | null>(null)
   useEffect(() => {
     setAvailability(
@@ -16,11 +19,13 @@ export const ScreenShare: React.FC<{ media: CallMedia }> = ({ media }) => {
     )
   }, [])
   const start = useCallback((): void => {
-    void media.start('screen')
+    void media.handle?.start('screen')
   }, [media])
+
   const stop = useCallback((): void => {
-    media.stop('screen')
+    media.handle?.stop('screen')
   }, [media])
+
   const stream = media.streams.screen
   return (
     <section className="panel" aria-labelledby="screen-share-heading">

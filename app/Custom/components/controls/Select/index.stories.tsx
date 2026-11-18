@@ -10,6 +10,7 @@ const meta = {
   tags: ['autodocs'],
   args: { label: 'Кто может войти', options, defaultValue: 'everyone' },
 } satisfies Meta<typeof Select>
+
 export default meta
 type Story = StoryObj<typeof meta>
 

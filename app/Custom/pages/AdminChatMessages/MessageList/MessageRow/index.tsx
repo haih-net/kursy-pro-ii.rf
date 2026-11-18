@@ -11,6 +11,7 @@ export const MessageRow: React.FC<MessageRowProps> = ({ entry }) => {
     variables: { chatId: entry.chatId, messageId: entry.id },
     fetchPolicy: 'network-only',
   })
+
   return (
     <article className="message-card">
       <header className="message-meta">

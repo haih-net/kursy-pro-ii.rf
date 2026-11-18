@@ -17,11 +17,13 @@ for (const sudo of [false, true]) {
       pageUrl: null,
       usage: null,
     }))
+
     await page.route(/\/api\/?$/, async (route) => {
       const { operationName, variables } = route.request().postDataJSON() as {
         operationName: string
         variables: { messageId: string }
       }
+
       operations.push(operationName)
       let data: Record<string, unknown>
       switch (operationName) {
@@ -107,6 +109,7 @@ for (const sudo of [false, true]) {
     const adminLink = page
       .getByRole('navigation', { name: 'Основная навигация' })
       .getByRole('link', { name: 'Админка', exact: true })
+
     await expect(adminLink).toBeVisible()
     await adminLink.click()
     await page.getByRole('link', { name: /Сообщения чата/ }).click()

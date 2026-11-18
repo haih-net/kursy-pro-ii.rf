@@ -63,8 +63,10 @@ export async function* readCompletionStream(
     }
     const content: unknown =
       'content' in choice.delta ? choice.delta.content : undefined
+
     return typeof content === 'string' ? content : undefined
   }
+
   try {
     while (!completed) {
       const { done, value } = await reader.read()

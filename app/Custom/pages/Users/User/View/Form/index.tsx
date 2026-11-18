@@ -22,6 +22,7 @@ const MarkdownEditor = lazy(async () => ({
   default: (await import('app/Custom/components/Markdown/Editor'))
     .MarkdownEditor,
 }))
+
 export const UserEditForm: React.FC<{
   user: UserFragment
   closeForm?: () => void
@@ -30,6 +31,7 @@ export const UserEditForm: React.FC<{
   const renderAvatar = useCallback<
     NonNullable<FileUploaderProps['renderPreview']>
   >((src) => <UserAvatar user={user} src={src} size={72} />, [user])
+
   const { addMessage } = useSnackbar() ?? {}
   const [image, setImage] = useState(user.image ?? '')
   const [intro, setIntro] = useState(user.intro ?? '')
@@ -41,6 +43,7 @@ export const UserEditForm: React.FC<{
     (file) => setImage(file?.path ?? ''),
     [],
   )
+
   const onSubmit = useCallback(
     async (event: React.SubmitEvent<HTMLFormElement>): Promise<void> => {
       event.preventDefault()
@@ -57,6 +60,7 @@ export const UserEditForm: React.FC<{
         intro,
         content,
       }
+
       const form = { formState: { errors: validateUserForm(data) } }
       if (Object.keys(form.formState.errors).length) {
         console.error(form.formState.errors)
@@ -83,6 +87,7 @@ export const UserEditForm: React.FC<{
     },
     [image, intro, content, update, addMessage, closeForm],
   )
+
   return (
     <UserEditFormStyled onSubmit={onSubmit}>
       <fieldset disabled={loading}>

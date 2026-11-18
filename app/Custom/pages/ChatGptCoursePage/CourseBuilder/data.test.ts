@@ -26,12 +26,14 @@ describe('Почасовая стоимость программы', () => {
       'lead',
       'verification:beginner',
     )
+
     const advanced = describeSelection(
       ['verification'],
       'corporate',
       'lead',
       'verification:confident',
     )
+
     expect(beginner).toContain('16 000 ₽')
     expect(advanced).toContain('16 000 ₽')
   })

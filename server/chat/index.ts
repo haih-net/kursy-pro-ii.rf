@@ -44,9 +44,11 @@ export const setupChat = ({
       const pageUrl = parsePageUrl(req.get('X-Chat-Page-Url'))
       const origin =
         req.get('origin') || `${req.protocol}://${req.get('host') || 'unknown'}`
+
       const controller = new AbortController()
       const disconnect = (): void =>
         controller.abort(new Error('Клиент закрыл соединение'))
+
       res.on('close', disconnect)
       const delivery = createChatResponse(res, stream, controller.signal)
       try {
@@ -59,6 +61,7 @@ export const setupChat = ({
           receive: (message, context) =>
             chatMessages.receive(context.chatId, message, origin),
         })
+
         const result = await agent.run(req.body.message, token, context, {
           stream,
           onEvent: async (event, signal) => {
@@ -69,6 +72,7 @@ export const setupChat = ({
           },
           diagnostics: () => ({ headersSent: res.headersSent }),
         })
+
         try {
           await delivery.finish(result)
         } catch (error) {

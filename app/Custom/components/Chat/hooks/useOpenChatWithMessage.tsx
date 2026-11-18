@@ -21,6 +21,7 @@ export function useOpenChatWithMessage() {
         const submitButton = form.querySelector(
           'button[type="submit"]',
         ) as HTMLButtonElement
+
         const buttonText =
           submitButton?.value || submitButton?.textContent || ''
 
@@ -34,6 +35,7 @@ export function useOpenChatWithMessage() {
           if (value && typeof value === 'string' && value.trim()) {
             const input = form.querySelector(`[name="${key}"]`) as
               HTMLInputElement | HTMLTextAreaElement
+
             const label = input?.name || key
 
             if (label) {

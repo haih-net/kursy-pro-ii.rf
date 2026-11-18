@@ -39,6 +39,7 @@ export const FeedbackForm: React.FC = () => {
     { token, openedAt, contacts, message, error, receipt, pending },
     dispatch,
   ] = useReducer(feedbackReducer, initialState)
+
   const dialog = useRef<HTMLDialogElement>(null)
   const submitting = useRef(false)
   const close = useCallback((): void => {
@@ -46,6 +47,7 @@ export const FeedbackForm: React.FC = () => {
       closeFeedback?.()
     }
   }, [closeFeedback])
+
   useEffect(() => {
     if (!open) {
       dialog.current?.close()
@@ -87,6 +89,7 @@ export const FeedbackForm: React.FC = () => {
         const { data } = await submitFeedback({
           variables: { data: { token: messageToken, contacts, message } },
         })
+
         if (!data?.submitFeedback) {
           throw new Error('Не удалось отправить сообщение. Попробуйте ещё раз.')
         }
@@ -105,6 +108,7 @@ export const FeedbackForm: React.FC = () => {
     },
     [token, contacts, message, openedAt, createFeedbackToken, submitFeedback],
   )
+
   const onCancel = useCallback(
     (event: React.SyntheticEvent): void => {
       event.preventDefault()
@@ -112,6 +116,7 @@ export const FeedbackForm: React.FC = () => {
     },
     [close],
   )
+
   const onBackdrop = useCallback(
     (event: React.MouseEvent<HTMLDialogElement>): void => {
       if (event.target !== dialog.current || !dialog.current) {
@@ -129,16 +134,19 @@ export const FeedbackForm: React.FC = () => {
     },
     [close],
   )
+
   const onContacts = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>): void =>
       dispatch({ contacts: event.target.value }),
     [],
   )
+
   const onMessage = useCallback(
     (event: React.ChangeEvent<HTMLTextAreaElement>): void =>
       dispatch({ message: event.target.value }),
     [],
   )
+
   return (
     <FeedbackDialog
       ref={dialog}

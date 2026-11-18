@@ -20,6 +20,7 @@ builder.mutationField('signin', (t) =>
         message,
         token: null,
       })
+
       if (!where.id && !where.email && !where.username) {
         return failure(
           'Укажите электронную почту, логин или идентификатор пользователя',

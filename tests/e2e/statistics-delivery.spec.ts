@@ -48,6 +48,7 @@ test('forwards browser 404 and recovery through the real API with correct Activi
       }),
     )
   })
+
   const receiverPort: number = await listen(receiver)
   let appProcess: ChildProcess | undefined
   try {
@@ -91,6 +92,7 @@ test('forwards browser 404 and recovery through the real API with correct Activi
       const body = (await response.json()) as {
         data?: { logStats?: { id: string }[] }
       }
+
       const id: string | undefined = body.data?.logStats?.[0]?.id
       if (id) {
         acknowledgements.push(id)

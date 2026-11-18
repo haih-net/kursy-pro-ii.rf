@@ -38,6 +38,7 @@ export async function sendMessageStream(
         signal: abortSignal,
       })
     }
+
     let response = await send()
     for (let attempt = 0; attempt < 2; attempt += 1) {
       if (response.status !== 401) {
@@ -47,6 +48,7 @@ export async function sendMessageStream(
         .clone()
         .json()
         .catch(() => null)
+
       if (
         !error ||
         typeof error !== 'object' ||
@@ -110,6 +112,7 @@ const getChatToken = async (signal?: AbortSignal): Promise<string> => {
     mutation: CreateChatTokenDocument,
     context: { fetchOptions: { signal } },
   })
+
   const token = result?.data?.createChatToken
   if (typeof token !== 'string' || !token) {
     throw new Error('Сервер не вернул токен чата')

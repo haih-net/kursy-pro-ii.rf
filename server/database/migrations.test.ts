@@ -11,6 +11,7 @@ it('applies merged migrations by name even when their timestamp precedes complet
   const config = {
     directory: [resolve('server/database/migrations'), resolve(directory)],
   }
+
   try {
     await writeFile(
       join(directory, '20261110000000_clone.mjs'),
@@ -49,6 +50,7 @@ it('adopts an existing SQLite database without recreating its tables or losing r
     const migrations = await db('knex_migrations')
       .select('name')
       .orderBy('name')
+
     expect(migrations).toEqual([
       { name: '20261108000000_initial.mjs' },
       { name: '20261115000000_call_rooms.mjs' },

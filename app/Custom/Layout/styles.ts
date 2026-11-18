@@ -2,13 +2,7 @@ import { styled } from '@linaria/react'
 import { theme } from '../theme'
 
 export const CustomLayoutSectionStyled = styled.section`
-  max-width: 1328px;
-  padding: 44px 24px;
-  margin: auto;
-
-  @media (min-width: ${theme.breakpoints.sm}px) {
-    padding: 64px 40px;
-  }
+  display: contents;
 `
 
 export const CustomLayoutGridStyled = styled.section`
@@ -28,6 +22,7 @@ export const CustomLayoutGridStyled = styled.section`
 
 export const CustomLayoutMainStyled = styled.main`
   flex: 1;
+  width: 100%;
   min-width: 0;
   padding: 30px 0 65px;
   min-height: 65vh;

@@ -12,6 +12,7 @@ export const Option: React.FC<OptionProps> = ({ item, state }) => {
     state,
     ref,
   )
+
   return (
     <OptionStyled
       {...optionProps}

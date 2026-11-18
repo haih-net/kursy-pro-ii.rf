@@ -27,6 +27,7 @@ builder.mutationField('updateCurrentUser', (t) =>
         .where('id', ctx.currentUser.id)
         .update(changes)
         .returning('*')
+
       return user ?? null
     },
   }),
@@ -69,6 +70,7 @@ builder.mutationField('updateUser', (t) =>
         .where('id', where.id)
         .update(changes)
         .returning('*')
+
       if (!user) {
         throw new GraphQLError('User not found', {
           extensions: { code: 'BAD_USER_INPUT' },

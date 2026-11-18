@@ -24,6 +24,7 @@ export const ConceptGallery: React.FC<ConceptGalleryProps> = ({ concept }) => {
       ),
     [Files, image],
   )
+
   const active = Math.min(selected, images.length - 1)
 
   const goTo = useCallback((index: number) => {
@@ -56,6 +57,7 @@ export const ConceptGallery: React.FC<ConceptGalleryProps> = ({ concept }) => {
     },
     [active, images.length, goTo],
   )
+
   const handleScroll = useCallback(() => {
     const target = viewport.current
     if (!target?.clientWidth) {
@@ -65,6 +67,7 @@ export const ConceptGallery: React.FC<ConceptGalleryProps> = ({ concept }) => {
     setSelected(index)
     const thumbnail = thumbnails.current?.children[index] as
       HTMLElement | undefined
+
     if (thumbnail && thumbnails.current) {
       thumbnails.current.scrollTo({
         left:
@@ -74,6 +77,7 @@ export const ConceptGallery: React.FC<ConceptGalleryProps> = ({ concept }) => {
       })
     }
   }, [])
+
   const previous = useCallback(() => goTo(active - 1), [active, goTo])
   const next = useCallback(() => goTo(active + 1), [active, goTo])
   const selectThumbnail = useCallback(

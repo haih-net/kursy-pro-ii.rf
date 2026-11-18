@@ -63,6 +63,7 @@ export class ChatStorage {
     )
       .where({ id: 'signing-key' })
       .first()
+
     if (!row) {
       throw new Error('Chat signing key is missing')
     }
@@ -74,6 +75,7 @@ export class ChatStorage {
     const signature = createHmac('sha256', await this.getSecret())
       .update(id)
       .digest('hex')
+
     await this.database('ChatDialogue').insert({
       chatId: id,
       channel,
@@ -86,12 +88,14 @@ export class ChatStorage {
     const match = /^Bearer ([a-f0-9]{48})\.([a-f0-9]{64})$/.exec(
       authorization || '',
     )
+
     if (!match) {
       return null
     }
     const expected = createHmac('sha256', await this.getSecret())
       .update(match[1])
       .digest()
+
     return timingSafeEqual(expected, Buffer.from(match[2], 'hex'))
       ? match[1]
       : null
@@ -112,6 +116,7 @@ export class ChatStorage {
       .select('*')
       .orderBy('createdAt', 'desc')
       .orderBy('chatId', 'asc')
+
     return rows.map(({ chatId, createdAt, channel }) => ({
       channel,
       chatId,
@@ -126,6 +131,7 @@ export class ChatStorage {
     }>('ChatDialogue')
       .where({ chatId: id })
       .first()
+
     return row?.channel ?? null
   }
 
@@ -139,6 +145,7 @@ export class ChatStorage {
       const existing = (await storage.read(id)).find(
         (message) => message.id === 'feedback',
       )
+
       if (existing) {
         if (existing.content !== content) {
           throw new Error('Для нового сообщения откройте форму заново.')
@@ -161,6 +168,7 @@ export class ChatStorage {
       .select('chatId', 'payload')
       .where({ indexed: 1 })
       .orderBy('sequence')
+
     return rows.map(({ chatId, payload }) => {
       const message = JSON.parse(payload) as StoredMessage
       return {
@@ -222,6 +230,7 @@ export class ChatStorage {
         .orderBy('sequence', 'desc')
         .offset(1)
         .first()
+
       return {
         channel: await storage.channel(id),
         previous: previous ? (JSON.parse(previous.payload) as Message) : null,
@@ -235,6 +244,7 @@ export class ChatStorage {
       .select('payload')
       .where({ chatId: id })
       .orderBy('sequence')
+
     return rows.map(({ payload }) => JSON.parse(payload) as Message)
   }
 

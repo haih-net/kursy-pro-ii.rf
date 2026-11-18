@@ -22,6 +22,7 @@ export async function sendEmail(input: EmailInput): Promise<void> {
     (await resolveMx(to.split('@')[1])).sort(
       (a, b) => a.priority - b.priority,
     )[0]?.exchange
+
   if (!host) {
     throw new Error('Не найден SMTP-сервер для почтового уведомления.')
   }
@@ -46,6 +47,7 @@ export async function sendEmail(input: EmailInput): Promise<void> {
     disableFileAccess: true,
     disableUrlAccess: true,
   })
+
   try {
     const result = await transport.sendMail({
       from,
@@ -54,6 +56,7 @@ export async function sendEmail(input: EmailInput): Promise<void> {
       text: input.text,
       ...(input.id ? { messageId: `<${input.id}@${from.split('@')[1]}>` } : {}),
     })
+
     if (
       !result.accepted.some(
         (address) => String(address).toLowerCase() === to.toLowerCase(),

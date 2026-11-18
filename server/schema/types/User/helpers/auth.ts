@@ -19,6 +19,7 @@ export async function createToken(user: UserRecord, db: Knex): Promise<string> {
     jwtSecret(),
     { algorithm: 'HS256' },
   )
+
   await db<TokenRecord>('Token').insert({
     id,
     userId: user.id,
@@ -50,6 +51,7 @@ export async function authenticate(
   const stored = await db<TokenRecord>('Token')
     .where({ id: payload.tokenId, userId: payload.userId })
     .first()
+
   if (
     !stored ||
     (stored.expiredAt && stored.expiredAt.getTime() <= Date.now())
@@ -59,6 +61,7 @@ export async function authenticate(
   const user = await db<UserRecord>('User')
     .where({ id: payload.userId })
     .first()
+
   return user && user.status !== 'blocked' ? user : null
 }
 

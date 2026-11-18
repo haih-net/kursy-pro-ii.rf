@@ -10,6 +10,7 @@ const CallIceServerType = builder
       credential: t.exposeString('credential', { nullable: true }),
     }),
   })
+
 export const CallRoom = builder
   .objectRef<CallRoomRecord>('CallRoom')
   .implement({

@@ -2,9 +2,8 @@ import { styled } from '@linaria/react'
 import { theme } from 'app/Custom/theme'
 
 export const AdminErrorsStyled = styled.section`
-  padding: 24px 16px;
-  max-width: 1440px;
-  margin: auto;
+  display: contents;
+
   nav {
     margin: 16px 0;
   }

@@ -39,5 +39,6 @@ export async function loadConcept({ params, context }: LoaderFunctionArgs) {
       },
     }
   })
+
   return data(props, { status: props.initialError ? 503 : 200 })
 }

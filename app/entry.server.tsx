@@ -29,6 +29,7 @@ export default async function handleRequest(
       },
     },
   )
+
   await body.allReady
   headers.set('Content-Type', 'text/html; charset=utf-8')
   return new Response(body, { status, headers })

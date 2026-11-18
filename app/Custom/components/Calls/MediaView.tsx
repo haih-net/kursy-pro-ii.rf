@@ -4,9 +4,8 @@ export const MediaView: React.FC<{
   stream: MediaStream | null
   muted?: boolean
   label: string
-  audio?: boolean
-}> = ({ stream, muted = false, label, audio = false }) => {
-  const ref = useRef<HTMLVideoElement & HTMLAudioElement>(null)
+}> = ({ stream, muted = false, label }) => {
+  const ref = useRef<HTMLVideoElement>(null)
   useEffect(() => {
     const element = ref.current
     if (element) {
@@ -18,9 +17,7 @@ export const MediaView: React.FC<{
       }
     }
   }, [stream])
-  return audio ? (
-    <audio ref={ref} autoPlay controls aria-label={label} />
-  ) : (
+  return (
     <video
       ref={ref}
       autoPlay

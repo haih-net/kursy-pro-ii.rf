@@ -107,6 +107,7 @@ export const HeaderStyled = styled.header`
     gap: 16px;
     @media (min-width: ${theme.breakpoints.lg}px) {
       display: grid;
+      grid-auto-flow: column;
       grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
     }
   }

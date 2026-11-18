@@ -66,6 +66,7 @@ export const Statistics: React.FC<StatisticsProps> = ({
     const url: string = decodeStatisticsUrl(
       `${location.origin}${pathname}${search}`.slice(0, 4096),
     )
+
     if (state.currentUrl === url && state.currentStatusCode === statusCode) {
       return
     }
@@ -95,11 +96,13 @@ export const Statistics: React.FC<StatisticsProps> = ({
     const flush = (): void => {
       getStatistics().queue.flush()
     }
+
     const onVisibility = (): void => {
       if (document.visibilityState === 'hidden') {
         flush()
       }
     }
+
     window.addEventListener('pagehide', flush)
     document.addEventListener('visibilitychange', onVisibility)
     return () => {

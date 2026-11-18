@@ -23,6 +23,7 @@ it('isolates concurrent models, messages and cancellation on one client', async 
     })
     res.end(body.model === 'stream' ? 'data: [DONE]\n\n' : JSON.stringify(body))
   })
+
   server.listen(0, '127.0.0.1')
   await once(server, 'listening')
   const address = server.address()
@@ -33,6 +34,7 @@ it('isolates concurrent models, messages and cancellation on one client', async 
     baseUrl: `http://127.0.0.1:${address.port}/v1/`,
     apiKey: 'test-secret',
   }))
+
   try {
     const [json, stream] = await Promise.all([
       client.complete({
@@ -45,6 +47,7 @@ it('isolates concurrent models, messages and cancellation on one client', async 
         stream: true,
       }),
     ])
+
     expect((await json.json()).messages[0].content).toBe('first')
     expect(await stream.text()).toBe('data: [DONE]\n\n')
     await expect(
@@ -69,6 +72,7 @@ it('returns provider error bodies without replacing diagnostics', async () => {
     res.writeHead(429, { 'x-request-id': 'rate-limit' })
     res.end('provider details')
   })
+
   server.listen(0, '127.0.0.1')
   await once(server, 'listening')
   const address = server.address()
@@ -80,6 +84,7 @@ it('returns provider error bodies without replacing diagnostics', async () => {
       baseUrl: `http://127.0.0.1:${address.port}`,
       apiKey: 'test',
     }))
+
     const response = await client.complete({ model: 'model', messages: [] })
     expect(response.status).toBe(429)
     expect(response.headers.get('x-request-id')).toBe('rate-limit')

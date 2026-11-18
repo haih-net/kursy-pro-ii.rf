@@ -11,6 +11,7 @@ const rpc = vi.hoisted(() => ({
   waitForTransaction: vi.fn(),
   destroy: vi.fn(),
 }))
+
 vi.mock('ethers', async (original) => ({
   ...(await original<typeof import('ethers')>()),
   JsonRpcProvider: class {
@@ -25,6 +26,7 @@ const contract = Wallet.createRandom().address
 const abi = new Interface([
   'event Transfer(address indexed from, address indexed to, uint256 value)',
 ])
+
 const txHash = `0x${'1'.repeat(64)}`
 beforeEach(() => {
   vi.stubEnv('JWT_SECRET', 'top-up-tests')
@@ -61,11 +63,13 @@ it('credits only matching token transfers from the linked wallet to the configur
     recipient,
     2500000n,
   ])
+
   const foreign = abi.encodeEventLog(event, [
     recipient,
     sender.address,
     99000000n,
   ])
+
   rpc.waitForTransaction.mockResolvedValue({
     status: 1,
     logs: [

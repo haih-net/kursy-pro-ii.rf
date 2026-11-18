@@ -12,6 +12,7 @@ import { recordPageError } from './storage'
 const { graphql } = createRequire(import.meta.url)(
   'graphql',
 ) as typeof import('graphql')
+
 let db: Knex
 const event: PageViewEvent = {
   eventId: 'page.viewed',
@@ -25,6 +26,7 @@ const event: PageViewEvent = {
   language: 'en',
   viewport: { width: 390, height: 844 },
 }
+
 beforeEach(async () => {
   vi.stubEnv('DATABASE_FILENAME', ':memory:')
   db = createDatabase()
@@ -38,6 +40,7 @@ async function execute(source: string, admin = true) {
   const currentUser = admin
     ? await db<UserRecord>('User').where({ id: 'admin' }).first()
     : null
+
   return graphql({
     schema,
     source,
@@ -55,6 +58,7 @@ it('records errors without the external integration and deduplicates delivery re
     tabId: 'c'.repeat(24),
     events: [event],
   }
+
   await logStatistics(packet, {} as Request, db)
   await logStatistics(packet, {} as Request, db)
   expect(await db('PageError').first()).toMatchObject({
@@ -86,6 +90,7 @@ it('requires review, rejects stale updates, reopens errors and clears only resol
     execute(
       `mutation { updatePageError(url: "${event.url}", count: ${count}, status: ${status}) { status } }`,
     )
+
   expect((await update('Resolved')).errors).toBeDefined()
   expect((await update('Review')).errors).toBeUndefined()
   await recordPageError(db, {

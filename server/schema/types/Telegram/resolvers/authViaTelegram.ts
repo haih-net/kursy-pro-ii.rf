@@ -23,6 +23,7 @@ const TelegramAuthDataInput = builder.inputType('TelegramAuthDataInput', {
     referrerToken: t.string(),
   }),
 })
+
 type TelegramAuthData = typeof TelegramAuthDataInput.$inferInput
 export function checkTelegramAuth(data: TelegramAuthData): boolean {
   const botToken = process.env.TELEGRAM_BOT_TOKEN
@@ -43,6 +44,7 @@ export function checkTelegramAuth(data: TelegramAuthData): boolean {
     .sort(([a], [b]) => a.localeCompare(b))
     .map(([key, value]) => `${key}=${value}`)
     .join('\n')
+
   const secret = createHash('sha256').update(botToken).digest()
   const expected = createHmac('sha256', secret).update(text).digest()
   return timingSafeEqual(expected, Buffer.from(hash, 'hex'))
@@ -63,6 +65,7 @@ export async function authViaTelegram(
     const account = await db<{ userId: string }>('TelegramAccount')
       .where('externalKey', data.id)
       .first()
+
     if (ctx.currentUser && account && ctx.currentUser.id !== account.userId) {
       throw new Error('Telegram уже привязан к другому пользователю')
     }

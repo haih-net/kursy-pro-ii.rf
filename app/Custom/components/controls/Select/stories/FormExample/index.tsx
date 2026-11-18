@@ -26,10 +26,12 @@ export const FormExample: React.FC = () => {
     ),
     [],
   )
+
   const save = useCallback(
     (data: FormData): void => setSaved(JSON.stringify(data)),
     [],
   )
+
   const reset = useCallback((): void => form.reset(), [form])
   return (
     <FormProvider {...form}>

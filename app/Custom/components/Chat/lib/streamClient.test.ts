@@ -28,6 +28,7 @@ it('получает и сохраняет токен до сообщения, �
       })
     },
   )
+
   vi.stubGlobal('fetch', fetchMock)
   const callbacks = { onChunk: vi.fn(), onDone: vi.fn(), onError: vi.fn() }
   await sendMessageStream('Вопрос', 'statistics-session', callbacks)
@@ -45,9 +46,11 @@ it('не отправляет сообщение при ошибке выдач�
   const log = vi
     .spyOn(apolloErrorReporter, 'error')
     .mockImplementationOnce(() => undefined)
+
   const fetchMock = vi
     .fn()
     .mockResolvedValue(new Response(null, { status: 503 }))
+
   vi.stubGlobal('fetch', fetchMock)
   const callbacks = { onChunk: vi.fn(), onDone: vi.fn(), onError: vi.fn() }
   await sendMessageStream('Вопрос', 'session', callbacks)
@@ -64,6 +67,7 @@ it('does not refresh on an unrelated HTTP 401', async () => {
   const fetchMock = vi
     .fn()
     .mockResolvedValue(new Response(null, { status: 401 }))
+
   vi.stubGlobal('fetch', fetchMock)
   const callbacks = { onChunk: vi.fn(), onDone: vi.fn(), onError: vi.fn() }
   await sendMessageStream('Вопрос', 'session', callbacks)
@@ -76,11 +80,13 @@ it('не отправляет сообщение при GraphQL-ошибке с 
   const log = vi
     .spyOn(apolloErrorReporter, 'error')
     .mockImplementationOnce(() => undefined)
+
   const fetchMock = vi
     .fn()
     .mockResolvedValue(
       Response.json({ data: null, errors: [{ message: 'Ошибка хранилища' }] }),
     )
+
   vi.stubGlobal('fetch', fetchMock)
   const callbacks = { onChunk: vi.fn(), onDone: vi.fn(), onError: vi.fn() }
   await sendMessageStream('Вопрос', 'session', callbacks)
@@ -218,6 +224,7 @@ it.each([false, true])(
         { error: 'Invalid dialogue token', code: 'INVALID_DIALOG_TOKEN' },
         { status: 401 },
       )
+
     const fetchMock = vi
       .fn()
       .mockResolvedValueOnce(invalid())
@@ -232,6 +239,7 @@ it.each([false, true])(
               { headers: { 'Content-Type': 'text/event-stream' } },
             ),
       )
+
     vi.stubGlobal('fetch', fetchMock)
     const callbacks = { onChunk: vi.fn(), onDone: vi.fn(), onError: vi.fn() }
     await sendMessageStream('My profile', 'session', callbacks)

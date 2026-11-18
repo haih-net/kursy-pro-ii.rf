@@ -25,6 +25,7 @@ const MarkdownEditor = lazy(async () => ({
   default: (await import('app/Custom/components/Markdown/Editor'))
     .MarkdownEditor,
 }))
+
 type FormData = UpdateUserMutationVariables['data'] &
   Pick<CreateUserMutationVariables['data'], 'email'>
 const schema: yup.ObjectSchema<FormData> = yup.object({
@@ -51,6 +52,7 @@ export const ManagedUserForm: React.FC<{
   const renderAvatar = useCallback<
     NonNullable<FileUploaderProps['renderPreview']>
   >((src) => <UserAvatar user={user} src={src} size={72} />, [user])
+
   const { addMessage } = useSnackbar() ?? {}
   const [create] = useCreateUserMutation()
   const [update] = useUpdateUserMutation()
@@ -69,31 +71,38 @@ export const ManagedUserForm: React.FC<{
       isAiAgent: user?.isAiAgent ?? false,
     },
   })
+
   const { field: status } = useController({
     control: form.control,
     name: 'status',
   })
+
   const changeStatus = useCallback(
     (value: string | null): void => status.onChange(value || undefined),
     [status],
   )
+
   const { field: image } = useController({
     control: form.control,
     name: 'image',
   })
+
   const { field: intro } = useController({
     control: form.control,
     name: 'intro',
   })
+
   const { field: content } = useController({
     control: form.control,
     name: 'content',
   })
+
   const { onChange: setImage } = image
   const changeImage = useCallback<NonNullable<FileUploaderProps['onChange']>>(
     (file) => setImage(file?.path ?? null),
     [setImage],
   )
+
   const { dirtyFields } = form.formState
   const submit = async ({ email, password, ...profile }: FormData) => {
     try {
@@ -102,6 +111,7 @@ export const ManagedUserForm: React.FC<{
         username: profile.username || null,
         password: password || undefined,
       }
+
       if (user) {
         for (const key of Object.keys(
           data,
@@ -113,6 +123,7 @@ export const ManagedUserForm: React.FC<{
         const result = await update({
           variables: { where: { id: user.id }, data },
         })
+
         if (!result.data?.updateUser) {
           throw new Error('Unable to update user')
         }
@@ -124,6 +135,7 @@ export const ManagedUserForm: React.FC<{
         const result = await create({
           variables: { data: { ...data, email: email || null, password } },
         })
+
         if (!result.data?.createUser) {
           throw new Error('Unable to create user')
         }
@@ -137,6 +149,7 @@ export const ManagedUserForm: React.FC<{
       })
     }
   }
+
   return (
     <FormProvider {...form}>
       <UserEditFormStyled onSubmit={form.handleSubmit(submit)}>

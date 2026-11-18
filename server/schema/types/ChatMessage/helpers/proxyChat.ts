@@ -62,6 +62,7 @@ export const proxyChat = async (
         { cause: error },
       )
     })
+
     if (!response.ok) {
       throw new Error(await readChatError(response))
     }
@@ -78,6 +79,7 @@ export const proxyChat = async (
       content: '',
       usage: {},
     }
+
     for await (const content of readCompletionStream(
       response.body,
       (metadata) => {
@@ -100,6 +102,7 @@ export const proxyChat = async (
               ? details.cached_tokens
               : undefined,
         }
+
         for (const key of Object.keys(counts) as (keyof TokenUsage)[]) {
           const count = counts[key]
           if (

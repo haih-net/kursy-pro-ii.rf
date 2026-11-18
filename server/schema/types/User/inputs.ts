@@ -7,9 +7,11 @@ export const UserStatusEnum = builder.enumType('UserStatusEnum', {
 const QueryModeEnum = builder.enumType('QueryModeEnum', {
   values: ['default', 'insensitive'] as const,
 })
+
 const NestedStringNullableFilter = builder.inputRef<StringFilter>(
   'NestedStringNullableFilter',
 )
+
 const stringFields = (
   t: Parameters<Parameters<typeof builder.inputType>[1]['fields']>[0],
 ) => ({
@@ -26,6 +28,7 @@ const stringFields = (
   mode: t.field({ type: QueryModeEnum }),
   not: t.field({ type: NestedStringNullableFilter }),
 })
+
 NestedStringNullableFilter.implement({ fields: stringFields })
 const StringNullableFilter = builder
   .inputRef<StringFilter>('StringNullableFilter')
@@ -73,11 +76,13 @@ const profileFields = (t: InputBuilder) => ({
   intro: t.string(),
   isAiAgent: t.boolean(),
 })
+
 const managedFields = (t: InputBuilder) => ({
   ...profileFields(t),
   status: t.field({ type: UserStatusEnum }),
   sudo: t.boolean(),
 })
+
 export const CurrentUserUpdateInput = builder.inputType(
   'CurrentUserUpdateInput',
   {

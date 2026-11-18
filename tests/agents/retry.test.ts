@@ -17,6 +17,7 @@ it('waits before retrying and saves one successful answer', async () => {
   const timers = await vi.importActual<typeof import('node:timers/promises')>(
     'node:timers/promises',
   )
+
   vi.mocked(delay).mockImplementationOnce(async (_ms, _value, options) => {
     await timers.setTimeout(100, undefined, options)
   })
@@ -29,11 +30,13 @@ it('waits before retrying and saves one successful answer', async () => {
     }
     return Response.json({ choices: [{ message: { content: 'Done' } }] })
   })
+
   const context = createAgentContext({
     storage,
     config: { apiKey: 'test', model: 'test' },
     client: { endpoint: 'http://unused.invalid/completions', complete },
   })
+
   await expect(
     new ChatAgent().run('Hello', 'test-token', context, { stream: false }),
   ).resolves.toMatchObject({ success: true, content: 'Done' })
@@ -53,11 +56,13 @@ it('stops after three failed requests and saves the final error once', async () 
   const complete = vi.fn(async () =>
     Response.json({ error: 'Provider unavailable' }, { status: 503 }),
   )
+
   const context = createAgentContext({
     storage,
     config: { apiKey: 'test', model: 'test' },
     client: { endpoint: 'http://unused.invalid/completions', complete },
   })
+
   await expect(
     new ChatAgent().run('Hello', 'test-token', context, { stream: false }),
   ).rejects.toThrow('Provider unavailable')
@@ -76,11 +81,13 @@ it('does not retry after emitting partial content', async () => {
         { headers: { 'Content-Type': 'text/event-stream' } },
       ),
   )
+
   const context = createAgentContext({
     storage: new MemoryStorage(),
     config: { apiKey: 'test', model: 'test' },
     client: { endpoint: 'http://unused.invalid/completions', complete },
   })
+
   await expect(
     new ChatAgent().run('Hello', 'test-token', context),
   ).rejects.toThrow('Stream failed')

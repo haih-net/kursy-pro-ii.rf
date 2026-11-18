@@ -34,14 +34,17 @@ export const Select: React.FC<SelectProps> = ({
     () => createCollection({ options, groups }),
     [options, groups],
   )
+
   const disabledKeys = useMemo(
     () => getDisabledKeys({ options, groups }),
     [options, groups],
   )
+
   const change = useCallback(
     (key: Key | null): void => onChange?.(key === null ? null : String(key)),
     [onChange],
   )
+
   const selectProps = {
     ...props,
     onChange: change,
@@ -52,9 +55,11 @@ export const Select: React.FC<SelectProps> = ({
     disabledKeys,
     validationBehavior: 'aria' as const,
   }
+
   const state = useSelectState<ControlOption>(selectProps)
   const { labelProps, triggerProps, valueProps, menuProps, hiddenSelectProps } =
     useSelect(selectProps, state, triggerRef)
+
   const { buttonProps } = useButton(triggerProps, triggerRef)
   return (
     <SelectStyled>

@@ -2,9 +2,8 @@ import { styled } from '@linaria/react'
 import { theme } from 'app/Custom/theme'
 
 export const AdminPageStyled = styled.section`
-  max-width: 1120px;
-  margin: auto;
-  padding: 32px 16px 64px;
+  display: contents;
+
   h1 {
     margin: 0 0 12px;
     font-size: 32px;

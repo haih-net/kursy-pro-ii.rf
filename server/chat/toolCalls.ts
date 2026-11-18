@@ -18,6 +18,7 @@ export function collectToolCalls(calls: ToolCall[], delta: unknown): void {
       type: 'function',
       function: { name: '', arguments: '' },
     })
+
     if (typeof item.id === 'string') {
       call.id += item.id
     }

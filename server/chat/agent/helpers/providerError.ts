@@ -31,6 +31,7 @@ export async function readProviderError(
   }
   const { chatId, messageId, model, providerUrl, providerRequestId } =
     diagnostics
+
   const providerStatus = upstream.status
   let responseBody: string | undefined
   try {
@@ -67,6 +68,7 @@ export async function readProviderError(
   let publicError = stream
     ? 'Провайдер не вернул потоковый ответ'
     : 'Провайдер не вернул JSON-ответ'
+
   if (responseBody) {
     try {
       publicError = chatErrorMessage(

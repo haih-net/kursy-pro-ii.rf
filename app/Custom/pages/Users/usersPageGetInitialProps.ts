@@ -25,10 +25,12 @@ export async function usersPageGetInitialProps({
       page,
       search,
     })
+
     const result = await apolloClient.query({
       query: UsersConnectionDocument,
       variables,
     })
+
     if (page > 1 && !result.data?.users.length) {
       throw new Response('Страница не найдена', { status: 404 })
     }

@@ -47,6 +47,7 @@ export function createChatMessages({
         chatId,
         message,
       )
+
       if (channel !== 'chat') {
         return
       }

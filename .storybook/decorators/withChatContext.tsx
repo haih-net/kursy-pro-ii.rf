@@ -19,6 +19,7 @@ const StoryState: React.FC<
     </ChatContext.Provider>
   )
 }
+
 export const withChatContext: Decorator = (Story, context) => (
   <MemoryRouter>
     <ChatProvider>

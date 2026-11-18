@@ -20,6 +20,7 @@ export const ListBox: React.FC<ListBoxProps> = ({
       item.type === 'section' &&
       !Array.from(state.collection.getChildren?.(item.key) ?? []).length,
   )
+
   return (
     <>
       {loading && <StatusStyled role="status">Загрузка…</StatusStyled>}

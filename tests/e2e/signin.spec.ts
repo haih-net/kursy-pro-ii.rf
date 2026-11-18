@@ -31,6 +31,7 @@ test('MetaMask sign-in refreshes the session and redirects to profile', async ({
       operationName: string
       variables: Record<string, unknown>
     }
+
     if (body.operationName === 'ethAccountNonce') {
       await route.fulfill({
         json: {

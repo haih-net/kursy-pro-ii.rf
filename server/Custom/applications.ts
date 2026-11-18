@@ -50,6 +50,7 @@ export const parseApplication = (
     consent,
     website,
   } = data
+
   if (
     typeof name !== 'string' ||
     !name.trim() ||
@@ -93,6 +94,7 @@ export const parseApplication = (
     audienceId,
     levelChoices,
   )
+
   if (!selectionDescription) {
     return null
   }
@@ -155,6 +157,7 @@ export const createNotificationsRouter = (
     queue = next.catch(() => undefined)
     return next
   }
+
   const read = async (): Promise<State> => {
     try {
       return JSON.parse(await readFile(file, 'utf8')) as State
@@ -165,11 +168,13 @@ export const createNotificationsRouter = (
       throw error
     }
   }
+
   const save = async (state: State): Promise<void> => {
     await mkdir(config.directory, { recursive: true, mode: 0o700 })
     await writeFile(`${file}.tmp`, JSON.stringify(state), { mode: 0o600 })
     await rename(`${file}.tmp`, file)
   }
+
   const delivery: NotificationTransport = transport || {
     telegram: async (text) => {
       const response = await fetch(
@@ -181,6 +186,7 @@ export const createNotificationsRouter = (
           signal: AbortSignal.timeout(10000),
         },
       )
+
       const result = (await response.json()) as { ok?: boolean }
       if (!response.ok || result.ok !== true) {
         throw new Error('Telegram delivery failed')
@@ -205,6 +211,7 @@ export const createNotificationsRouter = (
       )
     },
   }
+
   const deliver = async (
     state: State,
     application: Application,
@@ -236,12 +243,14 @@ export const createNotificationsRouter = (
           }
         }),
       )
+
       application.browser = results.some(Boolean)
       state.subscriptions = state.subscriptions.filter(
         (subscription) => !invalid.has(subscription.endpoint),
       )
     }
   }
+
   router.use((_req, res, next) => {
     res.set('Cache-Control', 'no-store')
     next()
@@ -293,6 +302,7 @@ export const createNotificationsRouter = (
     }
     next()
   }
+
   // Старый публичный REST-приём закрыт: все новые заявки проходят GraphQL-антиспам и уходят на email.
   router.post('/applications', (_req, res) => {
     res.status(410).json({ message: 'Откройте форму на странице курса.' })
@@ -355,6 +365,7 @@ export const createNotificationsRouter = (
         telegram: false,
         browser: false,
       }
+
       await deliver(state, test)
       await save(state)
       res.json({

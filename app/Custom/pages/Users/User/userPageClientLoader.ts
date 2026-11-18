@@ -20,6 +20,7 @@ export async function userPageClientLoader({
     variables: getUserQueryVariables(userId),
     fetchPolicy: 'network-only',
   })
+
   if (!result.data?.object) {
     throw new Response('Пользователь не найден', { status: 404 })
   }

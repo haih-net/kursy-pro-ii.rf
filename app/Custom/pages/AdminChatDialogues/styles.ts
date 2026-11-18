@@ -2,9 +2,7 @@ import { styled } from '@linaria/react'
 import { theme } from 'app/Custom/theme'
 
 export const AdminChatDialoguesStyled = styled.section`
-  padding: 24px 16px;
-  max-width: 1440px;
-  margin: auto;
+  display: contents;
 
   nav {
     display: flex;

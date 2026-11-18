@@ -14,6 +14,7 @@ export function createRunScope(
     reason ??= 'disconnect'
     controller.abort(parent.reason)
   }
+
   parent.addEventListener('abort', abort, { once: true })
   if (parent.aborted) {
     abort()
@@ -24,6 +25,7 @@ export function createRunScope(
       new Error(`Истёк таймаут запроса к модели (${timeoutMs / 1000} секунд)`),
     )
   }, timeoutMs)
+
   return {
     signal: controller.signal,
     get reason() {

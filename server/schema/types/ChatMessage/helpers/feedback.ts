@@ -29,6 +29,7 @@ export function createFeedback(
   const fail = (message: string): never => {
     throw new GraphQLError(message)
   }
+
   const limit = (key: string, maximum: number): void => {
     for (const [key, value] of attempts) {
       if (value.until <= now()) {
@@ -42,6 +43,7 @@ export function createFeedback(
       fail('Слишком много попыток. Попробуйте через 15 минут.')
     }
   }
+
   return {
     async submit(input: FeedbackInput, req: Request): Promise<string> {
       const address = req.socket.remoteAddress || 'unknown'
@@ -78,6 +80,7 @@ export function createFeedback(
       }
       const contacts = input.contacts.trim(),
         message = input.message.trim()
+
       if (
         !contacts ||
         contacts.length > 1000 ||
@@ -119,6 +122,7 @@ export function createFeedback(
           const origin =
             req.get('origin') ||
             `${req.protocol}://${req.get('host') || 'unknown'}`
+
           void Promise.resolve()
             .then(() =>
               send(

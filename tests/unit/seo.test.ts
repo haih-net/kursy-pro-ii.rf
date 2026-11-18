@@ -34,6 +34,7 @@ describe('serializeJsonLd', () => {
       '@type': 'WebPage',
       name,
     }
+
     const serialized: string = serializeJsonLd(data)
     expect(serialized).not.toContain('<')
     expect(JSON.parse(serialized)).toEqual(data)

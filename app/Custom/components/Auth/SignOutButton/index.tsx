@@ -26,6 +26,7 @@ export const SignOutButton: React.FC<SignOutButtonProps> = ({
       setLoading(false)
     }
   }, [client])
+
   return (
     <>
       <Button

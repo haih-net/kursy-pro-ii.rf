@@ -1,8 +1,10 @@
+import { useCallNotifications } from '../hooks/useCallNotifications'
+import type { CallRoomFormData } from '../interfaces'
 import { AccessSelect } from './AccessSelect'
 import { TextField } from '../../controls/TextField'
 import { useCallback } from 'react'
 import type * as React from 'react'
-import { useId, useState } from 'react'
+import { useId } from 'react'
 import {
   Controller,
   FormProvider,
@@ -11,15 +13,16 @@ import {
 } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { Button } from '../../Button'
-import { FormStyled } from '../../Form/styles'
-import { callRoomSchema, type CallRoomFormData } from './schema'
+import { CallRoomFormStyled } from './styles'
+import { callRoomSchema } from './schema'
 export const CallRoomForm: React.FC<{
   initial?: CallRoomFormData
   editing?: boolean
+  onCancel?: () => void
   onSave: (data: CallRoomFormData) => Promise<void>
-}> = ({ initial, editing = false, onSave }) => {
+}> = ({ initial, editing = false, onSave, onCancel }) => {
   const id = useId()
-  const [error, setError] = useState('')
+  const { reportError, addMessage } = useCallNotifications()
   const form = useForm<CallRoomFormData>({
     resolver: yupResolver(callRoomSchema),
     defaultValues: initial ?? {
@@ -28,19 +31,21 @@ export const CallRoomForm: React.FC<{
       accessCode: undefined,
     },
   })
-  const save = form.handleSubmit(async (data) => {
-    setError('')
-    try {
-      await onSave(data)
-      if (editing) {
-        form.reset({ ...data, accessCode: undefined })
+
+  const save = form.handleSubmit(
+    async (data) => {
+      try {
+        await onSave(data)
+        if (editing) {
+          form.reset({ ...data, accessCode: undefined })
+        }
+      } catch (err) {
+        reportError(err)
       }
-    } catch (err) {
-      setError(
-        err instanceof Error ? err.message : 'Не удалось сохранить комнату',
-      )
-    }
-  })
+    },
+    () => addMessage?.('Проверьте заполнение полей', { variant: 'warning' }),
+  )
+
   const renderTitle: ControllerProps<CallRoomFormData, 'title'>['render'] =
     useCallback(
       ({ field }) => (
@@ -53,6 +58,7 @@ export const CallRoomForm: React.FC<{
       ),
       [id],
     )
+
   const renderAccess: ControllerProps<
     CallRoomFormData,
     'authenticatedOnly'
@@ -60,6 +66,7 @@ export const CallRoomForm: React.FC<{
     ({ field }) => <AccessSelect field={field} id={`${id}-access`} />,
     [id],
   )
+
   const renderCode: ControllerProps<CallRoomFormData, 'accessCode'>['render'] =
     useCallback(
       ({ field }) => (
@@ -74,12 +81,14 @@ export const CallRoomForm: React.FC<{
       ),
       [id],
     )
+
   const removeCode = useCallback((): void => {
     form.setValue('accessCode', '', { shouldDirty: true })
   }, [form])
+
   return (
     <FormProvider {...form}>
-      <FormStyled onSubmit={save}>
+      <CallRoomFormStyled onSubmit={save}>
         <label htmlFor={`${id}-title`}>Название комнаты</label>
         <Controller name="title" control={form.control} render={renderTitle} />
         {form.formState.errors.title && (
@@ -108,22 +117,37 @@ export const CallRoomForm: React.FC<{
             : 'Код попадёт в ссылку приглашения. Его можно использовать с любым режимом доступа.'}
         </p>
         {editing && (
-          <Button variant="secondary" onClick={removeCode}>
+          <Button
+            className="code-actions"
+            variant="secondary"
+            size="small"
+            onClick={removeCode}
+          >
             Убрать код
           </Button>
         )}
         {editing && form.watch('accessCode') === '' && (
           <p role="status">После сохранения вход будет без кода.</p>
         )}
-        {error && <p role="alert">{error}</p>}
-        <Button type="submit" disabled={form.formState.isSubmitting}>
-          {form.formState.isSubmitting
-            ? 'Сохранение…'
-            : editing
-              ? 'Сохранить настройки'
-              : 'Создать комнату'}
-        </Button>
-      </FormStyled>
+        <div className="form-actions">
+          <Button type="submit" disabled={form.formState.isSubmitting}>
+            {form.formState.isSubmitting
+              ? 'Сохранение…'
+              : editing
+                ? 'Сохранить настройки'
+                : 'Создать комнату'}
+          </Button>
+          {onCancel && (
+            <Button
+              variant="secondary"
+              onClick={onCancel}
+              disabled={form.formState.isSubmitting}
+            >
+              Отмена
+            </Button>
+          )}
+        </div>
+      </CallRoomFormStyled>
     </FormProvider>
   )
 }

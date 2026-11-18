@@ -9,11 +9,13 @@ export const MessageList: React.FC = () => {
   const { data, loading, error, refetch } = useChatMessageIndexesQuery({
     fetchPolicy: 'network-only',
   })
+
   const [page, setPage] = useState(0)
   const entries = useMemo(
     () => [...(data?.chatMessageIndexes ?? [])].reverse(),
     [data],
   )
+
   const usage = useMemo(() => {
     const totals = {
       inputTokens: 0,
@@ -21,6 +23,7 @@ export const MessageList: React.FC = () => {
       outputTokens: 0,
       recorded: 0,
     }
+
     for (const entry of entries) {
       if (entry.usage) {
         totals.recorded += 1
@@ -31,19 +34,23 @@ export const MessageList: React.FC = () => {
     }
     return totals
   }, [entries])
+
   const pages = Math.max(1, Math.ceil(entries.length / pageSize))
   const current = Math.min(page, pages - 1)
   const previous = useCallback(
     () => setPage(Math.max(0, current - 1)),
     [current],
   )
+
   const next = useCallback(
     () => setPage(Math.min(pages - 1, current + 1)),
     [current, pages],
   )
+
   const refresh = useCallback(() => {
     void refetch().catch(() => undefined)
   }, [refetch])
+
   return (
     <>
       <Button onClick={refresh} disabled={loading}>

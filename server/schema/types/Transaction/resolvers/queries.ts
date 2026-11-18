@@ -35,6 +35,7 @@ builder.queryField('myTransactionsCount', (t) =>
         .where('userId', ctx.currentUser.id)
         .count({ count: '*' })
         .first()
+
       return Number(row?.count ?? 0)
     },
   }),

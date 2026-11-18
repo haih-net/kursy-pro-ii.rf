@@ -12,12 +12,14 @@ export const SearchExample: React.FC = () => {
     setValue(id)
     setQuery(options.find((option) => option.id === id)?.text ?? '')
   }, [])
+
   const changeQuery = useCallback((text: string): void => {
     setQuery(text)
     setValue((id) =>
       options.find((option) => option.id === id)?.text === text ? id : null,
     )
   }, [])
+
   const search = useCallback(
     async (text: string, signal: AbortSignal): Promise<void> => {
       await new Promise((resolve) => setTimeout(resolve, 400))
@@ -35,6 +37,7 @@ export const SearchExample: React.FC = () => {
     },
     [],
   )
+
   return (
     <>
       <Autocomplete

@@ -65,6 +65,7 @@ test('serializes requests, bounds the queue, and keeps event identity on retry',
         }),
     )
     .mockResolvedValue('accepted')
+
   const queue = createStatisticsQueue(send)
   queue.enqueue(packet)
   await vi.advanceTimersByTimeAsync(0)
@@ -97,6 +98,7 @@ test('retries rejected promises but discards permanent failures', async () => {
     .mockRejectedValueOnce(new Error('network'))
     .mockResolvedValueOnce('accepted')
     .mockResolvedValue('discard')
+
   const queue = createStatisticsQueue(send)
   queue.enqueue(packet)
   await vi.runAllTimersAsync()
@@ -168,6 +170,7 @@ test('aborts a stalled browser request and clears its deadline', async () => {
   const log = vi
     .spyOn(apolloErrorReporter, 'error')
     .mockImplementationOnce(() => undefined)
+
   vi.stubGlobal(
     'fetch',
     vi.fn(

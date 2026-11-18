@@ -53,6 +53,7 @@ export const deliverCourseEmail: MailDelivery = async (text, id) => {
     : (await resolveMx(recipient.split('@')[1])).sort(
         (a, b) => a.priority - b.priority,
       )
+
   if (!exchanges.length) {
     throw new Error('MAIL_UNAVAILABLE')
   }
@@ -79,6 +80,7 @@ export const deliverCourseEmail: MailDelivery = async (text, id) => {
     disableFileAccess: true,
     disableUrlAccess: true,
   })
+
   const result = await transport.sendMail({
     from: {
       name: 'Курсы про ИИ',
@@ -89,6 +91,7 @@ export const deliverCourseEmail: MailDelivery = async (text, id) => {
     messageId: `<${id}@${mailDomain}>`,
     text,
   })
+
   if (
     !result.accepted.some(
       (address) => String(address).toLowerCase() === recipient.toLowerCase(),
@@ -122,6 +125,7 @@ export const createCourseApplications = (
     // Не доверяем присланному посетителем X-Forwarded-For.
     return req.socket.remoteAddress || 'unknown'
   }
+
   const limit = (address: string, action: string, maximum: number): void => {
     for (const [key, value] of attempts) {
       if (value.until <= now()) {
@@ -136,6 +140,7 @@ export const createCourseApplications = (
       fail('Слишком много попыток. Попробуйте через 15 минут.', 'RATE_LIMITED')
     }
   }
+
   return {
     challenge: (req) => {
       const address = checkOrigin(req)
@@ -179,6 +184,7 @@ export const createCourseApplications = (
       const format = attendanceFormats.find(
         (item) => item.id === input.formatId,
       )
+
       if (
         !ids.length ||
         ids.length !== input.topicIds.length ||
@@ -194,6 +200,7 @@ export const createCourseApplications = (
         formatId: input.formatId,
         audienceId: input.audienceId || '',
       })
+
       if (state.payload && state.payload !== payload) {
         fail('Для новой заявки откройте форму заново.', 'CHALLENGE_EXPIRED')
       }
@@ -212,6 +219,7 @@ export const createCourseApplications = (
         .join(
           '\n',
         )}\n\nКонтакты и пожелания:\n${input.message.trim()}\n\nСостав, стоимость и время занятий требуют согласования.`
+
       state.pending = (async () => {
         try {
           await send(text, input.token)
@@ -220,6 +228,7 @@ export const createCourseApplications = (
             message:
               'Заявка отправлена. Я свяжусь с вами по указанным контактам, чтобы согласовать программу и время.',
           }
+
           state.receipt = receipt
           return receipt
         } catch {

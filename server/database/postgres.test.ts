@@ -38,6 +38,7 @@ it.skipIf(!process.env.TEST_DATABASE_URL)(
       const [owner] = await db<UserRecord>('User')
         .insert({ id: 'owner', fullname: 'ПРИМЕР_100%', sudo: true })
         .returning('*')
+
       await db('User').insert({ id: 'recipient' })
       expect(owner.createdAt).toBeInstanceOf(Date)
       expect(owner.sudo).toBe(true)
@@ -71,6 +72,7 @@ it.skipIf(!process.env.TEST_DATABASE_URL)(
           '{ concepts(where: {name: {startsWith: "Пример_", contains: "ПРИМЕР"}, coords: {lat: 55.75, lng: 37.61}}) {id data} usersCount }',
         contextValue: context,
       })
+
       expect(result.errors).toBeUndefined()
       expect(result.data).toEqual({
         concepts: [{ id: 'concept', data: { example: true } }],
@@ -112,6 +114,7 @@ it.skipIf(!process.env.TEST_DATABASE_URL)(
         language: 'en',
         viewport: { width: 390, height: 844 },
       }
+
       await Promise.all([
         recordPageError(db, event),
         recordPageError(db, event),
@@ -156,6 +159,7 @@ it.skipIf(!process.env.TEST_DATABASE_URL)(
     const password = randomUUID()
     const maintenanceHadMigrations =
       await admin.schema.hasTable('knex_migrations')
+
     await admin.raw(
       `CREATE ROLE "${role}" LOGIN PASSWORD '${password}' NOCREATEDB`,
     )

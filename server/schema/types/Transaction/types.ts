@@ -32,6 +32,7 @@ Transaction.implement({
           .db<UserRecord>('User')
           .where('id', row.userId)
           .first()
+
         if (!user) {
           throw new Error('Пользователь не найден')
         }

@@ -16,6 +16,7 @@ const prepare = (extra: Record<string, unknown> = {}) =>
       }),
     },
   })
+
 const signal = new AbortController().signal
 const context = () =>
   createAgentContext({
@@ -24,6 +25,7 @@ const context = () =>
     endpoint: 'http://unused.invalid/api',
     signal,
   })
+
 beforeEach(() => {
   vi.stubEnv('CHAT_API_BASE_URL', 'https://provider.example/v1')
   vi.stubEnv('CHAT_MODEL', 'chat-model')
@@ -43,6 +45,7 @@ it('uses the shared provider and configured search model and preserves citations
       url_citation: { url: 'https://example.org/reviews', title: 'Reviews' },
     },
   ]
+
   const fetchSpy = vi.spyOn(globalThis, 'fetch').mockResolvedValue(
     Response.json(
       {
@@ -58,11 +61,13 @@ it('uses the shared provider and configured search model and preserves citations
       { headers: { 'x-request-id': 'search-request' } },
     ),
   )
+
   const output = JSON.parse(
     await prepare({ max_uses: 2, allowed_domains: ['example.org'] }).execute(
       context(),
     ),
   )
+
   expect(output).toMatchObject({
     content: 'Summary',
     annotations,
@@ -140,6 +145,7 @@ it('uses the chat model when no separate search model is configured', async () =
     .mockResolvedValue(
       Response.json({ choices: [{ message: { content: 'Answer' } }] }),
     )
+
   await prepare().execute(context())
   expect(JSON.parse(spy.mock.calls[0][1]?.body as string).model).toBe(
     'chat-model',
@@ -174,6 +180,7 @@ it.each([
       .mockResolvedValue(
         Response.json({ choices: [{ message: { content: 'Answer' } }] }),
       )
+
     await prepare({ max_uses: 1, allowed_domains: ['example.org'] }).execute(
       context(),
     )

@@ -15,5 +15,6 @@ export async function hasChatToken(
   const verifiedId = await chatStorage.verify(
     dialogToken ? `Bearer ${dialogToken}` : undefined,
   )
+
   return verifiedId !== null && verifiedId === chatId
 }

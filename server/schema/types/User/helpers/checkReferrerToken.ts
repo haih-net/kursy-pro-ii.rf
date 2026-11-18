@@ -30,6 +30,7 @@ export async function checkReferrerToken(
   const token = await db<TokenRecord>('Token')
     .where({ id: payload.tokenId, userId: payload.userId })
     .first()
+
   if (
     !token ||
     (token.expiredAt && token.expiredAt.getTime() <= Date.now()) ||

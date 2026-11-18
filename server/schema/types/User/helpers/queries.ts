@@ -32,6 +32,7 @@ function stringFilter(
   const insensitive =
     filter.mode === 'insensitive' ||
     ((filter.mode === null || filter.mode === undefined) && inheritedMode)
+
   const field = insensitive ? 'lower(??)' : '??'
   const value = (s: string): string => (insensitive ? s.toLowerCase() : s)
   if (filter.equals === null) {

@@ -20,10 +20,12 @@ const body = {
   consent: 'on',
   website: '',
 }
+
 const subscription = {
   endpoint: 'https://fcm.googleapis.com/fcm/send/test',
   keys: { auth: 'a'.repeat(22), p256dh: 'b'.repeat(87) },
 }
+
 const resources: { server: Server; directory: string }[] = []
 afterEach(async () => {
   for (const { server, directory } of resources.splice(0)) {
@@ -36,6 +38,7 @@ const setup = async (configured = true, failTelegram = false) => {
   const telegram = failTelegram
     ? vi.fn().mockRejectedValue(new Error('offline'))
     : vi.fn().mockResolvedValue(undefined)
+
   const push = vi.fn().mockResolvedValue(undefined)
   const ownerToken = 'x'.repeat(64)
   const app = express()
@@ -77,6 +80,7 @@ const setup = async (configured = true, failTelegram = false) => {
       },
       body: data === undefined ? undefined : JSON.stringify(data),
     })
+
   return { request, telegram, push, directory }
 }
 
@@ -89,6 +93,7 @@ describe('Заявки и уведомления', () => {
       audience: 'lead',
       levels: 'workflow:advanced',
     }
+
     const result = parseApplication(selection)
     expect(result?.text).toContain('Команда 6–10 человек')
     expect(result?.text).toContain('Руководители и команды')

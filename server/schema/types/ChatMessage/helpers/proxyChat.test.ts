@@ -39,6 +39,7 @@ const execute = async (token: string | null | undefined = 'guest-token') => {
       },
     },
   })
+
   expect(res.listenerCount('close')).toBe(0)
   return result
 }
@@ -49,6 +50,7 @@ it('публичная мутация собирает поток и полны�
     'data: {"choices":[{"delta":{"content":"Текст"}}]}\n\n' +
     'data: {"id":"answer-id","usage":{"prompt_tokens":12,"prompt_tokens_details":{"cached_tokens":3},"completion_tokens":7},"choices":[]}\n\n' +
     'data: [DONE]\n\n'
+
   const bytes = new TextEncoder().encode(body)
   const fetchMock = vi.fn().mockResolvedValue(
     new Response(
@@ -63,6 +65,7 @@ it('публичная мутация собирает поток и полны�
       { headers: { 'Content-Type': 'text/event-stream' } },
     ),
   )
+
   vi.stubGlobal('fetch', fetchMock)
   const result = await execute()
   expect(result.errors).toBeUndefined()
@@ -117,9 +120,11 @@ it.each(['', '   ', 'invalid-token'])(
     const message = token.trim()
       ? 'Недействительный токен чата'
       : 'Токен чата обязателен. Получите его через createChatToken'
+
     const fetchMock = vi
       .fn()
       .mockResolvedValue(Response.json({ error: message }, { status: 401 }))
+
     vi.stubGlobal('fetch', fetchMock)
     const result = await execute(token)
     expect(fetchMock).toHaveBeenCalledOnce()
@@ -137,6 +142,7 @@ it('отсутствующий обязательный токен отклон�
     source:
       'mutation { sendChatMessage(data: { message: "Привет" }) { content } }',
   })
+
   expect(result.errors?.[0].message).toContain('token')
   expect(result.errors?.[0].message).toContain('was not provided')
   expect(fetchMock).not.toHaveBeenCalled()
@@ -177,6 +183,7 @@ it.each(['п4п34п', '🔑', 'token\r\nInjected: value', 'token\0value'])(
     const log = vi
       .spyOn(errorReporter, 'error')
       .mockImplementationOnce(() => undefined)
+
     try {
       // Настоящий fetch проверяет заголовки до сетевого запроса.
       const result = await execute(token)
@@ -198,9 +205,11 @@ it('логирует исходный сетевой сбой, не подмен
   const failure = new TypeError('fetch failed', {
     cause: new Error('ECONNREFUSED'),
   })
+
   const log = vi
     .spyOn(errorReporter, 'error')
     .mockImplementationOnce(() => undefined)
+
   vi.stubGlobal('fetch', vi.fn().mockRejectedValue(failure))
   try {
     const result = await execute()

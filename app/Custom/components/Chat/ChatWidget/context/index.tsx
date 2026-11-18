@@ -91,6 +91,7 @@ export const ChatProvider: React.FC<ChatProviderProps> = ({
     sessionIdRef.current = newId
     return newId
   }, [])
+
   const streamingMessageIdRef = useRef<string | null>(null)
   const abortControllerRef = useRef<AbortController | null>(null)
   const typingTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
@@ -162,6 +163,7 @@ export const ChatProvider: React.FC<ChatProviderProps> = ({
         message: messageText,
         messageLength: messageText.length,
       }
+
       let sessionId: string | undefined
       let responseText = ''
       let responseLength = 0
@@ -190,6 +192,7 @@ export const ChatProvider: React.FC<ChatProviderProps> = ({
             isUser: false,
             failed: true,
           }
+
           setMessages((prev) =>
             failedMessageId
               ? prev.map((msg) =>

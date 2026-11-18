@@ -13,6 +13,7 @@ test('reports the actual 404 page status and clears it after SPA recovery', asyn
     const body = route.request().postDataJSON() as {
       variables: { data: StatisticsPacket }
     }
+
     packets.push(body.variables.data)
     await route.fulfill({ json: { data: { logStats: [{ id: 'saved' }] } } })
   })

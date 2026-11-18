@@ -27,6 +27,7 @@ const query = gql`
     value(key: $key)
   }
 `
+
 const Empty: FC = () => null
 
 beforeEach(() => {
@@ -38,6 +39,7 @@ beforeEach(() => {
       link: ApolloLink.empty(),
       cache: new InMemoryCache(),
     })
+
     vi.spyOn(client, 'stop')
     clients.push(client)
     return client
@@ -78,6 +80,7 @@ function handler(
               )
               return null
             }
+
             renderToString(
               createElement(
                 RequestApolloContext.Provider,
@@ -117,6 +120,7 @@ function handler(
       },
     },
   }
+
   return createRequestHandler(build, 'test')
 }
 
@@ -130,6 +134,7 @@ describe('request Apollo context', () => {
       () => null,
       () => null,
     )(new Request('http://site/parent/child'))
+
     expect(response.status).toBe(200)
     expect(await response.json()).toMatchObject({
       root: {},
@@ -142,6 +147,7 @@ describe('request Apollo context', () => {
     const childFinished = new Promise<void>((resolve) => {
       releaseParent = resolve
     })
+
     const seen: ApolloClient[] = []
     const handle = handler(
       async ({ context }) => {
@@ -160,11 +166,13 @@ describe('request Apollo context', () => {
         return { child: true }
       },
     )
+
     const response = await handle(
       new Request('http://site/parent/child', {
         headers: { authorization: 'Bearer first' },
       }),
     )
+
     expect(response.status).toBe(200)
     expect(seen[0]).toBe(seen[1])
     expect(createApolloClient).toHaveBeenCalledTimes(1)
@@ -196,6 +204,7 @@ describe('request Apollo context', () => {
         return null
       },
     )
+
     const response = await handle(new Request('http://site/parent/child.data'))
     expect(response.status).toBe(200)
     const body = await response.text()
@@ -216,6 +225,7 @@ describe('request Apollo context', () => {
       },
       () => null,
     )
+
     const responses = await Promise.all(
       ['first', 'second'].map((authorization) =>
         handle(
@@ -225,9 +235,11 @@ describe('request Apollo context', () => {
         ),
       ),
     )
+
     const bodies = await Promise.all(
       responses.map((response) => response.text()),
     )
+
     expect(clients).toHaveLength(2)
     expect(clients[0]).not.toBe(clients[1])
     expect(bodies[0]).toContain('first')
@@ -252,6 +264,7 @@ describe('request Apollo context', () => {
         },
         () => null,
       )
+
       const response = await handle(new Request('http://site/parent/child'))
       expect(response.status).toBe(outcome === 'redirect' ? 302 : 500)
       expect(clients[0].stop).toHaveBeenCalledTimes(1)

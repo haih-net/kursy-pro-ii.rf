@@ -31,6 +31,7 @@ export function createTopUpOffer(userId: string): string {
     jwtSecret(),
     { algorithm: 'HS256', expiresIn: '24h' },
   )
+
   return `Balance Top-Up Agreement\n\nYou purchase internal Coins at a 1:1 USDT rate. Coins are non-refundable and can only be used within the platform.\nChain: ${chainId}\nRecipient: ${recipientAddress}\n\n${token}`
 }
 export function verifyTopUpOffer(
@@ -78,6 +79,7 @@ export async function verifyUsdtTransaction(
     const abi = new Interface([
       'event Transfer(address indexed from, address indexed to, uint256 value)',
     ])
+
     let units = 0n
     for (const log of receipt.logs) {
       if (

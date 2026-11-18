@@ -106,6 +106,7 @@ const StreamingConversation: React.FC<
         text: mockLongResponse.slice(0, offset),
         isUser: false,
       }
+
       setShowTypingIndicator(false)
       setMessages((previous) =>
         firstChunk

@@ -28,7 +28,7 @@ export const Layout: React.FC<React.PropsWithChildren> = ({ children }) => {
         <a className="skip-link" href="#main-content">
           К содержимому
         </a>
-        <Header key={location.key} />
+        <Header />
         <CustomLayoutMainStyled id="main-content" tabIndex={-1}>
           {children}
         </CustomLayoutMainStyled>

@@ -57,6 +57,7 @@ for (const viewport of [
         width: img.naturalWidth,
         height: img.naturalHeight,
       }))
+
       expect(Math.max(natural.width, natural.height)).toBeLessThanOrEqual(1200)
       expect(bounds.width / bounds.height).toBeCloseTo(
         natural.width / natural.height,
@@ -71,6 +72,7 @@ for (const viewport of [
         return img.naturalWidth / img.naturalHeight
       }),
     )
+
     expect(ratios[0]).toBeCloseTo(1, 2)
     expect(ratios[1]).toBeGreaterThan(1.5)
     await expect(footer.getByRole('textbox')).toBeVisible()

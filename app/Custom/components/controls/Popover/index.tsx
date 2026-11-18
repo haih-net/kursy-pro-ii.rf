@@ -1,6 +1,11 @@
 import type * as React from 'react'
 import { useLayoutEffect } from 'react'
-import { DismissButton, Overlay, usePopover } from 'react-aria'
+import {
+  DismissButton,
+  Overlay,
+  usePopover,
+  useUNSAFE_PortalContext,
+} from 'react-aria'
 import type { PopoverProps } from './interfaces'
 import { PopoverStyled, UnderlayStyled } from './styles'
 
@@ -11,6 +16,7 @@ export const Popover: React.FC<PopoverProps> = ({
   isNonModal = false,
   children,
 }) => {
+  const { getContainer } = useUNSAFE_PortalContext()
   const { popoverProps, underlayProps } = usePopover(
     {
       triggerRef,
@@ -21,6 +27,7 @@ export const Popover: React.FC<PopoverProps> = ({
     },
     state,
   )
+
   useLayoutEffect(() => {
     const anchor = triggerRef.current
     const popup = popoverRef.current
@@ -33,15 +40,24 @@ export const Popover: React.FC<PopoverProps> = ({
         `${anchor.getBoundingClientRect().width}px`,
       )
     }
+
     resize()
     const observer = new ResizeObserver(resize)
     observer.observe(anchor)
     return () => observer.disconnect()
   }, [triggerRef, popoverRef])
   return (
-    <Overlay>
+    <Overlay
+      portalContainer={
+        getContainer?.() ?? triggerRef.current?.parentElement ?? undefined
+      }
+    >
       {!isNonModal && <UnderlayStyled {...underlayProps} />}
-      <PopoverStyled {...popoverProps} ref={popoverRef}>
+      <PopoverStyled
+        {...popoverProps}
+        style={{ ...popoverProps.style, zIndex: undefined }}
+        ref={popoverRef}
+      >
         <DismissButton onDismiss={state.close} />
         {children}
         <DismissButton onDismiss={state.close} />

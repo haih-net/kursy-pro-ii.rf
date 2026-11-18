@@ -9,12 +9,15 @@ const { query, database } = vi.hoisted(() => {
     whereNot: vi.fn().mockReturnThis(),
     orderBy: vi.fn(),
   }
+
   const database = Object.assign(
     vi.fn(() => query),
     { raw: vi.fn() },
   )
+
   return { query, database }
 })
+
 vi.mock('../database', () => ({ db: database }))
 import { setupSitemap } from './index'
 
@@ -40,6 +43,7 @@ describe('Динамическая карта сайта', () => {
     const response = await fetch(`${origin}/sitemap.xml?check=1`, {
       headers: { 'X-Forwarded-Proto': 'https' },
     })
+
     expect(response.status).toBe(200)
     expect(response.headers.get('content-type')).toContain('application/xml')
     const xml = await response.text()
@@ -72,6 +76,7 @@ describe('Динамическая карта сайта', () => {
       '/docs/',
       '/docs/video-calls',
     ]
+
     query.orderBy.mockResolvedValueOnce(
       paths.flatMap((path) => [
         { uri: path },

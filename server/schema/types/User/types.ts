@@ -31,6 +31,7 @@ const EthAccount = builder.objectRef<EthAccountRecord>('EthAccount').implement({
     userId: t.exposeString('userId', { nullable: true }),
   }),
 })
+
 const TelegramAccount = builder
   .objectRef<TelegramAccountRecord>('TelegramAccount')
   .implement({
@@ -42,6 +43,7 @@ const TelegramAccount = builder
       userId: t.exposeID('userId'),
     }),
   })
+
 export const Balance = builder.objectRef<BalanceRecord>('Balance').implement({
   fields: (t) => ({
     id: t.exposeID('id'),

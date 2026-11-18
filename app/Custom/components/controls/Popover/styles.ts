@@ -4,10 +4,10 @@ import { theme } from 'app/Custom/theme'
 export const UnderlayStyled = styled.div`
   position: fixed;
   inset: 0;
-  z-index: ${theme.zIndex.popover};
+  z-index: 1;
 `
 export const PopoverStyled = styled.div`
-  z-index: ${theme.zIndex.popover};
+  z-index: 2;
   box-sizing: border-box;
   width: var(--control-popover-width);
   max-width: calc(100vw - 24px);

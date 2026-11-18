@@ -18,6 +18,7 @@ const TopUpRequestPayload = builder.simpleObject('TopUpRequestPayload', {
     chainId: t.int({ nullable: false }),
   }),
 })
+
 const TopUpBalanceInput = builder.inputType('TopUpBalanceInput', {
   fields: (t) => ({
     message: t.string({ required: true }),
@@ -25,6 +26,7 @@ const TopUpBalanceInput = builder.inputType('TopUpBalanceInput', {
     txHash: t.string({ required: true }),
   }),
 })
+
 builder.mutationField('requestTopUp', (t) =>
   t.field({
     authScopes: { active: true },
@@ -80,6 +82,7 @@ export async function creditTopUp(
         updatedAt: new Date(),
       })
       .returning('*')
+
     return updated
   })
 }
@@ -96,6 +99,7 @@ builder.mutationField('topUpBalance', (t) =>
         .db<{ address: string }>('EthAccount')
         .where('userId', ctx.currentUser.id)
         .first()
+
       if (!account) {
         throw new Error('Подключите кошелёк')
       }
@@ -110,17 +114,20 @@ builder.mutationField('topUpBalance', (t) =>
         .db('EthTransaction')
         .where({ chainId, txHash: data.txHash.toLowerCase() })
         .first()
+
       if (existing) {
         const credited = await ctx
           .db<TransactionRecord>('Transaction')
           .where({ id: existing.transactionId, userId: ctx.currentUser.id })
           .first()
+
         const balance = credited
           ? await ctx
               .db<BalanceRecord>('Balance')
               .where('id', credited.balanceId)
               .first()
           : undefined
+
         if (!balance) {
           throw new Error('Этот платёж уже зачислен другому пользователю')
         }

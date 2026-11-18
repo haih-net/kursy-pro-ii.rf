@@ -1,6 +1,7 @@
+import { useCallRoomMutations } from './hooks/useCallRoomMutations'
+import { useCallNotifications } from './hooks/useCallNotifications'
 import type * as React from 'react'
-import { useCallback, useState } from 'react'
-import { useKickCallRoomParticipantMutation } from 'app/gql/generated'
+import { useCallback } from 'react'
 import { useAppContext } from '../AppContext'
 import { Button } from '../Button'
 
@@ -10,22 +11,23 @@ export const KickCallParticipant: React.FC<{
   name: string
 }> = ({ roomId, participantId, name }) => {
   const { user } = useAppContext() ?? {}
-  const [kick, { loading }] = useKickCallRoomParticipantMutation()
-  const [error, setError] = useState('')
+  const { kickParticipant: kick, kicking: loading } = useCallRoomMutations()
+  const { reportError } = useCallNotifications()
   const kickParticipant = useCallback(async (): Promise<void> => {
     if (!window.confirm(`Исключить участника «${name}» из звонка?`)) {
       return
     }
-    setError('')
     try {
-      await kick({ variables: { id: roomId, participantId } })
+      if (!kick) {
+        throw new Error('Управление звонками недоступно')
+      }
+      await kick(roomId, participantId)
     } catch (err) {
-      setError(
-        err instanceof Error ? err.message : 'Не удалось исключить участника',
-      )
+      reportError(err)
     }
-  }, [kick, roomId, participantId, name])
-  if (!user?.sudo) {
+  }, [kick, roomId, participantId, name, reportError])
+
+  if (!user?.sudo || user.status !== 'active') {
     return null
   }
   return (
@@ -33,7 +35,6 @@ export const KickCallParticipant: React.FC<{
       <Button variant="danger" disabled={loading} onClick={kickParticipant}>
         Исключить участника
       </Button>
-      {error && <p role="alert">{error}</p>}
     </div>
   )
 }

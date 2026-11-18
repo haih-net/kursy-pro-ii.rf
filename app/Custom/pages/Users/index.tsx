@@ -15,6 +15,7 @@ export const UsersPage: React.FC = () => {
     skip: userLoading || user?.sudo !== true,
     variables: getUsersQueryVariables({ currentUser: user, page, search }),
   })
+
   return (
     <CustomLayoutSectionStyled>
       {userLoading ? (

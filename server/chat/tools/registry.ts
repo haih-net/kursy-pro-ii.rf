@@ -12,6 +12,7 @@ const tools: readonly ChatTool[] = [
   webSearchTool,
   getSystemInfoTool,
 ]
+
 export class ToolRegistry<S extends AgentStorage = AgentStorage> {
   readonly definitions: ToolDefinition[]
 
@@ -23,6 +24,7 @@ export class ToolRegistry<S extends AgentStorage = AgentStorage> {
     const tool = this.entries.find(
       ({ definition }) => definition.function.name === call.function.name,
     )
+
     if (!tool) {
       throw new Error(`Unknown tool: ${call.function.name}`)
     }

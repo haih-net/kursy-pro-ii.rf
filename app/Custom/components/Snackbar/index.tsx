@@ -30,6 +30,7 @@ export const SnackbarProvider: React.FC<React.PropsWithChildren> = ({
     }
     setMessages((values) => values.filter((message) => message.id !== id))
   }, [])
+
   const addMessage = useCallback<SnackbarContextValue['addMessage']>(
     (text, options) => {
       const id = nanoid()
@@ -47,12 +48,14 @@ export const SnackbarProvider: React.FC<React.PropsWithChildren> = ({
     },
     [removeMessage],
   )
+
   const dismiss = useCallback(
     (event: React.MouseEvent<HTMLButtonElement>) => {
       removeMessage(event.currentTarget.value)
     },
     [removeMessage],
   )
+
   return (
     <SnackbarContext.Provider value={{ addMessage }}>
       {children}

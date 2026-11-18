@@ -57,5 +57,6 @@ export function useApollo(
       }),
     [getRequestClient, initialState, withWs],
   )
+
   return store
 }

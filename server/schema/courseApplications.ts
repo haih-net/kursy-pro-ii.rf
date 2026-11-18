@@ -13,6 +13,7 @@ const Challenge = builder
       waitMs: t.exposeInt('waitMs', { nullable: false }),
     }),
   })
+
 const Receipt = builder
   .objectRef<ApplicationReceipt>('CourseApplicationReceipt')
   .implement({
@@ -21,6 +22,7 @@ const Receipt = builder
       message: t.exposeString('message', { nullable: false }),
     }),
   })
+
 const Input = builder.inputType('CourseApplicationInput', {
   fields: (t) => ({
     token: t.string({ required: true }),
@@ -31,6 +33,7 @@ const Input = builder.inputType('CourseApplicationInput', {
     website: t.string(),
   }),
 })
+
 builder.mutationFields((t) => ({
   prepareCourseApplication: t.field({
     type: Challenge,

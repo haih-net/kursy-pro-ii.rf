@@ -63,6 +63,7 @@ describe('call signaling sessions', () => {
       `${origin.replace('http:', 'ws:')}/api/calls/socket`,
       { headers: { origin } },
     )
+
     sockets.push(socket)
     await once(socket, 'open')
     return socket
@@ -202,6 +203,7 @@ describe('call signaling sessions', () => {
       name: 'Гость',
       userId: null,
     }
+
     const token = createCallSessionToken(session)
     expect(readCallSessionToken(token)).toEqual(session)
     expect(() => readCallSessionToken(`${token}tampered`)).toThrow()

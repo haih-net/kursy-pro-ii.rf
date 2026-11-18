@@ -77,9 +77,11 @@ const FileType = builder.objectRef<FileRecord>('File').implement({
     }),
   }),
 })
+
 const FileWhere = builder.inputType('FileWhereUniqueInput', {
   fields: (t) => ({ id: t.id(), path: t.string(), hash: t.string() }),
 })
+
 const FileUpdate = builder.inputType('FileUpdateInput', {
   fields: (t) => ({
     name: t.string(),
@@ -87,6 +89,7 @@ const FileUpdate = builder.inputType('FileUpdateInput', {
     content: t.string(),
   }),
 })
+
 const SingleUpload = builder.inputType('SingleUploadInput', {
   fields: (t) => ({
     file: t.field({ type: 'Upload', required: true }),
@@ -94,6 +97,7 @@ const SingleUpload = builder.inputType('SingleUploadInput', {
     directory: t.string(),
   }),
 })
+
 export async function findFile(
   ctx: Context,
   where: { id?: string | null; path?: string | null; hash?: string | null },
@@ -101,6 +105,7 @@ export async function findFile(
   const conditions = Object.entries(where).filter(
     ([, value]) => value !== null && value !== undefined,
   )
+
   if (conditions.length !== 1 || !conditions[0][1]) {
     throw new GraphQLError('Укажите ровно один идентификатор файла')
   }
@@ -143,6 +148,7 @@ builder.mutationField('updateFile', (t) =>
         .where('id', file.id)
         .update({ ...args.data, updatedAt: new Date() })
         .returning('*')
+
       return updated
     },
   }),
@@ -187,6 +193,7 @@ builder.mutationField('singleUpload', (t) =>
           .db<FileRecord>('File')
           .where('hash', digest)
           .first()
+
         if (existing) {
           await rm(target)
           return existing
@@ -209,6 +216,7 @@ builder.mutationField('singleUpload', (t) =>
           .onConflict('hash')
           .ignore()
           .returning('*')
+
         if (file) {
           return file
         }
@@ -216,6 +224,7 @@ builder.mutationField('singleUpload', (t) =>
           .db<FileRecord>('File')
           .where('hash', digest)
           .first()
+
         if (!duplicate) {
           throw new Error('Не удалось сохранить файл')
         }

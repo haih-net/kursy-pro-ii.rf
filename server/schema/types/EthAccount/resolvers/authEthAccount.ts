@@ -50,6 +50,7 @@ export async function authEthAccount(
       .whereNull('userId')
       .where('expiredAt', '>', new Date())
       .delete()
+
     if (consumed !== 1) {
       return {
         success: false,
@@ -62,6 +63,7 @@ export async function authEthAccount(
     const account = await db<EthAccountRecord>('EthAccount')
       .where({ address: normalizedAddress })
       .first()
+
     if (
       ctx.currentUser &&
       account?.userId &&
@@ -91,6 +93,7 @@ export async function authEthAccount(
       const existingWallet = await db<EthAccountRecord>('EthAccount')
         .where({ userId })
         .first()
+
       if (existingWallet && existingWallet.id !== account?.id) {
         throw new Error('К учётной записи уже привязан кошелёк')
       }

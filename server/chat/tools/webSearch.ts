@@ -129,9 +129,11 @@ export const webSearchTool: ChatTool = {
           },
           signal,
         )
+
         const requestId =
           response.headers.get('x-request-id') ??
           response.headers.get('request-id')
+
         const text = await response.text()
         if (text.length > 128000) {
           throw new Error(
@@ -156,6 +158,7 @@ export const webSearchTool: ChatTool = {
         const choice = Array.isArray(result.choices)
           ? result.choices[0]
           : undefined
+
         const content = choice?.message?.content
         if (
           !response.ok ||

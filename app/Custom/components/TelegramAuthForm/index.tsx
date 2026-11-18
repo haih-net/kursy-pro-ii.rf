@@ -52,6 +52,7 @@ export const TelegramAuthForm: React.FC<{
             },
           },
         })
+
         const response = result.data?.authViaTelegram
         if (!response?.success || !response.token) {
           throw new Error(

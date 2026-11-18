@@ -32,11 +32,13 @@ const mockCurrentUser: MeUserFragment = {
   EthAccount: null,
   TelegramAccount: null,
 }
+
 const mockViewedUser: MeUserFragment = {
   ...mockCurrentUser,
   id: 'other',
   fullname: 'Other User',
 }
+
 const mocks: MockLink.MockedResponse[] = [
   {
     request: {
@@ -62,6 +64,7 @@ const mocks: MockLink.MockedResponse[] = [
     }),
   },
 ]
+
 const meta = {
   title: 'pages/Users/User/View',
   component: UserPageView,
@@ -82,6 +85,7 @@ const meta = {
     ),
   ],
 } satisfies Meta<typeof UserPageView>
+
 export default meta
 type Story = StoryObj<typeof meta>
 export const NotAuthenticated: Story = { args: { user: mockViewedUser } }

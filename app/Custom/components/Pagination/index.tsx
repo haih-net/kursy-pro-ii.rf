@@ -17,6 +17,7 @@ export const Pagination: React.FC<{
     }
     return pathname + (params.size ? `?${params}` : '')
   }
+
   if (totalPages <= 1) {
     return null
   }

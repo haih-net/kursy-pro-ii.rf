@@ -15,6 +15,7 @@ it('requires a purpose before executing a tool', () => {
       arguments: JSON.stringify({ query: '{ __typename }', reasoning: '  ' }),
     },
   }
+
   expect(() => prepareTool(call)).toThrow('reasoning')
 })
 
@@ -88,6 +89,7 @@ it('возвращает сведения о помощнике с готовы�
         }),
       },
     }
+
     const tool = prepareTool(call)
     const controller = new AbortController()
     const context = createAgentContext({
@@ -96,6 +98,7 @@ it('возвращает сведения о помощнике с готовы�
       endpoint: 'http://unused.invalid',
       signal: controller.signal,
     })
+
     const result = JSON.parse(await tool.execute(context))
     expect(result.content).toContain('test-model')
     expect(result.content).toMatch(/\[[^\]]+\]\(https?:\/\/[^)]+\)/)

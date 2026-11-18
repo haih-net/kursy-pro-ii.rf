@@ -24,6 +24,7 @@ export function createChatResponse(
       await once(res, 'drain', { signal: writeSignal })
     }
   }
+
   return {
     event: async (event, runSignal) => {
       if (!stream) {

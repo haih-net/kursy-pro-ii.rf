@@ -22,6 +22,7 @@ export async function setupGraphqlMiddleware(
     process.env.COURSE_SITE_ORIGIN ||
       (process.env.NODE_ENV === 'development' ? 'http://localhost:3201' : ''),
   )
+
   const apolloServer = new ApolloServer<Context>({
     schema,
     stopOnTerminationSignals: false,

@@ -24,6 +24,7 @@ for (const [ascii, unicode] of domains) {
         const body = route.request().postDataJSON() as {
           variables: { data: StatisticsPacket }
         }
+
         packets.push(body.variables.data)
         await route.fulfill({ json: { data: { logStats: [{ id: 'saved' }] } } })
         return
@@ -31,6 +32,7 @@ for (const [ascii, unicode] of domains) {
       const response = await route.fetch({
         url: new URL(`${url.pathname}${url.search}`, baseURL).href,
       })
+
       await route.fulfill({ response })
     })
     await page.goto(`${origin}/signin?next=xn--p1ai`, {

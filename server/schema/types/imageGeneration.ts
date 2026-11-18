@@ -5,20 +5,24 @@ import { requireUser } from './files'
 const Provider = builder.enumType('LlmProvider', {
   values: ['OPENROUTER'] as const,
 })
+
 const Model = builder.enumType('LlmModel', {
   values: {
     GEMINI3_1_FLASH_IMAGE: { value: 'google/gemini-3.1-flash-image-preview' },
   },
 })
+
 const Ratio = builder.enumType('LLMImageGenerationAspectRatioInput', {
   values: {
     AspectRatio_16_9: { value: '16:9' },
     AspectRatio_1_1: { value: '1:1' },
   },
 })
+
 const Size = builder.enumType('LLMImageGenerationImageSizeInput', {
   values: { ImageSize_1K: { value: '1K' } },
 })
+
 const Input = builder.inputType('LLMImageGenerationInput', {
   fields: (t) => ({
     provider: t.field({ type: Provider, required: true }),
@@ -28,18 +32,23 @@ const Input = builder.inputType('LLMImageGenerationInput', {
     imageSize: t.field({ type: Size }),
   }),
 })
+
 const Image = builder.simpleObject('LLMImage', {
   fields: (t) => ({ imageUrl: t.string({ nullable: false }) }),
 })
+
 const Message = builder.simpleObject('LLMImageMessage', {
   fields: (t) => ({ images: t.field({ type: [Image], nullable: false }) }),
 })
+
 const Choice = builder.simpleObject('LLMImageChoice', {
   fields: (t) => ({ message: t.field({ type: Message, nullable: false }) }),
 })
+
 const Response = builder.simpleObject('LLMImageResponse', {
   fields: (t) => ({ choices: t.field({ type: [Choice], nullable: false }) }),
 })
+
 interface ProviderResponse {
   error?: { message?: string }
   choices?: { message?: { images?: { image_url?: { url?: string } }[] } }[]
@@ -76,6 +85,7 @@ builder.mutationField('llmImageGeneration', (t) =>
         },
         AbortSignal.timeout(120000),
       )
+
       if (!response.ok) {
         throw new Error(`Image generation failed (${response.status})`)
       }
@@ -90,6 +100,7 @@ builder.mutationField('llmImageGeneration', (t) =>
           ),
         },
       }))
+
       if (!choices.some((choice) => choice.message.images.length)) {
         throw new Error('No image returned')
       }

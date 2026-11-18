@@ -14,6 +14,7 @@ import {
 const base = '/api/client-certificate'
 const denied =
   'Вход по сертификату запрещён. Проверьте, что ваш ключ разрешён на сайте.'
+
 const hash = (value: string) => createHash('sha256').update(value).digest()
 
 async function verifiedKey(
@@ -29,6 +30,7 @@ async function verifiedKey(
     const secret = (
       await readFile(resolve(directory, 'proxy-secret'), 'utf8')
     ).trim()
+
     if (secret.length < 64 || !timingSafeEqual(hash(supplied), hash(secret))) {
       return null
     }
@@ -36,6 +38,7 @@ async function verifiedKey(
     const fingerprint = certificateFingerprint(
       `-----BEGIN CERTIFICATE-----\n${leaf}\n-----END CERTIFICATE-----`,
     )
+
     return (await allowedKey(
       fingerprint,
       resolve(directory, 'authorized-keys.pem'),
@@ -97,6 +100,7 @@ export function setupClientCertificate(
         req.body?.force === true,
       )
     })
+
     switch (result.kind) {
       case 'denied':
         res.status(403).json({ message: denied })

@@ -13,6 +13,7 @@ const collect = async (source: string, chunkSize = 1): Promise<string> => {
       controller.enqueue(bytes.slice(offset, (offset += chunkSize)))
     },
   })
+
   let result = ''
   for await (const text of readCompletionStream(stream)) {
     result += text

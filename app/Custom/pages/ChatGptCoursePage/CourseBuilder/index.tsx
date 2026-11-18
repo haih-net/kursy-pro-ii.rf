@@ -29,6 +29,7 @@ export const CourseBuilder: React.FC = () => {
     const preset = coursePresets.find(
       (item) => item.id === params.get('preset'),
     )
+
     if (preset) {
       setSelected(preset.stageIds)
     }
@@ -44,17 +45,20 @@ export const CourseBuilder: React.FC = () => {
     },
     [],
   )
+
   const handleFormat = useCallback(
     (event: React.ChangeEvent<HTMLSelectElement>): void => {
       setFormatId(event.currentTarget.value)
     },
     [],
   )
+
   const handlePreset = useCallback(
     (event: React.MouseEvent<HTMLButtonElement>): void => {
       const preset = coursePresets.find(
         (item) => item.id === event.currentTarget.dataset.preset,
       )
+
       if (preset) {
         setSelected(preset.stageIds)
         // Ждём обновления кратких описаний, чтобы прокрутить к новой позиции темы.
@@ -62,6 +66,7 @@ export const CourseBuilder: React.FC = () => {
           const firstTopicIndex = courseModules.findIndex((topic) =>
             preset.stageIds.includes(topic.id),
           )
+
           document
             .getElementById(`stage-${firstTopicIndex + 1}`)
             ?.scrollIntoView({
@@ -76,6 +81,7 @@ export const CourseBuilder: React.FC = () => {
     },
     [],
   )
+
   const clearSelection = useCallback((): void => setSelected([]), [])
   const handleTopic = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>): void => {
@@ -88,6 +94,7 @@ export const CourseBuilder: React.FC = () => {
     },
     [],
   )
+
   const totals = getCourseTotals(selected, formatId)
   const format = getAttendanceFormat(formatId)
   const activePreset = coursePresets.find(
@@ -95,6 +102,7 @@ export const CourseBuilder: React.FC = () => {
       preset.stageIds.length === selected.length &&
       preset.stageIds.every((id) => selected.includes(id)),
   )
+
   return (
     <BuilderStyled aria-labelledby="program">
       <h2 id="program">Соберите свой курс</h2>

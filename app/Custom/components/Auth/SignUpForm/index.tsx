@@ -63,10 +63,12 @@ export const SignUpForm: React.FC<SignUpFormProps> = ({
     reValidateMode: 'onChange',
     resolver: yupResolver(signUpSchema),
   })
+
   const referrerToken = useWatch({
     control: form.control,
     name: 'referrerToken',
   })
+
   const showInvitationOnly = invitationRequired && referrerToken === undefined
   const disabled = loading || form.formState.isSubmitting
   const submit = useCallback(

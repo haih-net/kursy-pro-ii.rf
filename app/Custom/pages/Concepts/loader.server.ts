@@ -32,6 +32,7 @@ export function createListLoader(kind: ConceptListKind) {
           >,
           variables,
         })
+
         return {
           page,
           kind,
@@ -43,6 +44,7 @@ export function createListLoader(kind: ConceptListKind) {
         return { page, kind, initialError: true, notFound: false }
       }
     })
+
     if (props.notFound) {
       throw new Response('Страница не найдена', { status: 404 })
     }

@@ -1,7 +1,8 @@
+import { useCallNotifications } from './hooks/useCallNotifications'
 import { TextField } from '../controls/TextField'
 import { useCallback } from 'react'
 import type * as React from 'react'
-import { useEffect, useId, useState } from 'react'
+import { useEffect, useId } from 'react'
 import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
 import {
@@ -10,13 +11,10 @@ import {
   useForm,
   type ControllerProps,
 } from 'react-hook-form'
-import {
-  useJoinCallRoomMutation,
-  type JoinCallRoomMutationVariables,
-} from 'app/gql/generated'
+import { type JoinCallRoomMutationVariables } from 'app/gql/generated'
 import { Button } from '../Button'
 import { FormStyled } from '../Form/styles'
-import type { CallSession } from './hooks/useCallConnection'
+
 type FormData = JoinCallRoomMutationVariables['data']
 const schema: yup.ObjectSchema<FormData> = yup.object({
   name: yup
@@ -26,20 +24,20 @@ const schema: yup.ObjectSchema<FormData> = yup.object({
     .max(60, 'Максимум 60 символов'),
   accessCode: yup.string().nullable().max(64, 'Максимум 64 символа'),
 })
+
 export const JoinCallForm: React.FC<{
-  roomId: string
   hasCode: boolean
   code: string
   name: string
-  onJoin: (room: CallSession, code: string) => void
-}> = ({ roomId, hasCode, code, name, onJoin }) => {
+  onJoin: (data: FormData) => Promise<void>
+}> = ({ hasCode, code, name, onJoin }) => {
   const id = useId()
-  const [join] = useJoinCallRoomMutation({ fetchPolicy: 'no-cache' })
-  const [error, setError] = useState('')
+  const { reportError, addMessage } = useCallNotifications()
   const form = useForm<FormData>({
     resolver: yupResolver(schema),
     defaultValues: { name, accessCode: code },
   })
+
   useEffect(() => {
     form.setValue('accessCode', code)
   }, [code, form])
@@ -54,6 +52,7 @@ export const JoinCallForm: React.FC<{
     ),
     [id],
   )
+
   const renderCode: ControllerProps<FormData, 'accessCode'>['render'] =
     useCallback(
       ({ field }) => (
@@ -68,22 +67,21 @@ export const JoinCallForm: React.FC<{
       ),
       [id],
     )
+
   return (
     <FormProvider {...form}>
       <FormStyled
-        onSubmit={form.handleSubmit(async (data) => {
-          setError('')
-          try {
-            const result = await join({ variables: { id: roomId, data } })
-            const room = result.data?.joinCallRoom
-            if (!room?.sessionToken) {
-              throw new Error('Не удалось войти в комнату')
+        onSubmit={form.handleSubmit(
+          async (data) => {
+            try {
+              await onJoin(data)
+            } catch (err) {
+              reportError(err)
             }
-            onJoin(room, data.accessCode ?? '')
-          } catch (err) {
-            setError(err instanceof Error ? err.message : 'Не удалось войти')
-          }
-        })}
+          },
+          () =>
+            addMessage?.('Проверьте заполнение полей', { variant: 'warning' }),
+        )}
       >
         <label htmlFor={`${id}-name`}>Ваше имя</label>
         <Controller name="name" control={form.control} render={renderName} />
@@ -103,7 +101,6 @@ export const JoinCallForm: React.FC<{
         {form.formState.errors.accessCode && (
           <p role="alert">{form.formState.errors.accessCode.message}</p>
         )}
-        {error && <p role="alert">{error}</p>}
         <Button type="submit" disabled={form.formState.isSubmitting}>
           {form.formState.isSubmitting ? 'Вход…' : 'Войти в звонок'}
         </Button>

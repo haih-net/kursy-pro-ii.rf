@@ -25,6 +25,7 @@ export const CameraEffects: React.FC<{ stream: MediaStream | null }> = ({
       setMode(value)
     }
   }, [])
+
   const changeImage: React.ChangeEventHandler<HTMLInputElement> = useCallback(
     (event) => {
       setStatus('idle')
@@ -32,6 +33,7 @@ export const CameraEffects: React.FC<{ stream: MediaStream | null }> = ({
     },
     [],
   )
+
   const retry = useCallback((): void => {
     setAttempt((value) => value + 1)
   }, [])
@@ -75,6 +77,7 @@ export const CameraEffects: React.FC<{ stream: MediaStream | null }> = ({
         imageUrl = null
       }
     }
+
     const fail = (): void => {
       release()
       if (!disposed) {
@@ -84,6 +87,7 @@ export const CameraEffects: React.FC<{ stream: MediaStream | null }> = ({
         )
       }
     }
+
     const start = async (): Promise<void> => {
       setStatus('loading')
       const context = canvas.getContext('2d')
@@ -136,6 +140,7 @@ export const CameraEffects: React.FC<{ stream: MediaStream | null }> = ({
               1,
               640 / Math.max(video.videoWidth, video.videoHeight),
             )
+
             const width = Math.max(1, Math.round(video.videoWidth * scale))
             const height = Math.max(1, Math.round(video.videoHeight * scale))
             if (canvas.width !== width || canvas.height !== height) {
@@ -179,6 +184,7 @@ export const CameraEffects: React.FC<{ stream: MediaStream | null }> = ({
                   width / background.naturalWidth,
                   height / background.naturalHeight,
                 )
+
                 const w = background.naturalWidth * cover
                 const h = background.naturalHeight * cover
                 context.drawImage(
@@ -202,8 +208,10 @@ export const CameraEffects: React.FC<{ stream: MediaStream | null }> = ({
           fail()
         }
       }
+
       frameId = requestAnimationFrame(draw)
     }
+
     void start().catch(fail)
     return () => {
       disposed = true

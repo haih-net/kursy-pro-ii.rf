@@ -25,6 +25,7 @@ builder.mutationField('createCallRoom', (t) =>
         closed: false,
         version: 1,
       }
+
       await ctx.db('CallRoom').insert(room)
       return room
     },

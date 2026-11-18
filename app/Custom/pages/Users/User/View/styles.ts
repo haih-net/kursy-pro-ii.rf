@@ -48,8 +48,6 @@ export const UserPageViewInfoStyled = styled.section`
 export const UserPageViewStyled = styled.div`
   display: flex;
   flex-direction: column;
-  max-width: 960px;
-  margin: 0 auto;
   min-width: 0;
   gap: 20px;
   .back-link {

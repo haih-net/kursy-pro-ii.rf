@@ -25,6 +25,7 @@ export const contextMessages = (
             (entry) => entry.id === answer.replyToId && entry.role === 'user',
           )
       : history[index - 1]
+
     if (!question || question.role !== 'user') {
       continue
     }

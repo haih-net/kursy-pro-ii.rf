@@ -19,5 +19,6 @@ export function useCopy(): {
     },
     [addMessage],
   )
+
   return { onClickCopy }
 }

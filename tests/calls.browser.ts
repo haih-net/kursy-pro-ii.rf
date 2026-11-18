@@ -26,6 +26,7 @@ async function operation(
     },
     body: JSON.stringify({ query: print(document), variables }),
   })
+
   return response.json()
 }
 const signup = await operation(SignupDocument, {
@@ -35,6 +36,7 @@ const signup = await operation(SignupDocument, {
     fullname: 'Создатель',
   },
 })
+
 assert.equal(signup.errors, undefined)
 const token = (signup.data?.response as { token: string }).token
 assert.ok(token)
@@ -47,6 +49,7 @@ const browser = await chromium.launch({
     '--autoplay-policy=no-user-gesture-required',
   ],
 })
+
 const errors: string[] = []
 let debugPages: Page[] = []
 try {
@@ -67,6 +70,7 @@ try {
         callTestPeers: RTCPeerConnection[]
         callTestSockets: WebSocket[]
       }
+
       state.callTestPeers = []
       state.callTestSockets = []
       const NativeSocket = WebSocket
@@ -111,11 +115,13 @@ try {
     id: roomId,
     data: { name: 'Гость', accessCode: 'wrong' },
   })
+
   assert.match(wrongCode.errors?.[0].message || '', /Неверный код/)
   const forbiddenSettings = await operation(UpdateCallRoomDocument, {
     id: roomId,
     data: { title: 'Чужая комната', authenticatedOnly: false },
   })
+
   assert.match(forbiddenSettings.errors?.[0].message || '', /создателю/)
   const forbiddenClose = await operation(CloseCallRoomDocument, { id: roomId })
   assert.match(forbiddenClose.errors?.[0].message || '', /создатель/)
@@ -183,6 +189,7 @@ try {
           ),
       ),
     )
+
     assert.deepEqual(receivedAudio, [true, true])
   }
   console.warn(
@@ -208,9 +215,11 @@ try {
       callTestSockets: WebSocket[]
       callTestPeers: RTCPeerConnection[]
     }
+
     state.callTestSockets.at(-1)?.close(4000, 'Test signaling interruption')
     return state.callTestPeers.length
   })
+
   await guest1.getByText(/Связь с сервером потеряна/).waitFor()
   await guest1.getByText(/Попытка №1/).waitFor()
   await guest1
@@ -242,6 +251,7 @@ try {
       callTestSockets: WebSocket[]
       callTestPeers: RTCPeerConnection[]
     }
+
     state.callTestPeers
       .find((peer) => peer.connectionState === 'connected')
       ?.close()
@@ -312,12 +322,14 @@ try {
     id: roomId,
     data: { name: 'Гость', accessCode: 'test-room-code' },
   })
+
   assert.match(denied.errors?.[0].message || '', /авторизация/)
   const oldCode = await operation(
     JoinCallRoomDocument,
     { id: roomId, data: { name: 'Создатель', accessCode: 'test-room-code' } },
     token,
   )
+
   assert.match(oldCode.errors?.[0].message || '', /Неверный код/)
   await owner.waitForFunction(() =>
     document
@@ -332,6 +344,7 @@ try {
     },
     token,
   )
+
   assert.equal(allowed.errors, undefined)
   await owner
     .getByRole('button', { name: 'Завершить звонок для всех', exact: true })
@@ -347,6 +360,7 @@ try {
     { id: roomId, data: { name: 'Создатель', accessCode: 'test-room-code' } },
     token,
   )
+
   assert.match(closed.errors?.[0].message || '', /закрыта/)
   console.warn(
     'PASS: authentication setting disconnects guests, rejects anonymous admission, room closure enforced',

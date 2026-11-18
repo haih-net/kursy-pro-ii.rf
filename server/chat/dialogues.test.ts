@@ -14,6 +14,7 @@ const createStorage = async (): Promise<ChatStorage> => {
   databases.push(database)
   return new ChatStorage(database)
 }
+
 afterEach(async () => {
   await Promise.all(databases.splice(0).map((database) => database.destroy()))
   await Promise.all(
@@ -60,6 +61,7 @@ it('persists tokens and history across database reopening', async () => {
     replyToId: 'question',
     pageUrl: '/page',
   }
+
   await first.append(chatId, message)
   await first.database.destroy()
   const second = await createStorage()

@@ -62,6 +62,7 @@ export const Balance: React.FC<{ currentUser: MeUserFragment }> = ({
   const [topUpBalance] = useTopUpBalanceMutation({
     refetchQueries: transactionsRefreshQueriesList,
   })
+
   const handleTopUp = useCallback(async (): Promise<void> => {
     if (busy.current) {
       return
@@ -84,6 +85,7 @@ export const Balance: React.FC<{ currentUser: MeUserFragment }> = ({
         const accounts = await provider.request({
           method: 'eth_requestAccounts',
         })
+
         if (!Array.isArray(accounts) || typeof accounts[0] !== 'string') {
           throw new Error('No accounts found')
         }
@@ -107,12 +109,14 @@ export const Balance: React.FC<{ currentUser: MeUserFragment }> = ({
           method: 'personal_sign',
           params: [hexlify(toUtf8Bytes(offer.message)), userAddress],
         })
+
         if (typeof signature !== 'string') {
           throw new Error('Invalid signature')
         }
         const abi = new Interface([
           'function transfer(address to, uint256 amount) returns (bool)',
         ])
+
         const txHash =
           data?.txHash ??
           (await provider.request({
@@ -128,6 +132,7 @@ export const Balance: React.FC<{ currentUser: MeUserFragment }> = ({
               },
             ],
           }))
+
         if (typeof txHash !== 'string') {
           throw new Error('Invalid transaction hash')
         }
@@ -162,11 +167,13 @@ export const Balance: React.FC<{ currentUser: MeUserFragment }> = ({
     addMessage,
     storageKey,
   ])
+
   const onChangeAmount = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) =>
       setAmount(event.target.value),
     [],
   )
+
   return process.env.NEXT_PUBLIC_CRYPTO_ENABLED === 'true' ? (
     <BalanceStyled>
       {ethAccount && (

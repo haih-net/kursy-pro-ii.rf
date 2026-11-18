@@ -52,6 +52,7 @@ const ApplicationForm: React.FC<ApplicationProps> = ({
       },
     )
   }, [prepareMutation])
+
   useEffect(() => {
     if (!initialized.current) {
       initialized.current = true
@@ -72,11 +73,13 @@ const ApplicationForm: React.FC<ApplicationProps> = ({
       setMessage(event.currentTarget.value),
     [],
   )
+
   const changeWebsite = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) =>
       setWebsite(event.currentTarget.value),
     [],
   )
+
   const handleSubmit = useCallback(
     (event: React.SubmitEvent<HTMLFormElement>) => {
       event.preventDefault()
@@ -117,6 +120,7 @@ const ApplicationForm: React.FC<ApplicationProps> = ({
       prepareForm,
     ],
   )
+
   const handleDialogClose = useCallback(() => {
     onClose()
     if (submit.isSuccess) {
@@ -125,6 +129,7 @@ const ApplicationForm: React.FC<ApplicationProps> = ({
       prepareForm()
     }
   }, [onClose, submit, prepareForm])
+
   const totals = getCourseTotals(selected, formatId)
   return (
     <ApplicationStyled
@@ -257,10 +262,12 @@ const ApplicationForm: React.FC<ApplicationProps> = ({
     </ApplicationStyled>
   )
 }
+
 export const CourseApplication: React.FC<ApplicationProps> = (props) => {
   const [client] = useState(
     () => new QueryClient({ defaultOptions: { mutations: { retry: false } } }),
   )
+
   return (
     <QueryClientProvider client={client}>
       <ApplicationForm {...props} />

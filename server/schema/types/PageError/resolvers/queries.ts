@@ -13,6 +13,7 @@ builder.queryField('pageErrors', (t) =>
         .db<PageErrorRecord>('PageError')
         .whereNull('status')
         .orWhere('status', 'Review')
+
       if (sort === 'LastOccurredAt') {
         query.orderBy('lastOccurredAt', 'desc')
       }

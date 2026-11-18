@@ -54,6 +54,7 @@ export const StatusToggler: React.FC<StatusTogglerProps> = ({ user }) => {
       : status === UserStatusEnum.NEWBIE
         ? 'Новый'
         : 'Активен'
+
   return (
     <UserStatusActionsStyled>
       <UserStatusStyled data-status={status}>{label}</UserStatusStyled>

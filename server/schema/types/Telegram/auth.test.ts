@@ -15,9 +15,11 @@ function signed(auth_date = Math.floor(Date.now() / 1000)) {
     .sort(([a], [b]) => a.localeCompare(b))
     .map(([key, value]) => `${key}=${value}`)
     .join('\n')
+
   const hash = createHmac('sha256', createHash('sha256').update(token).digest())
     .update(text)
     .digest('hex')
+
   return { ...fields, hash }
 }
 beforeEach(async () => {
@@ -43,11 +45,13 @@ it('links an account, issues a session and rejects linking it to another user', 
   const [user, other] = await db<UserRecord>('User')
     .insert([{ id: 'one' }, { id: 'two' }])
     .returning('*')
+
   const result = await authViaTelegram(signed(), {
     db,
     currentUser: user,
     req: {} as Request,
   })
+
   expect(await authenticate(result.token ?? '', db)).toMatchObject({
     id: user.id,
   })

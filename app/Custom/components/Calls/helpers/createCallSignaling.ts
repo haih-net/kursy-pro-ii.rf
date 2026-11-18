@@ -1,16 +1,13 @@
-import type { CallConnectionStatus, CallServerMessage } from '../interfaces'
+import type {
+  CallConnectionStatus,
+  CallServerMessage,
+  CallSignaling,
+  CallSignalingOptions,
+} from '../interfaces'
 
-export interface CallSignaling {
-  send: (message: unknown) => boolean
-  close: () => void
-}
-export function createCallSignaling(options: {
-  url: string
-  sessionToken: string
-  onMessage: (message: CallServerMessage) => void
-  onStatus: (status: CallConnectionStatus) => void
-  onStopped: () => void
-}): CallSignaling {
+export function createCallSignaling(
+  options: CallSignalingOptions,
+): CallSignaling {
   let socket: WebSocket | null = null
   let disposed = false
   let ready = false
@@ -26,11 +23,13 @@ export function createCallSignaling(options: {
     clearTimeout(recoveryDeadline)
     clearInterval(heartbeat)
   }
+
   const publish = (
     phase: CallConnectionStatus['phase'],
     message: string,
     nextAttemptAt: number | null = null,
   ): void => options.onStatus({ phase, message, attempt, nextAttemptAt })
+
   const detach = (leave: boolean): void => {
     const previous = socket
     socket = null
@@ -46,6 +45,7 @@ export function createCallSignaling(options: {
       previous.close()
     }
   }
+
   const stop = (message: string): void => {
     stopped = true
     clearTimers()
@@ -53,6 +53,7 @@ export function createCallSignaling(options: {
     publish('denied', message)
     options.onStopped()
   }
+
   const lost = (): void => {
     if (disposed || stopped) {
       return
@@ -81,6 +82,7 @@ export function createCallSignaling(options: {
       connect()
     }, delay)
   }
+
   const connect = (): void => {
     if (disposed || stopped) {
       return
@@ -159,6 +161,7 @@ export function createCallSignaling(options: {
       }
     }
   }
+
   connect()
   return {
     send: (message) => {

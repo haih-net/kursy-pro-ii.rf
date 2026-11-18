@@ -67,6 +67,7 @@ function setup(registrationError = false) {
         }),
     ),
   })
+
   const reset = vi.spyOn(client, 'resetStore')
   const onSuccess = vi.fn()
   render(
@@ -82,6 +83,7 @@ function installWallet() {
     async ({ method }: { method: string }): Promise<unknown> =>
       method === 'eth_requestAccounts' ? [address] : 'signature',
   )
+
   window.ethereum = { isMetaMask: true, request }
   return request
 }

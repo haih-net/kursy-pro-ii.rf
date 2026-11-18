@@ -39,12 +39,15 @@ async function main(): Promise<void> {
       env: { ...process.env, PORT: String(port) },
     },
   )
+
   const onInterrupt = (): void => {
     watcher.kill('SIGINT')
   }
+
   const onTerminate = (): void => {
     watcher.kill('SIGTERM')
   }
+
   process.on('SIGINT', onInterrupt)
   process.on('SIGTERM', onTerminate)
   try {

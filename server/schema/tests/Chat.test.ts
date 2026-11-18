@@ -15,15 +15,18 @@ it('выдаёт гостевой токен через GraphQL с сохран�
   const issue = vi
     .spyOn(chatStorage, 'issue')
     .mockImplementation(() => storage.issue())
+
   const db = vi.fn(() => {
     throw new Error('Unexpected context database access')
   })
+
   try {
     const result = await graphql({
       schema,
       source: 'mutation CreateChatToken { createChatToken(data: {}) }',
       contextValue: { currentUser: null, db },
     })
+
     expect(result.errors).toBeUndefined()
     const token = result.data?.createChatToken as string
     expect(await new ChatStorage(database).verify(`Bearer ${token}`)).toBe(
@@ -41,11 +44,13 @@ it('возвращает GraphQL-ошибку без внутренних пут
   const issue = vi
     .spyOn(chatStorage, 'issue')
     .mockRejectedValue(new Error('EACCES /private/path'))
+
   try {
     const result = await graphql({
       schema,
       source: 'mutation { createChatToken(data: {}) }',
     })
+
     expect(result.errors?.[0].message).toBe('Не удалось создать чат')
     expect(result.data).toBeNull()
   } finally {
@@ -69,6 +74,7 @@ it('закрывает индекс и отдельные сообщения д�
           source,
           contextValue: { currentUser },
         })
+
         expect(result.errors?.[0].message).toBe('Доступ запрещён')
       }
     }
@@ -95,18 +101,23 @@ it('выдаёт диалог только судо или владельцу п
     role: 'user' as const,
     content: 'Личное сообщение',
   }
+
   await storage.append(chatId, message)
   const read = vi
     .spyOn(chatStorage, 'read')
     .mockImplementation((id) => storage.read(id))
+
   const verify = vi
     .spyOn(chatStorage, 'verify')
     .mockImplementation((value) => storage.verify(value))
+
   const list = vi
     .spyOn(chatStorage, 'listMessages')
     .mockImplementation(() => storage.listMessages())
+
   const source =
     'query($chatId:String!,$token:String){chatMessages(chatId:$chatId,token:$token){id content createdAt}}'
+
   try {
     for (const access of [undefined, other, `${token}bad`]) {
       const result = await graphql({
@@ -115,6 +126,7 @@ it('выдаёт диалог только судо или владельцу п
         variableValues: { chatId, token: access },
         contextValue: { currentUser: null, req: { headers: {} } },
       })
+
       expect(result.errors?.[0].message).toBe('Доступ запрещён')
     }
     expect(read).not.toHaveBeenCalled()
@@ -131,6 +143,7 @@ it('выдаёт диалог только судо или владельцу п
         variableValues: { chatId },
         contextValue,
       })
+
       expect(result.errors).toBeUndefined()
       expect(result.data?.chatMessages).toEqual([
         {
@@ -146,6 +159,7 @@ it('выдаёт диалог только судо или владельцу п
       variableValues: { chatId, token },
       contextValue: { currentUser: null, req: { headers: {} } },
     })
+
     expect(own.errors).toBeUndefined()
     const admin = await graphql({
       schema,
@@ -154,6 +168,7 @@ it('выдаёт диалог только судо или владельцу п
       variableValues: { chatId },
       contextValue: { currentUser: { sudo: true } },
     })
+
     expect(admin.errors).toBeUndefined()
     expect(admin.data?.chatMessageIndexes).toEqual([
       { id: 'user-test', chatId },
@@ -177,6 +192,7 @@ it('shows tool logs only in the administrator dialogue', async () => {
     { role: 'tool', content: 'API result' },
     { role: 'assistant', content: 'Answer' },
   ])
+
   const verify = vi.spyOn(chatStorage, 'verify').mockResolvedValue('chat')
   try {
     for (const sudo of [true, false]) {
@@ -188,6 +204,7 @@ it('shows tool logs only in the administrator dialogue', async () => {
           req: { headers: {} },
         },
       })
+
       expect(result.errors).toBeUndefined()
       expect(result.data?.chatMessages).toEqual(
         (sudo
@@ -225,9 +242,11 @@ it('возвращает сохранённые токены из БД и соо
   const read = vi
     .spyOn(chatStorage, 'read')
     .mockImplementation((id) => storage.read(id))
+
   const list = vi
     .spyOn(chatStorage, 'listMessages')
     .mockImplementation(() => storage.listMessages())
+
   try {
     const result = await graphql({
       schema,
@@ -239,6 +258,7 @@ it('возвращает сохранённые токены из БД и соо
       variableValues: { chatId },
       contextValue: { currentUser: { sudo: true } },
     })
+
     expect(result.errors).toBeUndefined()
     expect(result.data?.chatMessageIndexes).toEqual([
       { usage: null },
@@ -261,6 +281,7 @@ it('returns the dialogue index for administrators', async () => {
       channel: 'chat' as const,
     },
   ]
+
   const list = vi.spyOn(chatStorage, 'listDialogues').mockResolvedValue(entries)
   const read = vi.spyOn(chatStorage, 'read')
   try {
@@ -269,6 +290,7 @@ it('returns the dialogue index for administrators', async () => {
       source: '{ chatDialogues { chatId createdAt channel } }',
       contextValue: { currentUser: { sudo: true } },
     })
+
     expect(result.errors).toBeUndefined()
     expect(result.data?.chatDialogues).toEqual(entries)
     expect(read).not.toHaveBeenCalled()
@@ -286,15 +308,18 @@ it('creates feedback channels and exposes them to administrators', async () => {
   const issue = vi
     .spyOn(chatStorage, 'issue')
     .mockImplementation((channel) => storage.issue(channel))
+
   const list = vi
     .spyOn(chatStorage, 'listDialogues')
     .mockImplementation(() => storage.listDialogues())
+
   try {
     const created = await graphql({
       schema,
       source: 'mutation { createChatToken(data: { channel: feedback }) }',
       contextValue: { currentUser: null },
     })
+
     expect(created.errors).toBeUndefined()
     const token = created.data?.createChatToken as string
     expect(await storage.channel(token.split('.')[0])).toBe('feedback')
@@ -303,6 +328,7 @@ it('creates feedback channels and exposes them to administrators', async () => {
       source: '{ chatDialogues { chatId channel } }',
       contextValue: { currentUser: { sudo: true } },
     })
+
     expect(result.errors).toBeUndefined()
     expect(result.data?.chatDialogues).toEqual([
       expect.objectContaining({ channel: 'feedback' }),
@@ -311,6 +337,7 @@ it('creates feedback channels and exposes them to administrators', async () => {
       schema,
       source: 'mutation { createChatToken(data: { channel: unknown }) }',
     })
+
     expect(invalid.errors).toBeDefined()
   } finally {
     issue.mockRestore()

@@ -39,6 +39,7 @@ export const sendStatistics: StatisticsSender = async (packet) => {
     () => controller.abort(),
     6500,
   )
+
   try {
     const result = await initializeApollo({ withWs: false }).mutate({
       mutation: LogStatsDocument,
@@ -52,6 +53,7 @@ export const sendStatistics: StatisticsSender = async (packet) => {
         },
       },
     })
+
     if (!result.data || !('logStats' in result.data)) {
       return 'retry'
     }

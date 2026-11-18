@@ -10,6 +10,7 @@ export const fetchGraphql =
       errors?: { message: string; extensions?: { code?: string } }[]
       message?: string
     }
+
     try {
       response = await fetch('/api', {
         method: 'POST',
@@ -29,6 +30,7 @@ export const fetchGraphql =
           result.message ||
           'Не удалось отправить запрос. Попробуйте ещё раз.',
       )
+
       Object.assign(error, { code: result.errors?.[0]?.extensions?.code })
       throw error
     }

@@ -22,10 +22,13 @@ interface SavedStatistic {
 }
 const isRecord = (value: unknown): value is Record<string, unknown> =>
   value !== null && typeof value === 'object' && !Array.isArray(value)
+
 const validId = (value: unknown): value is string =>
   typeof value === 'string' && /^[a-f0-9]{24}$/.test(value)
+
 const text = (value: unknown, max: number): value is string =>
   typeof value === 'string' && value.length <= max
+
 const httpUrl = (value: unknown): value is string => {
   if (!text(value, 4096)) {
     return false
@@ -36,6 +39,7 @@ const httpUrl = (value: unknown): value is string => {
     return false
   }
 }
+
 const dimension = (value: unknown): value is number =>
   typeof value === 'number' &&
   Number.isInteger(value) &&
@@ -100,6 +104,7 @@ const validatePacket = (data: unknown): StatisticsPacket => {
         ? { error: { name: event.error.name, message: event.error.message } }
         : {}),
     }
+
     return { visitorId: data.visitorId, tabId: data.tabId, events: [chat] }
   }
   if (
@@ -136,6 +141,7 @@ const validatePacket = (data: unknown): StatisticsPacket => {
     language: event.language,
     viewport: { width: event.viewport.width, height: event.viewport.height },
   }
+
   return { visitorId: data.visitorId, tabId: data.tabId, events: [visit] }
 }
 
@@ -224,6 +230,7 @@ export const logStatistics = async (
           (isRecord(error.extensions) &&
             error.extensions.code === 'UNAUTHENTICATED')),
     )
+
     throw new GraphQLError(
       authFailed
         ? 'Statistics integration credentials rejected.'

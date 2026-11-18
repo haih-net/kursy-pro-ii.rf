@@ -9,6 +9,7 @@ const request = {
   get: () => 'https://example.com',
   socket: { remoteAddress: '127.0.0.1' },
 } as unknown as Request
+
 const databases: ReturnType<typeof createDatabase>[] = []
 const setup = async () => {
   const database = createDatabase()
@@ -22,6 +23,7 @@ const setup = async () => {
     service: createFeedback(send, Date.now, storage),
   }
 }
+
 afterEach(async () => {
   await Promise.all(databases.splice(0).map((database) => database.destroy()))
 })
@@ -37,6 +39,7 @@ describe('feedback dialogues', () => {
       service.submit(input, request),
       service.submit(input, request),
     ])
+
     expect(results[0]).toBe(results[1])
     expect(send).toHaveBeenCalledTimes(1)
     expect(send.mock.calls[0][0]).toContain('@visitor')
@@ -69,6 +72,7 @@ describe('feedback dialogues', () => {
     const log = vi
       .spyOn(errorReporter, 'error')
       .mockImplementationOnce(() => undefined)
+
     send.mockRejectedValueOnce(failure)
     const token = await storage.issue('feedback')
     const input = { token, contacts: '@visitor', message: 'Help' }
@@ -92,6 +96,7 @@ it('accepts feedback without mail configuration and without Origin', async () =>
   const log = vi
     .spyOn(errorReporter, 'error')
     .mockImplementationOnce(() => undefined)
+
   try {
     const { storage } = await setup()
     const service = createFeedback(undefined, Date.now, storage)
@@ -101,6 +106,7 @@ it('accepts feedback without mail configuration and without Origin', async () =>
       protocol: 'http',
       get: (name: string) => (name === 'host' ? 'localhost:4319' : undefined),
     } as unknown as Request
+
     await expect(
       service.submit({ token, contacts: '@visitor', message: 'Hello' }, req),
     ).resolves.toContain('Сообщение принято')
@@ -126,6 +132,7 @@ it('does not wait for SMTP to accept the message', async () => {
         finish = resolve
       }),
   )
+
   const service = createFeedback(send, Date.now, storage)
   try {
     const token = await storage.issue('feedback')
@@ -148,9 +155,11 @@ it('reports a storage failure and does not attempt mail delivery', async () => {
   const log = vi
     .spyOn(errorReporter, 'error')
     .mockImplementationOnce(() => undefined)
+
   const append = vi
     .spyOn(storage, 'appendFeedback')
     .mockRejectedValueOnce(failure)
+
   try {
     await expect(
       service.submit(

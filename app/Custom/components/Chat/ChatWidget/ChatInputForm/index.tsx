@@ -11,6 +11,7 @@ export const ChatInputForm: React.FC = () => {
     initialMessage,
     initialMessageSetter,
   } = useChatContext()
+
   const [inputValue, setInputValue] = useState('')
   const textareaRef = useRef<HTMLTextAreaElement>(null)
 

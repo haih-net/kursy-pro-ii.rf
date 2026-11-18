@@ -6,6 +6,7 @@ export const DialogueList: React.FC = () => {
   const { data, loading, error } = useChatDialoguesQuery({
     fetchPolicy: 'network-only',
   })
+
   if (loading) {
     return <p role="status">Загрузка диалогов…</p>
   }

@@ -16,6 +16,7 @@ export const App: React.FC<AppProps> = ({ children, initialApolloState }) => {
     client: apolloClient,
     ssr: false,
   })
+
   const user = data?.me
 
   return (

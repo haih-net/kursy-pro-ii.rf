@@ -10,6 +10,7 @@ export const ConceptPage: React.FC = () => {
   const { data, error, loading } = useConceptQuery({
     variables: { where: { uri } },
   })
+
   const concept = data?.concept
   if (!concept) {
     return (

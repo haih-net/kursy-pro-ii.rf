@@ -35,6 +35,7 @@ export async function readRound({
       receivedId = true
     }
   }
+
   const onUsage = (value: unknown): void => {
     if (!value || typeof value !== 'object') {
       return
@@ -49,6 +50,7 @@ export async function readRound({
           : undefined,
       outputTokens: raw.completion_tokens,
     }
+
     for (const key of Object.keys(counters) as (keyof TokenUsage)[]) {
       const count = counters[key]
       if (
@@ -62,10 +64,12 @@ export async function readRound({
       roundUsage[key] = count
     }
   }
+
   const appendContent = async (content: string): Promise<void> => {
     roundContent += content
     await onContent(content)
   }
+
   if (stream) {
     if (!upstream.body) {
       throw new Error('Провайдер не вернул потоковый ответ')
@@ -102,6 +106,7 @@ export async function readRound({
       'choices' in result && Array.isArray(result.choices)
         ? result.choices[0]
         : undefined
+
     if (
       !choice ||
       typeof choice !== 'object' ||

@@ -59,6 +59,7 @@ $$`
       const inlineKatex = container.querySelectorAll(
         '.katex:not(.katex-display .katex)',
       )
+
       const blockKatex = container.querySelector('.katex-display')
       expect(inlineKatex.length).toBeGreaterThanOrEqual(1)
       expect(blockKatex).toBeTruthy()

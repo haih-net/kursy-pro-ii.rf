@@ -6,6 +6,7 @@ export const Dialogue: React.FC<{ chatId: string }> = ({ chatId }) => {
     variables: { chatId },
     fetchPolicy: 'network-only',
   })
+
   return (
     <>
       <code>{chatId}</code>

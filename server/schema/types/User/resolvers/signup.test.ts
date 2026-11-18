@@ -11,6 +11,7 @@ import type { UserRecord } from '../interfaces'
 const { graphql } = createRequire(import.meta.url)(
   'graphql',
 ) as typeof import('graphql')
+
 let db: Knex
 const data = { username: 'registered', password: 'Example123' }
 beforeEach(async () => {
@@ -43,6 +44,7 @@ it('requires a valid invitation when registration is restricted and records its 
   const [owner] = await db<UserRecord>('User')
     .insert({ id: 'owner' })
     .returning('*')
+
   vi.stubEnv('NEXT_PUBLIC_SITE_SIGNUP_STRATEGY', '')
   const ctx = { db, currentUser: null, req: {} as Request }
   await expect(signup(data, ctx)).rejects.toThrow('приглашения')
@@ -51,6 +53,7 @@ it('requires a valid invitation when registration is restricted and records its 
     source: 'mutation{createReferrerToken}',
     contextValue: { ...ctx, currentUser: owner },
   })
+
   expect(invitation.errors).toBeUndefined()
   await signup(
     { ...data, referrerToken: String(invitation.data?.createReferrerToken) },

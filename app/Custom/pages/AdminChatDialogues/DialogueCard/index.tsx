@@ -15,10 +15,12 @@ export const DialogueCard: React.FC<DialogueCardProps> = ({ dialogue }) => {
     variables: { chatId: dialogue.chatId },
     fetchPolicy: 'network-only',
   })
+
   const firstMessage = data?.chatMessages[0]
   const errorCount =
     data?.chatMessages.filter((message) => message.success === false).length ??
     0
+
   return (
     <article>
       <div className="dialogue-toolbar">

@@ -147,6 +147,7 @@ async function startServer() {
     const buildUrl: string = pathToFileURL(
       resolve('build/server/index.js'),
     ).href
+
     const build: ServerBuild = (await import(buildUrl)) as ServerBuild
     app.all('/{*splat}', createRequestHandler({ build }))
   }
@@ -155,6 +156,7 @@ async function startServer() {
     logDevError('http.error', error, { method: req.method, path: req.path })
     next(error)
   }
+
   app.use(logRequestError)
 
   metricsServer = startMetricsServer()

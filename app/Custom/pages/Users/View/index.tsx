@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react'
-import { Form, useNavigate } from 'react-router'
+import { useNavigate } from 'react-router'
 import { Button } from 'app/Custom/components/Button'
 import { ManagedUserForm } from '../User/View/ManagedUserForm'
 import { UserFragment } from 'app/gql/generated'
@@ -7,6 +7,7 @@ import {
   UsersViewStyled,
   UsersViewGridStyled,
   UsersViewCardStyled,
+  UsersViewFiltersFormStyled,
 } from './styles'
 import { SeparatorStyled } from 'app/Custom/components/Separator/styles'
 import { StatusToggler } from '../User/View/StatusToggler'
@@ -44,17 +45,23 @@ export const UsersView: React.FC<UsersViewProps> = ({
   return (
     <UsersViewStyled>
       <h1>Пользователи</h1>
-      <Form method="get" key={search ?? ''}>
+      <UsersViewFiltersFormStyled method="get" key={search ?? ''}>
         <label>
-          Search by email, username or full name{' '}
-          <input type="search" name="q" defaultValue={search} />
+          <input
+            type="search"
+            name="q"
+            defaultValue={search}
+            placeholder="Емейл, юзернейм или ФИО"
+          />
         </label>
-        <Button type="submit">Search</Button>
-      </Form>
+        <Button type="submit">Поиск</Button>
+      </UsersViewFiltersFormStyled>
       {creating ? (
         <ManagedUserForm closeForm={setCreatingOff} onCreated={openUser} />
       ) : (
-        <Button onClick={setCreatingOn}>Create user</Button>
+        <div>
+          <Button onClick={setCreatingOn}>Создать пользователя</Button>
+        </div>
       )}
       <p className="list-description">Участники сообщества · {count}</p>
 

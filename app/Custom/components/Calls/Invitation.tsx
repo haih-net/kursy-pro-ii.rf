@@ -1,3 +1,4 @@
+import { useCallNotifications } from './hooks/useCallNotifications'
 import { useCallback } from 'react'
 import type * as React from 'react'
 import { useEffect, useState } from 'react'
@@ -8,7 +9,7 @@ export const CallInvitation: React.FC<{
   hasCode: boolean
 }> = ({ roomId, code, hasCode }) => {
   const [origin, setOrigin] = useState('')
-  const [message, setMessage] = useState('')
+  const { addMessage } = useCallNotifications()
   useEffect(() => {
     setOrigin(location.origin)
   }, [])
@@ -17,16 +18,19 @@ export const CallInvitation: React.FC<{
     (event) => event.target.select(),
     [],
   )
+
   const copy = useCallback(async (): Promise<void> => {
     try {
       await navigator.clipboard.writeText(url)
-      setMessage('Ссылка скопирована')
+      addMessage?.('Ссылка скопирована', { variant: 'success' })
     } catch {
-      setMessage(
+      addMessage?.(
         'Не удалось скопировать автоматически. Выделите ссылку и скопируйте вручную.',
+        { variant: 'error' },
       )
     }
-  }, [url])
+  }, [url, addMessage])
+
   return (
     <div className="panel">
       <h2>Пригласить участников</h2>
@@ -55,7 +59,6 @@ export const CallInvitation: React.FC<{
           пригласить.
         </p>
       )}
-      <p role="status">{message}</p>
     </div>
   )
 }

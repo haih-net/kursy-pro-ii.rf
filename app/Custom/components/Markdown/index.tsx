@@ -134,6 +134,7 @@ const createComponents = ({
           const match = extracted
             .trim()
             .match(/^```mermaid\n?([\s\S]*?)\n?```$/)
+
           const source = match?.[1]?.trim() || ''
 
           if (source) {

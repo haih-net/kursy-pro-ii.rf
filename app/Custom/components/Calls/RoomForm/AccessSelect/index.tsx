@@ -1,8 +1,14 @@
+import type { ControllerRenderProps } from 'react-hook-form'
+import type { CallRoomFormData } from '../../interfaces'
+
+interface AccessSelectProps {
+  field: ControllerRenderProps<CallRoomFormData, 'authenticatedOnly'>
+  id: string
+}
 import type * as React from 'react'
 import { useCallback } from 'react'
 import { Select } from '../../../controls/Select'
 import type { ControlOption } from '../../../controls/ListBox/interfaces'
-import type { AccessSelectProps } from './interfaces'
 
 const options: ControlOption[] = [
   { id: 'everyone', text: 'Всем по ссылке' },
@@ -14,6 +20,7 @@ export const AccessSelect: React.FC<AccessSelectProps> = ({ field, id }) => {
     (value: string | null): void => field.onChange(value === 'authenticated'),
     [field],
   )
+
   return (
     <Select
       {...field}

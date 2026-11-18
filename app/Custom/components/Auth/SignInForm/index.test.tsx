@@ -47,10 +47,12 @@ function setup(success: boolean, networkError = false) {
               observer.complete()
             }
           }, 20)
+
           return () => clearTimeout(timer)
         }),
     ),
   })
+
   const reset = vi.spyOn(client, 'resetStore')
   const onSuccess = vi.fn()
   render(

@@ -60,6 +60,7 @@ it('runs without HTTP and shares context and custom storage with nested tools', 
       },
     }),
   }
+
   const outer: ChatTool<MemoryStorage> = {
     ...inner,
     definition: {
@@ -77,6 +78,7 @@ it('runs without HTTP and shares context and custom storage with nested tools', 
       },
     }),
   }
+
   const runContext = context(storage)
   runContext.tools = new ToolRegistry([outer, inner])
   runContext.client.complete = vi
@@ -106,6 +108,7 @@ it('runs without HTTP and shares context and custom storage with nested tools', 
       }
     },
   })
+
   expect(result.content).toBe('Done')
   expect(events).toEqual(['Done'])
   expect(seen).toHaveLength(3)
@@ -125,6 +128,7 @@ it('isolates concurrent runs using different storage instances', async () => {
     agent.run('First', 'test-token', first, { stream: false }),
     agent.run('Second', 'test-token', second, { stream: false }),
   ])
+
   expect(results.every(({ success }) => success)).toBe(true)
   expect((await first.storage.read('same-dialogue'))[0].content).toBe('First')
   expect((await second.storage.read('same-dialogue'))[0].content).toBe('Second')
@@ -139,6 +143,7 @@ it('propagates cancellation, records failure and releases the dialogue', async (
   const ready = new Promise<void>((resolve) => {
     started = resolve
   })
+
   runContext.client.complete = async (_request, signal) => {
     if (!signal) {
       throw new Error('Missing run signal')
@@ -153,6 +158,7 @@ it('propagates cancellation, records failure and releases the dialogue', async (
   const pending = agent.run('Cancel me', 'test-token', runContext, {
     stream: false,
   })
+
   const assertion = expect(pending).rejects.toThrow('Stopped')
   await ready
   controller.abort(new Error('Stopped'))
@@ -212,6 +218,7 @@ it('returns a missing GraphQL endpoint error to the model and continues', async 
       stream: false,
     },
   )
+
   expect(result.content).toBe('The site API is unavailable.')
   const messages = await runContext.storage.read('same-dialogue')
   expect(messages.find(({ role }) => role === 'tool')?.success).toBe(false)
@@ -239,6 +246,7 @@ it('derives the dialogue from the verified token, ignoring caller-supplied IDs',
     ...context(new MemoryStorage()),
     chatId: 'another-dialogue',
   }
+
   const verify = vi.spyOn(runContext.storage, 'verify')
   await new ChatAgent().run('Hello', 'test-token', runContext, {
     stream: false,

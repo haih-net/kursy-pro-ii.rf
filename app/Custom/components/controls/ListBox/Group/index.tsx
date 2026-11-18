@@ -9,6 +9,7 @@ export const Group: React.FC<GroupProps> = ({ section, state }) => {
     heading: section.rendered,
     'aria-label': section['aria-label'],
   })
+
   return (
     <GroupStyled {...itemProps}>
       {section.rendered && (

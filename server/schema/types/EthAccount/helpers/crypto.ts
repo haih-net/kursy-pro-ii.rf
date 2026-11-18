@@ -20,6 +20,7 @@ export async function generateNonce(
     jwtSecret(),
     { algorithm: 'HS256', expiresIn: '5m' },
   )
+
   await db<TokenRecord>('Token').insert({
     id: tokenId,
     userId: null,

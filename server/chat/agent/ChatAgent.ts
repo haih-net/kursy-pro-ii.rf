@@ -60,6 +60,7 @@ export class ChatAgent {
       success: true,
       content: content.trim(),
     }
+
     let busy = this.busy.get(storage)
     if (!busy) {
       busy = new Set<string>()
@@ -79,6 +80,7 @@ export class ChatAgent {
       context.signal.throwIfAborted()
       await options.onEvent?.({ type: 'content', content }, context.signal)
     }
+
     let stage = 'save_user_message'
     let userSaved = false
     let answerSaved = false
@@ -137,6 +139,7 @@ export class ChatAgent {
               : content,
         })),
       ]
+
       for (let round = 0; round < 9; round += 1) {
         const { content: roundContent, calls } = await (async () => {
           for (let attempt = 0; ; attempt += 1) {
@@ -163,6 +166,7 @@ export class ChatAgent {
                 },
                 context.signal,
               )
+
               providerStatus = upstream.status
               providerRequestId =
                 upstream.headers.get('x-request-id') ??
@@ -174,6 +178,7 @@ export class ChatAgent {
                 providerUrl,
                 providerRequestId,
               })
+
               if (providerError) {
                 responseBody = providerError.body
                 failureStatus = providerError.status
@@ -217,6 +222,7 @@ export class ChatAgent {
             }
           }
         })()
+
         if (context.signal.aborted) {
           throw new Error('Запрос отменён')
         }
@@ -242,6 +248,7 @@ export class ChatAgent {
               await write(content)
             },
           )
+
           conversation.push({
             role: 'tool',
             tool_call_id: call.id,

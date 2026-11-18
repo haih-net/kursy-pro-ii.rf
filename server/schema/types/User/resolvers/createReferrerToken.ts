@@ -22,6 +22,7 @@ builder.mutationField('createReferrerToken', (t) =>
             '1h') as jwt.SignOptions['expiresIn'],
         },
       )
+
       const payload = jwt.decode(token)
       if (!payload || typeof payload === 'string' || !payload.exp) {
         throw new Error('Некорректный срок приглашения')

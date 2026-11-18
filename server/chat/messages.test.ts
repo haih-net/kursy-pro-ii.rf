@@ -34,6 +34,7 @@ async function setup() {
   const send = vi
     .fn<(input: EmailInput) => Promise<void>>()
     .mockResolvedValue(undefined)
+
   return {
     storage,
     chatId,
@@ -81,6 +82,7 @@ it('uses the last dialogue message and a strict inactivity threshold across serv
     storage: new ChatStorage(storage.database),
     sendNotify: send,
   })
+
   // More than three hours since the user message, exactly three since the reply.
   await service.receive(chatId, message(start + 5 * hour), origin)
   expect(send).not.toHaveBeenCalled()
@@ -110,6 +112,7 @@ it('does not await SMTP and isolates a failed recipient from other admins', asyn
   const log = vi
     .spyOn(errorReporter, 'error')
     .mockImplementationOnce(() => undefined)
+
   let finish: (() => void) | undefined
   send.mockRejectedValueOnce(failure).mockImplementationOnce(
     () =>

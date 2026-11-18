@@ -38,6 +38,7 @@ export const useAutocompleteSearch = (
         }
       }
     }, delay)
+
     return () => {
       clearTimeout(timer)
       controller.abort()

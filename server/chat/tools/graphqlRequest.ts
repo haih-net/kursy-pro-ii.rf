@@ -59,6 +59,7 @@ export const graphqlRequestTool: ChatTool = {
       variables: args.variables as Record<string, unknown> | undefined,
       operationName: args.operationName as string | undefined,
     }
+
     return {
       reasoning: input.reasoning,
       execute: ({ endpoint, signal, authorization }) =>
@@ -94,6 +95,7 @@ export async function executeGraphql(
     signal,
     redirect: 'error',
   })
+
   const result = await response.text()
   if (result.length > 128000) {
     throw new Error(

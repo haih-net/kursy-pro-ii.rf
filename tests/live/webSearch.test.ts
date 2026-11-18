@@ -45,9 +45,11 @@ for (const provider of providers) {
         CHAT_WEB_SEARCH_MODEL: '',
         CHAT_WEB_SEARCH_TOOL: provider.tool,
       }
+
       const previous = new Map(
         Object.keys(overrides).map((name) => [name, process.env[name]]),
       )
+
       try {
         for (const [name, value] of Object.entries(overrides)) {
           if (value === undefined) {
@@ -74,6 +76,7 @@ for (const provider of providers) {
               }),
             ),
         )
+
         assert.ok(
           !result.error,
           `${provider.name}: ${JSON.stringify({ error: result.error, status: result.status, requestId: result.requestId })}`,
@@ -91,6 +94,7 @@ for (const provider of providers) {
           result.usage?.server_tool_use?.web_search_requests ??
           result.usage?.server_tool_use_details?.web_search_requests ??
           0
+
         assert.ok(searchRequests > 0, 'Expected evidence of an executed search')
         context.diagnostic(
           `${provider.name}: search requests=${searchRequests}, citations=${result.annotations?.length}`,

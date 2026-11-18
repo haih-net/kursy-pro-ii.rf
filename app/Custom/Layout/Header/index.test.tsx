@@ -11,6 +11,7 @@ const { context } = vi.hoisted(() => ({
     userLoading: false,
   },
 }))
+
 vi.mock('app/Custom/components/AppContext', () => ({
   useAppContext: () => context,
 }))

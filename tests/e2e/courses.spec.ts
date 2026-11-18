@@ -103,6 +103,7 @@ test('конструктор считает часы, группы и уровн
   const bands = page.locator(
     '[data-topic-id="verification"] .topic-levels [data-level]',
   )
+
   await expect(bands).toHaveCount(2)
   for (const band of await bands.all()) {
     await expect(band).toBeVisible()
@@ -156,9 +157,11 @@ test('разделы, занятия и сложность доступны во
     const expected = await topic
       .locator('.level-badge')
       .evaluateAll((els) => els.map((el) => el.getAttribute('data-level')))
+
     const actual = await topic
       .locator('.topic-levels > [data-level]')
       .evaluateAll((els) => els.map((el) => el.getAttribute('data-level')))
+
     expect(actual).toEqual(expected)
     await expect(topic.locator('.topic-lessons')).toHaveCount(1)
   }

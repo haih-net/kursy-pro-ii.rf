@@ -51,10 +51,12 @@ export async function listenWithPortFallback(
         input: process.stdin,
         output: process.stdout,
       })
+
       try {
         const answer = await prompt.question(
           `Порт ${port} занят, открыть на ${nextPort} порту? [Y/n] `,
         )
+
         if (
           !['', 'y', 'yes', 'д', 'да'].includes(answer.trim().toLowerCase())
         ) {

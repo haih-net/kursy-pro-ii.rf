@@ -61,6 +61,7 @@ export async function completeCertificateAttempt(
   )
     .where({ fingerprint })
     .first()
+
   if (linkUserId) {
     const owner = await db<UserRecord>('User').where({ id: linkUserId }).first()
     if (!owner || owner.status === 'blocked') {

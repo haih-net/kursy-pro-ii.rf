@@ -15,6 +15,7 @@ const request = (
     get: () => origin,
     socket: { remoteAddress: address },
   }) as unknown as Request
+
 const setup = () => {
   let time = 1_000_000
   const send = vi.fn().mockResolvedValue(undefined)
@@ -23,6 +24,7 @@ const setup = () => {
     send,
     () => time,
   )
+
   const input: CourseApplicationInput = {
     token: service.challenge(request()).token,
     message: 'Telegram @student, удобны вечера',
@@ -30,6 +32,7 @@ const setup = () => {
     formatId: 'individual',
     website: '',
   }
+
   return {
     service,
     send,
@@ -39,6 +42,7 @@ const setup = () => {
     },
   }
 }
+
 describe('Заявка на email через GraphQL', () => {
   test('сервер не принимает заявку до пяти секунд и затем рассчитывает программу', async () => {
     const { service, send, input, advance } = setup()
@@ -95,6 +99,7 @@ describe('Заявка на email через GraphQL', () => {
       service.submit(input, request()),
       service.submit(input, request()),
     ])
+
     expect(receipts[0]).toEqual(receipts[1])
     await service.submit(input, request())
     expect(send).toHaveBeenCalledOnce()
@@ -145,6 +150,7 @@ describe('Заявка на email через GraphQL', () => {
       },
       contextValue: { req: request(), courseApplications: service },
     })
+
     expect(result.errors).toBeUndefined()
     expect(send.mock.calls[0][0]).toContain('150 ч.')
     expect(send.mock.calls[0][0]).toContain('600 000 ₽')

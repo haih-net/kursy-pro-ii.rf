@@ -23,6 +23,7 @@ export const CertificateKeys: React.FC<{ fingerprints: readonly string[] }> = ({
           Authorization: `Bearer ${localStorage.getItem('token') ?? ''}`,
         },
       })
+
       if (!response.ok) {
         throw new Error((await response.json()).message)
       }
@@ -37,6 +38,7 @@ export const CertificateKeys: React.FC<{ fingerprints: readonly string[] }> = ({
       setPending(false)
     }
   }, [client])
+
   return (
     <CurrentUserDataRowStyled>
       <span className="account-icon">

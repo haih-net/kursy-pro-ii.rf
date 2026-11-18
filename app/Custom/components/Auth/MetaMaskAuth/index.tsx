@@ -76,16 +76,19 @@ export const MetaMaskAuth: React.FC<MetaMaskAuthProps> = ({
         Array.from(new TextEncoder().encode(message), (byte) =>
           byte.toString(16).padStart(2, '0'),
         ).join('')
+
       const signature = await provider.request({
         method: 'personal_sign',
         params: [hexMessage, address],
       })
+
       if (typeof signature !== 'string') {
         throw new Error('Не удалось подписать сообщение.')
       }
       const { data } = await authEthAccount({
         variables: { data: { address, signature, nonce, referrerToken } },
       })
+
       const response = data?.response
       if (!response?.success || !response.token) {
         throw new Error(
@@ -103,6 +106,7 @@ export const MetaMaskAuth: React.FC<MetaMaskAuthProps> = ({
         typeof error === 'object' && error !== null && 'code' in error
           ? error.code
           : null
+
       if (code === 4001) {
         setError('Запрос в MetaMask отменён. Попробуйте ещё раз.')
       } else if (code === -32002) {

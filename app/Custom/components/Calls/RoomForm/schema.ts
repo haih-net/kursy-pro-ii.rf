@@ -1,6 +1,5 @@
+import type { CallRoomFormData } from '../interfaces'
 import * as yup from 'yup'
-import type { CreateCallRoomMutationVariables } from 'app/gql/generated'
-export type CallRoomFormData = CreateCallRoomMutationVariables['data']
 export const callRoomSchema: yup.ObjectSchema<CallRoomFormData> = yup.object({
   title: yup
     .string()

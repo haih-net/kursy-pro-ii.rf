@@ -12,6 +12,7 @@ async function main(): Promise<void> {
       help: { type: 'boolean', short: 'h' },
     },
   })
+
   if (values.help) {
     process.stdout.write(
       'Usage: npm run chat -- [--endpoint URL] [--token TOKEN] "Message"\n',
@@ -39,6 +40,7 @@ async function main(): Promise<void> {
       endpoint: values.endpoint,
       signal: controller.signal,
     })
+
     await new ChatAgent().run(message, token, context, {
       onEvent: (event) => {
         if (event.type === 'authenticated') {

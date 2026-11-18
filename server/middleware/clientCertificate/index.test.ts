@@ -104,6 +104,7 @@ async function fetch(
         })
       },
     )
+
     req.on('error', reject)
     req.end(options.body)
   })
@@ -112,6 +113,7 @@ async function userToken(id: string, sudo = false): Promise<string> {
   const [user] = await db<UserRecord>('User')
     .insert({ id, sudo })
     .returning('*')
+
   return createToken(user, db)
 }
 function post(

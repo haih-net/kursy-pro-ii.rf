@@ -19,6 +19,7 @@ export async function userPageGetInitialProps({
       query: UserDocument,
       variables: getUserQueryVariables(userId),
     })
+
     if (!result.data?.object) {
       throw new Response('Пользователь не найден', { status: 404 })
     }
