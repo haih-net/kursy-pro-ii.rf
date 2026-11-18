@@ -17,6 +17,9 @@ export const CallRoomStyled = styled(CallsStyled)`
     white-space: nowrap;
   }
   body:has(&[data-active='true']) ${CustomLayoutStyled} {
+    max-width: none;
+    margin: 0;
+    padding-inline: 0;
     height: 100dvh;
     min-height: 0;
     display: grid;
