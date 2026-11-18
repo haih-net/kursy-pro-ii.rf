@@ -9,7 +9,13 @@ export function createCallsState(): CallsState {
     rooms: {},
     media: {},
     codes: {},
-    audio: { volume: 1, muted: false, blocked: false, resumeRequest: 0 },
+    audio: {
+      volume: 1,
+      muted: false,
+      blocked: false,
+      level: 0,
+      resumeRequest: 0,
+    },
     pool: createCallMediaPool(),
   }
 }

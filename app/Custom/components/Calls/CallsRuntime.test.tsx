@@ -70,6 +70,21 @@ const App: React.FC<{ client: ApolloClient }> = ({ client }) => (
 )
 
 beforeEach(() => {
+  vi.stubGlobal(
+    'Audio',
+    class {
+      paused = true
+      volume = 1
+      srcObject: MediaStream | null = null
+      play = vi.fn(async () => {
+        this.paused = false
+      })
+      pause = vi.fn(() => {
+        this.paused = true
+      })
+    },
+  )
+
   calls = undefined
   vi.mocked(createCallConnection).mockReturnValue({
     close,
@@ -88,6 +103,11 @@ beforeEach(() => {
     class {
       state = 'running'
       destination = {}
+      createAnalyser = () => ({
+        fftSize: 1024,
+        getFloatTimeDomainData: vi.fn(),
+        disconnect: vi.fn(),
+      })
       createGain = () => ({
         gain: { value: 1 },
         connect: vi.fn(),

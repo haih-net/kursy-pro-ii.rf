@@ -1,4 +1,7 @@
 import assert from 'node:assert/strict'
+import { mkdtemp, writeFile, rm } from 'node:fs/promises'
+import { tmpdir } from 'node:os'
+import { join } from 'node:path'
 import { chromium, type Page } from 'playwright'
 import { print, type DocumentNode } from 'graphql'
 import {
@@ -29,24 +32,54 @@ async function operation(
 
   return response.json()
 }
-const signup = await operation(SignupDocument, {
-  data: {
-    username: `calltest${Date.now()}`,
-    password: 'Calls-test-password-2026',
-    fullname: 'Создатель',
-  },
-})
+// Для сценария с управлением комнатой нужен администратор локальной тестовой БД.
+let token = process.env.CALL_TEST_OWNER_TOKEN
+if (!token) {
+  const signup = await operation(SignupDocument, {
+    data: {
+      username: `calltest${Date.now()}`,
+      password: 'Calls-test-password-2026',
+      fullname: 'Создатель',
+    },
+  })
 
-assert.equal(signup.errors, undefined)
-const token = (signup.data?.response as { token: string }).token
+  assert.equal(signup.errors, undefined)
+  token = (signup.data?.response as { token: string }).token
+}
 assert.ok(token)
+// Виртуальный микрофон Chromium без WAV может передавать только тишину.
+const audioDirectory = await mkdtemp(join(tmpdir(), 'call-audio-'))
+const audioFile = join(audioDirectory, 'microphone.wav')
+const sampleRate = 48000
+const samples = sampleRate * 2
+const wav = Buffer.alloc(44 + samples * 2)
+wav.write('RIFF', 0)
+wav.writeUInt32LE(wav.length - 8, 4)
+wav.write('WAVEfmt ', 8)
+wav.writeUInt32LE(16, 16)
+wav.writeUInt16LE(1, 20)
+wav.writeUInt16LE(1, 22)
+wav.writeUInt32LE(sampleRate, 24)
+wav.writeUInt32LE(sampleRate * 2, 28)
+wav.writeUInt16LE(2, 32)
+wav.writeUInt16LE(16, 34)
+wav.write('data', 36)
+wav.writeUInt32LE(samples * 2, 40)
+for (let i = 0; i < samples; i++) {
+  wav.writeInt16LE(
+    Math.round(Math.sin((2 * Math.PI * 440 * i) / sampleRate) * 12000),
+    44 + i * 2,
+  )
+}
+await writeFile(audioFile, wav)
 const browser = await chromium.launch({
   args: [
     '--use-fake-device-for-media-stream',
     '--use-fake-ui-for-media-stream',
+    `--use-file-for-fake-audio-capture=${audioFile}`,
     '--auto-select-desktop-capture-source=Entire screen',
     '--enable-usermedia-screen-capturing',
-    '--autoplay-policy=no-user-gesture-required',
+    '--autoplay-policy=document-user-activation-required',
   ],
 })
 
@@ -69,10 +102,29 @@ try {
       const state = window as typeof window & {
         callTestPeers: RTCPeerConnection[]
         callTestSockets: WebSocket[]
+        callTestAudio: Array<{ context: AudioContext; analyser: AnalyserNode }>
       }
 
       state.callTestPeers = []
       state.callTestSockets = []
+      state.callTestAudio = []
+      const NativeAudio = AudioContext
+      window.AudioContext = class extends NativeAudio {
+        sources: MediaStream[] = []
+        createMediaStreamSource(
+          stream: MediaStream,
+        ): MediaStreamAudioSourceNode {
+          this.sources.push(stream)
+          return super.createMediaStreamSource(stream)
+        }
+        createGain(): GainNode {
+          const gain = super.createGain()
+          const analyser = this.createAnalyser()
+          gain.connect(analyser)
+          state.callTestAudio.push({ context: this, analyser })
+          return gain
+        }
+      }
       const NativeSocket = WebSocket
       window.WebSocket = class extends NativeSocket {
         constructor(url: string | URL, protocols?: string | string[]) {
@@ -145,7 +197,7 @@ try {
       .click()
     await page
       .getByText('В комнате · связь с сервером установлена', { exact: true })
-      .waitFor()
+      .waitFor({ state: 'attached' })
   }
   await Promise.all(
     pages.map((page, index) =>
@@ -159,10 +211,13 @@ try {
       .waitFor()
     await page.waitForFunction(
       () =>
-        document.querySelectorAll('article video').length === 2 &&
-        [...document.querySelectorAll<HTMLVideoElement>('article video')].every(
-          (video) => video.videoWidth > 0,
-        ),
+        document.querySelectorAll('video[aria-label^="Миниатюра:"]').length ===
+          3 &&
+        [
+          ...document.querySelectorAll<HTMLVideoElement>(
+            'video[aria-label^="Миниатюра:"]',
+          ),
+        ].every((video) => video.videoWidth > 0),
       { timeout: 30000 },
     )
     assert.equal(await page.getByText('На связи', { exact: true }).count(), 2)
@@ -191,10 +246,80 @@ try {
     )
 
     assert.deepEqual(receivedAudio, [true, true])
+    // Проверяем сигнал после общего GainNode, а не только получение RTP.
+    await page.waitForFunction(() => {
+      const outputs = (
+        window as typeof window & {
+          callTestAudio: Array<{
+            context: AudioContext
+            analyser: AnalyserNode
+          }>
+        }
+      ).callTestAudio
+
+      return outputs.some(({ context, analyser }) => {
+        const samples = new Float32Array(analyser.fftSize)
+        analyser.getFloatTimeDomainData(samples)
+        return (
+          context.state === 'running' &&
+          samples.some((value) => Math.abs(value) > 0.001)
+        )
+      })
+    })
+    await page.evaluate(async () => {
+      const outputs = (
+        window as typeof window & {
+          callTestAudio: Array<{
+            context: AudioContext
+            analyser: AnalyserNode
+          }>
+        }
+      ).callTestAudio
+
+      await outputs
+        .find(({ context }) => context.state === 'running')
+        ?.context.suspend()
+    })
+    await page.waitForFunction(() =>
+      (
+        window as typeof window & {
+          callTestAudio: Array<{
+            context: AudioContext
+            analyser: AnalyserNode
+          }>
+        }
+      ).callTestAudio.some(({ context }) => context.state === 'running'),
+    )
   }
   console.warn(
     'PASS: three participants, bidirectional camera and audio streams, protected invitations, owner-only settings',
   )
+  if (process.env.CALL_TEST_AUDIO_ONLY === '1') {
+    for (const page of pages) {
+      await page.getByLabel('Меню звонка: Проверка группового звонка').click()
+      await page
+        .getByRole('button', {
+          name: 'Выйти из звонка: Проверка группового звонка',
+        })
+        .click()
+      await page.waitForFunction(() =>
+        (
+          window as typeof window & {
+            callTestAudio: Array<{
+              context: AudioContext
+              analyser: AnalyserNode
+            }>
+          }
+        ).callTestAudio.every(({ context }) => context.state === 'closed'),
+      )
+    }
+    console.warn(
+      'PASS: общий аудиовыход, восстановление без отдельного клика, закрытие после звонка',
+    )
+    await browser.close()
+    await rm(audioDirectory, { recursive: true, force: true })
+    process.exit(0)
+  }
   await guest1
     .getByRole('button', { name: 'Поделиться экраном', exact: true })
     .click()
@@ -445,6 +570,22 @@ try {
                 })),
             }),
           ),
+          audio: (
+            window as typeof window & {
+              callTestAudio: Array<{
+                context: AudioContext
+                analyser: AnalyserNode
+              }>
+            }
+          ).callTestAudio?.map(({ context, analyser }) => {
+            const samples = new Float32Array(analyser.fftSize)
+            analyser.getFloatTimeDomainData(samples)
+            return {
+              state: context.state,
+              time: context.currentTime,
+              peak: Math.max(...samples.map(Math.abs)),
+            }
+          }),
           peers: await Promise.all(
             (
               window as typeof window & { callTestPeers: RTCPeerConnection[] }
@@ -467,6 +608,8 @@ try {
                   bytesReceived: s.bytesReceived,
                   bytesSent: s.bytesSent,
                   framesDecoded: s.framesDecoded,
+                  totalAudioEnergy: s.totalAudioEnergy,
+                  audioLevel: s.audioLevel,
                 })),
             })),
           ),
@@ -478,4 +621,5 @@ try {
   throw error
 } finally {
   await browser.close()
+  await rm(audioDirectory, { recursive: true, force: true })
 }

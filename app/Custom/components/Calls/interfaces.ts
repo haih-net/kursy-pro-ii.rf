@@ -123,5 +123,6 @@ export interface CallAudioState {
   volume: number
   muted: boolean
   blocked: boolean
+  level: number
   resumeRequest: number
 }

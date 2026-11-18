@@ -5,6 +5,7 @@
     "server/**/*",
     "scripts/chat.ts",
     "scripts/dev.ts",
+    "scripts/test-call-broadcast.ts",
     "*.ts",
     ".react-router/types/**/*",
     ".storybook/**/*.ts",

@@ -46,6 +46,11 @@ class FakeAudioContext {
   constructor() {
     contexts.push(this)
   }
+  createAnalyser = () => ({
+    fftSize: 1024,
+    getFloatTimeDomainData: vi.fn(),
+    disconnect: vi.fn(),
+  })
   createGain = () => this.gain
   createMediaStreamSource = vi.fn(() => {
     const node = { connect: vi.fn(), disconnect: vi.fn() }
@@ -97,22 +102,41 @@ function room(id: string, stream: MediaStream): CallRoomState {
 }
 
 beforeEach(() => {
+  vi.stubGlobal(
+    'Audio',
+    class {
+      paused = true
+      volume = 1
+      srcObject: MediaStream | null = null
+      play = vi.fn(async () => {
+        this.paused = false
+      })
+      pause = vi.fn(() => {
+        this.paused = true
+      })
+    },
+  )
+
   contexts.length = 0
   vi.stubGlobal('AudioContext', FakeAudioContext)
 })
 afterEach(() => {
   cleanup()
   vi.unstubAllGlobals()
+  vi.useRealTimers()
 })
 
 describe('общий аудиовыход звонков', () => {
   it('смешивает комнаты через один регулятор громкости и освобождает только удалённые источники', async () => {
+    vi.useFakeTimers()
     const a = room('a', {} as MediaStream)
     const b = room('b', {} as MediaStream)
     const { result, unmount } = renderHook(useTestCallAudio, {
       wrapper: Wrapper,
     })
 
+    expect(contexts).toHaveLength(0)
+    expect(vi.getTimerCount()).toBe(0)
     act(() => {
       calls.dispatch({ type: 'roomOpened', id: 'a' })
       calls.dispatch({ type: 'roomChanged', id: 'a', room: a })
@@ -125,9 +149,16 @@ describe('общий аудиовыход звонков', () => {
     expect(context.createMediaStreamSource).toHaveBeenCalledTimes(2)
     expect(context.nodes[0].connect).toHaveBeenCalledWith(context.gain)
     expect(context.nodes[1].connect).toHaveBeenCalledWith(context.gain)
-    expect(calls.state.audio.blocked).toBe(true)
-    await act(async () => result.current.resume())
+    await act(async () => undefined)
+    expect(context.resume).toHaveBeenCalledOnce()
     expect(calls.state.audio.blocked).toBe(false)
+    expect(vi.getTimerCount()).toBe(1)
+    context.state = 'suspended'
+    await act(async () => vi.advanceTimersByTimeAsync(1000))
+    expect(context.state).toBe('running')
+    context.state = 'suspended'
+    await act(async () => document.dispatchEvent(new Event('click')))
+    expect(context.state).toBe('running')
     act(() => result.current.setVolume(0.3))
     expect(context.gain.gain.value).toBe(0.3)
     act(() => result.current.toggleMuted())
@@ -142,6 +173,13 @@ describe('общий аудиовыход звонков', () => {
     act(() => calls.dispatch({ type: 'roomRemoved', id: 'b' }))
     expect(context.nodes[1].disconnect).toHaveBeenCalledOnce()
     expect(context.close).toHaveBeenCalledOnce()
+    expect(vi.getTimerCount()).toBe(0)
+    const attempts = context.resume.mock.calls.length
+    await act(async () => {
+      document.dispatchEvent(new Event('click'))
+      await vi.advanceTimersByTimeAsync(2000)
+    })
+    expect(context.resume).toHaveBeenCalledTimes(attempts)
     unmount()
     expect(context.close).toHaveBeenCalledOnce()
   })

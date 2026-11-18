@@ -9,6 +9,7 @@ import { previewMediaId } from 'app/Custom/components/Calls/hooks/useCallMedia'
 import { DeviceControls } from 'app/Custom/components/Calls/DeviceControls'
 import { CameraEffects } from './CameraEffects'
 import { ScreenShare } from './ScreenShare'
+import { TestBroadcast } from './TestBroadcast'
 export const CallDevicesPage: React.FC = () => {
   useCallPreview()
   const media = useCallMedia(previewMediaId)
@@ -27,6 +28,7 @@ export const CallDevicesPage: React.FC = () => {
         созвона. Комната и регистрация не нужны. Проверка выполняется в
         браузере: звук и видео никуда не отправляются.
       </p>
+      <TestBroadcast />
       <DeviceControls
         mediaId={previewMediaId}
         cameraPreview={<CameraEffects stream={media.streams.camera} />}
