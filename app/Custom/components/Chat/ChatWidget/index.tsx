@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { useSnackbar } from 'app/Custom/hooks/useSnackbar'
 import { ChatWidgetContainer, ChatButton } from './styles'
 import { useChatContext } from './context'
+import { useDraggable } from 'app/Custom/hooks/useDraggable'
 
 type ChatComponents = {
   ChatContent: typeof import('./ChatContent').ChatContent
@@ -13,6 +14,17 @@ export const ChatWidget: React.FC = () => {
   const snackbar = useSnackbar()
   const addMessage = snackbar?.addMessage
   const { isOpen, handleClose } = chat
+  const draggable = useDraggable<HTMLButtonElement>()
+  const buttonRef = useRef<HTMLButtonElement>(null)
+  const draggableRef = draggable.ref
+  const setButtonRef = useCallback(
+    (element: HTMLButtonElement | null): void => {
+      buttonRef.current = element
+      draggableRef(element)
+    },
+    [draggableRef],
+  )
+
   const [mounted, setMounted] = useState(false)
   const [components, setComponents] = useState<ChatComponents | null>(null)
 
@@ -62,6 +74,7 @@ export const ChatWidget: React.FC = () => {
     <ChatWidgetContainer>
       {isOpen && components && (
         <components.ChatModal
+          anchorRef={buttonRef}
           isExpanded={chat.isExpanded}
           onClose={chat.handleClose}
           onExpand={chat.handleExpand}
@@ -71,10 +84,14 @@ export const ChatWidget: React.FC = () => {
       )}
 
       <ChatButton
+        {...draggable.handleProps}
+        ref={setButtonRef}
+        style={{ ...draggable.handleProps.style, ...draggable.style }}
+        data-dragging={draggable.isDragging}
+        data-animated={!isOpen && !draggable.isDragging}
         aria-label="Спросить ИИ — открыть помощника"
         onClick={chat.handleToggle}
         data-open={isVisible}
-        data-animated={!isOpen}
         disabled={isLoading}
         aria-busy={isLoading}
         type="button"

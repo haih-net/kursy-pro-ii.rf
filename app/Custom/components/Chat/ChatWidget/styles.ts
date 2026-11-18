@@ -84,6 +84,14 @@ export const ChatWindow = styled.div`
 `
 
 export const ChatHeader = styled.div`
+  &[data-draggable='true'] {
+    cursor: grab;
+  }
+
+  &[data-dragging='true'] {
+    cursor: grabbing;
+  }
+
   flex-shrink: 0;
   padding: 14px 20px;
   background: ${theme.backgrounds.page};
@@ -361,10 +369,18 @@ export const ChatButton = styled.button`
     font-size: 18px;
   }
   border: 1px solid transparent;
-  cursor: pointer;
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+
+  &[data-dragging='true'] {
+    cursor: grabbing;
+    animation: none;
+  }
   display: flex;
   &[data-open='true'] {
-    display: none;
+    visibility: hidden;
+    pointer-events: none;
   }
   align-items: center;
   justify-content: center;
@@ -397,7 +413,6 @@ export const ChatButton = styled.button`
 
   &:hover:not(:disabled) {
     background: #8d2c18;
-    transform: translateY(-2px);
     box-shadow: 0 6px 16px rgba(173, 59, 32, 0.32);
   }
 
